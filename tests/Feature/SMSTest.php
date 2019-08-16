@@ -4,21 +4,13 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use LBHurtado\SMS\Facades\SMS;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SMSTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testExample()
+    public function it_works()
     {
         $mobile = '639173011987';
-        $message = 'Testing from 1898';
-        $amount = 25;
+        $message = 'SMSTest::it_works';
         $senderId = 'TXTCMDR';
 
         SMS::channel('engagespark')
@@ -26,7 +18,6 @@ class SMSTest extends TestCase
             ->to($mobile)
             ->content($message)
             ->send()
-            // ->topup(25)
             ;
     }
 }
