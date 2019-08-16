@@ -8,6 +8,7 @@ Backend software for DEC SMS Relay
 * Forward SMS Messages to Email
 * Forward SMS Messages to Mobile
 * Send SMS Messages with Message ID - [x] 
-* Send Email Messages with HashTag
+* Send Email Messages  - [x]
+    * with HashTag
 * Reply
 * Broadcast
