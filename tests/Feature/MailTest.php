@@ -13,5 +13,7 @@ class MailTest extends TestCase
     {
         $name = 'Krunal';
         Mail::to('lester@3rd.tel')->send(new SendMailable($name));
+
+        $this->assertTrue(true);
     }
 }
