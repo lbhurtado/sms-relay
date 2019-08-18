@@ -4,13 +4,13 @@ namespace App\CommandBus\Commands;
 
 use LBHurtado\Missive\Models\SMS;
 
-class SendMailCommand
+class MailSMSCommand
 {
     /** @var SMS */
     public $sms;
 
     /**
-     * SendMailCommand constructor.
+     * MailSMSCommand constructor.
      * @param SMS $sms
      */
     public function __construct(SMS $sms)

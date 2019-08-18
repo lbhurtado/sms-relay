@@ -3,11 +3,11 @@
 namespace App\CommandBus;
 
 use LBHurtado\Missive\Routing\Router;
-use App\CommandBus\Commands\SendMailCommand;
-use App\CommandBus\Handlers\SendMailHandler;
+use App\CommandBus\Commands\MailSMSCommand;
+use App\CommandBus\Handlers\MailSMSHandler;
 use Joselfonseca\LaravelTactician\CommandBusInterface;
 
-class MailAction
+class MailSMSAction
 {
     protected $bus;
 
@@ -17,7 +17,7 @@ class MailAction
     {
         $this->router = $router;
         $this->bus = app(CommandBusInterface::class);
-        $this->bus->addHandler(SendMailCommand::class, SendMailHandler::class);
+        $this->bus->addHandler(MailSMSCommand::class, MailSMSHandler::class);
     }
 
     public function __invoke(string $path, array $values)
@@ -31,7 +31,7 @@ class MailAction
 
     public function forwardMessage(array $data = [])
     {
-        $this->bus->dispatch(SendMailCommand::class, $data);
+        $this->bus->dispatch(MailSMSCommand::class, $data);
 
         return $this;
     }

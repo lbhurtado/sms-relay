@@ -12,10 +12,10 @@ class LogCommand
     /**
      * LogCommand constructor.
      *
-     * @param string $message
+     * @param SMS $sms
      */
     public function __construct(SMS $sms)
     {
-    	$this->sms = trim($sms);
+    	$this->sms = $sms;
     }
 }

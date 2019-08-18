@@ -5,14 +5,14 @@ namespace App\CommandBus\Handlers;
 use App\Mail\SMSForward;
 use Illuminate\Support\Facades\Mail;
 use Akaunting\Setting\Facade as Setting;
-use App\CommandBus\Commands\SendMailCommand;
+use App\CommandBus\Commands\MailSMSCommand;
 
-class SendMailHandler
+class MailSMSHandler
 {
     /**
-     * @param SendMailCommand $command
+     * @param MailSMSCommand $command
      */
-    public function handle(SendMailCommand $command)
+    public function handle(MailSMSCommand $command)
     {
         $emails = Setting::get('forwarding.emails');
 

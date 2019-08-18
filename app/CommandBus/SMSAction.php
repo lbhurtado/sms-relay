@@ -3,10 +3,10 @@
 namespace App\CommandBus;
 
 use Joselfonseca\LaravelTactician\CommandBusInterface;
-use App\CommandBus\Commands\{CreateContactCommand, SendMessageCommand, SendMailCommand};
-use App\CommandBus\Handlers\{CreateContactHandler, SendMessageHandler, SendMailHandler};
+use App\CommandBus\Commands\{CreateContactCommand, SendMessageCommand, MailSMSCommand};
+use App\CommandBus\Handlers\{CreateContactHandler, SendMessageHandler, MailSMSHandler};
 
-class SendAction
+class SMSAction
 {
     protected $bus;
 
@@ -15,7 +15,7 @@ class SendAction
         $this->bus = app(CommandBusInterface::class);
         $this->bus->addHandler(CreateContactCommand::class, CreateContactHandler::class);
         $this->bus->addHandler(SendMessageCommand::class, SendMessageHandler::class);
-        $this->bus->addHandler(SendMailCommand::class, SendMailHandler::class);
+        $this->bus->addHandler(MailSMSCommand::class, MailSMSHandler::class);
     }
 
     public function createContact(array $data = [])
@@ -32,9 +32,9 @@ class SendAction
         return $this;
     }
 
-    public function sendMail(array $data = [])
+    public function mailSMS(array $data = [])
     {
-        $this->bus->dispatch(SendMailCommand::class, $data);
+        $this->bus->dispatch(MailSMSCommand::class, $data);
 
         return $this;
     }
