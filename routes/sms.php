@@ -1,29 +1,13 @@
 <?php
 
-use App\Mail\SendMailable;
-use Illuminate\Support\Facades\Mail;
-use LBHurtado\EngageSpark\Notifications\Adhoc;
+use App\CommandBus\{PingAction, SendAction, LogAction, MailAction};
 
 $router = resolve('missive:router');
 
-$router->register('LOG {message}', function (string $path, array $values) use ($router) {
-    \Log::info($values['message']);
+$router->register('LOG {message}', app(LogAction::class));
 
-    tap($router->missive->getSMS()->origin, function ($contact) use ($values) {
-        $message = $values['message'];
-        $contact->notify(new Adhoc("{$contact->mobile}: $message"));
-    });
-});
+$router->register('PING', app(PingAction::class));
 
-$router->register('{message}', function (string $path, array $values) use ($router) {
-    tap($router->missive->getSMS()->origin, function ($contact) use ($values) {
-        $mobile = $contact->mobile;
-        $message = $values['message'];
-
-        Mail::to('lester@3rd.tel')->send(new SendMailable($mobile, $message));
-    });
-
-    return false;
-});
+$router->register('{message}', app(MailAction::class));
 
 

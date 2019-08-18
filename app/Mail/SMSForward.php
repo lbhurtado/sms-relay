@@ -4,10 +4,12 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use LBHurtado\Missive\Models\SMS;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendMailable extends Mailable
+
+class SMSForward extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -15,16 +17,16 @@ class SendMailable extends Mailable
 
     public $message;
 
-    public function __construct($mobile, $message)
+    public function __construct(SMS $sms)
     {
-        $this->mobile = $mobile;
-        $this->message = $message;
+        $this->mobile = $sms->origin->mobile;
+        $this->message = $sms->getMessage();
     }
 
     public function build()
     {
         return $this->subject('SMS Forward')
-            ->markdown('email.name')
+            ->markdown('email.forward')
             ->with([
                 'name' => 'New Mailtrap User',
                 'link' => 'https://mailtrap.io/inboxes'
