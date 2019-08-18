@@ -11,17 +11,19 @@ class SendMailable extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $name;
+    public $mobile;
 
-    public function __construct(string $name)
+    public $message;
+
+    public function __construct($mobile, $message)
     {
-        $this->name = $name;
+        $this->mobile = $mobile;
+        $this->message = $message;
     }
 
     public function build()
     {
-        return $this->from('mail@example.com', 'Mailtrap')
-            ->subject('Mailtrap Confirmation')
+        return $this->subject('SMS Forward')
             ->markdown('email.name')
             ->with([
                 'name' => 'New Mailtrap User',
