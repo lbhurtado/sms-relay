@@ -2,25 +2,24 @@
 
 namespace App\CommandBus\Handlers;
 
-use App\Mail\SMSForward;
+use App\Mail\ForwardSMSToMail;
 use Illuminate\Support\Facades\Mail;
 use Akaunting\Setting\Facade as Setting;
-use App\CommandBus\Commands\MailSMSCommand;
+use App\CommandBus\Commands\ForwardSMSToMailCommand;
 
-class MailSMSHandler
+class ForwardSMSToMailHandler
 {
     /**
-     * @param MailSMSCommand $command
+     * @param ForwardSMSToMailCommand $command
      */
-    public function handle(MailSMSCommand $command)
+    public function handle(ForwardSMSToMailCommand $command)
     {
         $emails = Setting::get('forwarding.emails');
 
         foreach($emails as $email) {
             Mail::to($email)
-                ->send(new SMSForward($command->sms))
+                ->send(new ForwardSMSToMail($command->sms))
             ;
         }
-
     }
 }

@@ -12,9 +12,9 @@ class SettingSeeder extends Seeder
     public function run()
     {
         Setting::forget('forwarding.emails');
-        Setting::forget('forwarding.sms');
-        Setting::set('forwarding.emails', [env('DEFAULT_FORWARDING_EMAIL', 'lester@hurtado.ph')]);
-        Setting::set('forwarding.sms', [env('DEFAULT_FORWARDING_SMS', '09173011987')]);
+        Setting::forget('forwarding.mobiles');
+        Setting::set('forwarding.emails', explode(',', env('FORWARDING_EMAILS', 'lester@hurtado.ph,lbhurtado@gmail.com')));
+        Setting::set('forwarding.mobiles', explode(',', env('FORWARDING_SMSS', '09173011987,09189362340')));
         Setting::save();
     }
 }
