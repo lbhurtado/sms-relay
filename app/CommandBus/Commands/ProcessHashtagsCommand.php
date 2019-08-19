@@ -2,18 +2,15 @@
 
 namespace App\CommandBus\Commands;
 
-use LBHurtado\Missive\Models\SMS;
-
-class BroadcastCommand
+class ProcessHashtagsCommand
 {
-    /*
+    /**
      * @var string
      */
     public $message;
 
     /**
-     * BroadcastCommand constructor.
-     *
+     * ProcessHashtagsCommand constructor.
      * @param string $message
      */
     public function __construct(string $message)
