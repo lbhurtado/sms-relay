@@ -7,10 +7,10 @@ Backend software for DEC SMS Relay
     * from an Authorized Mobile Number
 * Receive Messages from any mobile phone in the Philippines
 * Forward SMS Messages to Email - [x]
-* Forward SMS Messages to Mobile
+* Forward SMS Messages to Mobile - [x]
 * Send SMS Messages with Message ID - [x] 
 * Send Email Messages - [x]
     * with HashTag
-* Reply
-* Broadcast
-* Setting
+* Reply - [x]
+* Broadcast - [x]
+* Setting - [x]
