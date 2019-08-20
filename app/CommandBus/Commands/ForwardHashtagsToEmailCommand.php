@@ -4,14 +4,14 @@ namespace App\CommandBus\Commands;
 
 use LBHurtado\Missive\Models\SMS;
 
-class ProcessHashtagsCommand
+class ForwardHashtagsToEmailCommand
 {
     /** @var SMS */
     public $sms;
 
     /**
      * ProcessHashtagsCommand constructor.
-     * @param string $message
+     * @param SMS $sms
      */
     public function __construct(SMS $sms)
     {
