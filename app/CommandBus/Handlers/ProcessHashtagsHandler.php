@@ -49,7 +49,7 @@ class ProcessHashtagsHandler
 
     protected function getEmails($hashtag)
     {
-        return Setting::get("forwarding.hashtags")[$hashtag];
+        return Arr::get(Setting::get("forwarding.hashtags"), $hashtag);
     }
 
     protected function send($email, SMS $sms)

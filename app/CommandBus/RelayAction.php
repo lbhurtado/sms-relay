@@ -2,6 +2,7 @@
 
 namespace App\CommandBus;
 
+use App\Traits\HasActionPermissions;
 use LBHurtado\Missive\Routing\Router;
 use App\CommandBus\Commands\LogCommand;
 use App\CommandBus\Handlers\LogHandler;
@@ -17,9 +18,13 @@ use Joselfonseca\LaravelTactician\CommandBusInterface;
 
 class RelayAction
 {
+    use HasActionPermissions;
+
     protected $bus;
 
     protected $router;
+
+    protected $permission = 'send message';
 
     public function __construct(Router $router)
     {
@@ -29,13 +34,15 @@ class RelayAction
 
     public function __invoke(string $path, array $values)
     {
+        if (! $this->permittedContact()) return;
+
         $go = (object) config('sms-relay.relay');
 
         $this->log($go->log)
             ->relayToEmail($go->email)
             ->relayToMobile($go->mobile)
             ->reply($go->reply)
-            ->processMessage(true);
+            ->processMessage(true); 
     }
 
     protected function addBusHandlers()

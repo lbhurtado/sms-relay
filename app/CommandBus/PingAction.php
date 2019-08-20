@@ -2,6 +2,8 @@
 
 namespace App\CommandBus;
 
+use App\Contact;
+use App\Traits\HasActionPermissions;
 use LBHurtado\Missive\Routing\Router;
 use App\CommandBus\Commands\PingCommand;
 use App\CommandBus\Handlers\PingHandler;
@@ -9,9 +11,13 @@ use Joselfonseca\LaravelTactician\CommandBusInterface;
 
 class PingAction
 {
+    use HasActionPermissions;
+
 	protected $bus;
 
     protected $router;
+
+    protected $permission = 'issue command';
 
 	public function __construct(Router $router)
     {
@@ -22,9 +28,9 @@ class PingAction
 
     public function __invoke(string $path, array $values)
     {
-        $mobile = $this->router->missive->getSMS()->origin->mobile;
-
-        $this->sendReply(compact('mobile'));
+        optional($this->permittedContact(), function ($contact) {
+            $this->sendReply(['mobile' => $contact->mobile]); 
+        });
     }
 
     public function sendReply(array $data = [])
