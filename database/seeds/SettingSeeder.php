@@ -13,8 +13,13 @@ class SettingSeeder extends Seeder
     {
         Setting::forget('forwarding.emails');
         Setting::forget('forwarding.mobiles');
+        Setting::forget('forwarding.hashtags');
         Setting::set('forwarding.emails', explode(',', env('FORWARDING_EMAILS', 'lester@hurtado.ph,lbhurtado@gmail.com')));
         Setting::set('forwarding.mobiles', explode(',', env('FORWARDING_SMSS', '09173011987,09189362340')));
+        Setting::set('forwarding.hashtags', [
+            'info' => 'info@lgu.gov.ph',
+            'support' => 'support@lgu.gov.ph'
+        ]);
         Setting::save();
     }
 }

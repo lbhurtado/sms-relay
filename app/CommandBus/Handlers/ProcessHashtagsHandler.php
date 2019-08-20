@@ -5,7 +5,12 @@ namespace App\CommandBus\Handlers;
 use Illuminate\Support\Arr;
 use Twitter\Text\Extractor;
 use League\Pipeline\Pipeline;
+use App\Mail\ForwardSMSToMail;
+use LBHurtado\Missive\Models\SMS;
+use Illuminate\Support\Facades\Mail;
+use Akaunting\Setting\Facade as Setting;
 use App\CommandBus\Commands\ProcessHashtagsCommand;
+
 
 class ProcessHashtagsHandler
 {
@@ -28,7 +33,29 @@ class ProcessHashtagsHandler
      */
     public function handle(ProcessHashtagsCommand $command)
     {
-        $extracted = $this->extractor->extract($command->message);
+        foreach ($this->getHashtags($command) as $hashtag) {
+            optional($this->getEmails($hashtag), function ($email) use ($command) {
+                $this->send($email, $command->sms);
+            });
+        };       
+    }
 
+    protected function getHashtags(ProcessHashtagsCommand $command)
+    {
+        $extracted = $this->extractor->extract($command->sms->getMessage());
+
+        return Arr::get($extracted, 'hashtags');
+    }
+
+    protected function getEmails($hashtag)
+    {
+        return Setting::get("forwarding.hashtags")[$hashtag];
+    }
+
+    protected function send($email, SMS $sms)
+    {
+        Mail::to($email)
+            ->send(new ForwardSMSToMail($sms))
+        ;
     }
 }

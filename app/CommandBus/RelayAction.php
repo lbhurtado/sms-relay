@@ -35,7 +35,7 @@ class RelayAction
             ->relayToEmail($go->email)
             ->relayToMobile($go->mobile)
             ->reply($go->reply)
-            ->processMessage($values);
+            ->processMessage(true);
     }
 
     protected function addBusHandlers()
@@ -77,9 +77,9 @@ class RelayAction
         return $this;
     }
 
-    protected function processMessage(array $data = [])
+    protected function processMessage(bool $go = true)
     {
-        $this->bus->dispatch(ProcessHashtagsCommand::class, $data);
+        $this->bus->dispatch(ProcessHashtagsCommand::class, $this->getData());
 
         return $this;
     }
