@@ -8,7 +8,7 @@ use App\CommandBus\Commands\ForwardSMSToMobileCommand;
 
 class ForwardSMSToMobileHandler
 {
-    protected $template = 'relay.forward.mobile';
+    protected $template = 'sms-relay.forward.mobile';
 
     /**
      * @param ForwardSMSToMobileCommand $command
@@ -28,8 +28,9 @@ class ForwardSMSToMobileHandler
     protected function getContent(ForwardSMSToMobileCommand $command)
     {
         $from = $command->sms->origin->mobile;
+        $to = $command->sms->destination->mobile;
         $message = $command->sms->getMessage();
 
-        return trans($this->template, compact('from','message'));
+        return trans($this->template, compact('from', 'to', 'message'));
     }
 }
