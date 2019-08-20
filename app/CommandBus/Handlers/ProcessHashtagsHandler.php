@@ -30,16 +30,5 @@ class ProcessHashtagsHandler
     {
         $extracted = $this->extractor->extract($command->message);
 
-        dd(implode(",", Arr::get($extracted, 'hashtags')));
-        $subject = '';
-        $pipeline = (new Pipeline)
-            ->pipe(function ($payload) use (&$subject, $extracted) {
-                $subject = '#:'.implode(",", Arr::get($extracted, 'hashtags'));
-                return $payload;
-            })
-        ;
-
-        $pipeline->process($command->message);
-        dd($subject);
     }
 }

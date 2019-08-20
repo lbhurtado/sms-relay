@@ -14,8 +14,7 @@ class PingHandler
      */
     public function handle(PingCommand $command)
     {
-        SMS::from('TXTCMDR')
-            ->to($command->mobile)
+        SMS::to($command->mobile)
             ->content($this->message)
             ->send()
         ;        
