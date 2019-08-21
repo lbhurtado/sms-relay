@@ -30,15 +30,6 @@ class RelayAction extends BaseAction
             ->relayHashtagsToEmail($go->hashtags);
     }
 
-    protected function addBusHandlers()
-    {
-        $this->bus->addHandler(LogCommand::class, LogHandler::class);
-        $this->bus->addHandler(ReplyCommand::class, ReplyHandler::class);
-        $this->bus->addHandler(ForwardSMSToMailCommand::class, ForwardSMSToMailHandler::class);
-        $this->bus->addHandler(ForwardSMSToMobileCommand::class, ForwardSMSToMobileHandler::class);
-        $this->bus->addHandler(ForwardHashtagsToEmailCommand::class, ForwardHashtagsToEmailHandler::class);
-    }
-
     protected function log(bool $go = true)
     {
         ! $go || $this->bus->dispatch(LogCommand::class, $this->getData());
@@ -72,6 +63,15 @@ class RelayAction extends BaseAction
         ! $go || $this->bus->dispatch(ForwardHashtagsToEmailCommand::class, $this->getData());
 
         return $this;
+    }
+
+    protected function addBusHandlers()
+    {
+        $this->bus->addHandler(LogCommand::class, LogHandler::class);
+        $this->bus->addHandler(ReplyCommand::class, ReplyHandler::class);
+        $this->bus->addHandler(ForwardSMSToMailCommand::class, ForwardSMSToMailHandler::class);
+        $this->bus->addHandler(ForwardSMSToMobileCommand::class, ForwardSMSToMobileHandler::class);
+        $this->bus->addHandler(ForwardHashtagsToEmailCommand::class, ForwardHashtagsToEmailHandler::class);
     }
 
     private function getData()

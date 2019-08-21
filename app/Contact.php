@@ -12,8 +12,13 @@ class Contact extends BaseContact
 
     protected $guard_name = 'web';
 
-    public static function bearing($mobile) 
+    public static function bearing($mobile)
     {
     	return static::where('mobile', $mobile)->first();
+    }
+
+    public function setMobileAttribute($value)
+    {
+        $this->attributes['mobile'] = phone($value, 'PH')->formatE164();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\CommandBus;
 
 use LBHurtado\Missive\Routing\Router;
+use LBHurtado\Missive\Repositories\ContactRepository;
 use Joselfonseca\LaravelTactician\CommandBusInterface;
 
 abstract class BaseAction
@@ -11,11 +12,14 @@ abstract class BaseAction
 
     protected $router;
 
+    protected $contacts;
+
     protected $permission = 'issue command';
 
-    public function __construct(Router $router)
+    public function __construct(Router $router, ContactRepository $contacts)
     {
         $this->router = $router;
+        $this->contacts = $contacts;
         $this->bus = app(CommandBusInterface::class);
         $this->addBusHandlers();
     }
