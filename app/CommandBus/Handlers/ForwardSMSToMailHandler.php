@@ -14,6 +14,8 @@ class ForwardSMSToMailHandler
      */
     public function handle(ForwardSMSToMailCommand $command)
     {
+//        Contact::whereHas('hashtags',function ($query) {$query->whereIn('tag',['inquire']);})->get()->pluck('email')
+            
         $emails = Setting::get('forwarding.emails');
 
         foreach($emails as $email) {

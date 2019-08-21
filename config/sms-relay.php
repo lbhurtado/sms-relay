@@ -9,8 +9,8 @@ return [
         'hashtags' => env('RELAY_HASHTAGS', true),
     ],
     'permissions' => [
-        'admin'      => ['send message', 'issue command', 'broadcast message'],
-        'leader'     => ['send message', 'issue command' ],
+        'spokesman'  => ['send message', 'issue command'],
+        'listener'   => ['issue command'],
         'subscriber' => ['send message'],
     ],
 ];
