@@ -2,14 +2,13 @@
 
 namespace App\CommandBus\Handlers;
 
+use App\Contact;
 use Illuminate\Support\Arr;
 use Twitter\Text\Extractor;
 use App\Mail\ForwardSMSToMail;
 use LBHurtado\Missive\Models\SMS;
 use Illuminate\Support\Facades\Mail;
-use Akaunting\Setting\Facade as Setting;
 use App\CommandBus\Commands\ForwardHashtagsToEmailCommand;
-
 
 class ForwardHashtagsToEmailHandler
 {
@@ -33,27 +32,30 @@ class ForwardHashtagsToEmailHandler
     public function handle(ForwardHashtagsToEmailCommand $command)
     {
         foreach ($this->getHashtags($command) as $hashtag) {
-            optional($this->getEmails($hashtag), function ($email) use ($command) {
-                $this->send($email, $command->sms);
+            optional($this->getEmails($hashtag), function ($emails) use ($command) {
+                $this->send($emails, $command->sms);
             });
         };
     }
 
-    protected function getHashtags(ForwardHashtagsToEmailCommand $command)
+    protected function getHashtags(ForwardHashtagsToEmailCommand $command): array
     {
         $extracted = $this->extractor->extract($command->sms->getMessage());
 
         return Arr::get($extracted, 'hashtags');
     }
 
-    protected function getEmails($hashtag)
+    protected function getEmails(string $hashtag): array
     {
-        return Arr::get(Setting::get("forwarding.hashtags"), $hashtag);
+        return Contact::whereHas('hashtags', function ($query) use ($hashtag) {
+            $query->where('tag', $hashtag);
+        })->get()->pluck('email')->toArray();
     }
 
-    protected function send($email, SMS $sms)
+    protected function send(array $emails, SMS $sms)
     {
-        Mail::to($email)
+        //TODO change this to notification
+        Mail::to($emails)
             ->send(new ForwardSMSToMail($sms)) //TODO change this ForwardHashtagsToEmail
         ;
     }
