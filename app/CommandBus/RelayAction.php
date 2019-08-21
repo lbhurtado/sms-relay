@@ -2,35 +2,20 @@
 
 namespace App\CommandBus;
 
-use App\Traits\HasActionPermissions;
-use LBHurtado\Missive\Routing\Router;
 use App\CommandBus\Commands\LogCommand;
 use App\CommandBus\Handlers\LogHandler;
 use App\CommandBus\Commands\ReplyCommand;
 use App\CommandBus\Handlers\ReplyHandler;
-use App\CommandBus\Commands\ForwardHashtagsToEmailCommand;
-use App\CommandBus\Handlers\ForwardHashtagsToEmailHandler;
 use App\CommandBus\Commands\ForwardSMSToMailCommand;
 use App\CommandBus\Handlers\ForwardSMSToMailHandler;
 use App\CommandBus\Commands\ForwardSMSToMobileCommand;
 use App\CommandBus\Handlers\ForwardSMSToMobileHandler;
-use Joselfonseca\LaravelTactician\CommandBusInterface;
+use App\CommandBus\Commands\ForwardHashtagsToEmailCommand;
+use App\CommandBus\Handlers\ForwardHashtagsToEmailHandler;
 
-class RelayAction
+class RelayAction extends BaseAction
 {
-    use HasActionPermissions;
-
-    protected $bus;
-
-    protected $router;
-
     protected $permission = 'send message';
-
-    public function __construct(Router $router)
-    {
-        $this->router = $router;
-        $this->addBusHandlers();
-    }
 
     public function __invoke(string $path, array $values)
     {
@@ -47,7 +32,6 @@ class RelayAction
 
     protected function addBusHandlers()
     {
-        $this->bus = app(CommandBusInterface::class);
         $this->bus->addHandler(LogCommand::class, LogHandler::class);
         $this->bus->addHandler(ReplyCommand::class, ReplyHandler::class);
         $this->bus->addHandler(ForwardSMSToMailCommand::class, ForwardSMSToMailHandler::class);
