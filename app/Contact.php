@@ -33,4 +33,15 @@ class Contact extends BaseContact
     {
         return $this->hasMany(Hashtag::class);
     }
+
+    public function catch(array $hashtags)
+    {
+        $tags = [];
+        foreach ($hashtags as $tag) {
+            $tags[] = ['tag' => $tag];
+        }
+        $this->hashtags()->createMany($tags);
+
+        return $this;
+    }
 }
