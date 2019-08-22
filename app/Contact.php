@@ -3,9 +3,9 @@
 namespace App;
 
 use Illuminate\Support\Arr;
+use App\Traits\CanRedeemVouchers;
 use Spatie\Permission\Traits\HasRoles;
 use LBHurtado\EngageSpark\Traits\HasEngageSpark;
-use BeyondCode\Vouchers\Traits\CanRedeemVouchers;
 use LBHurtado\Missive\Models\Contact as BaseContact;
 
 class Contact extends BaseContact

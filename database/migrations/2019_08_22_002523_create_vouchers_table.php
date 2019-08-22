@@ -25,11 +25,11 @@ class CreateVouchersTable extends Migration
 
         Schema::create($pivotTable, function (Blueprint $table) use ($voucherTable) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('contact_id');
             $table->unsignedInteger('voucher_id');
             $table->timestamp('redeemed_at');
 
-            $table->foreign('user_id')->references('id')->on('contacts');
+            $table->foreign('contact_id')->references('id')->on('contacts');
             $table->foreign('voucher_id')->references('id')->on($voucherTable);
         });
     }
