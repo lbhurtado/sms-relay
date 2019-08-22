@@ -13,16 +13,13 @@ trait CanRedeemVouchers
 {
     /**
      * @param string $code
-     * @throws VoucherExpired
-     * @throws VoucherIsInvalid
-     * @throws VoucherAlreadyRedeemed
      * @return mixed
      */
     public function redeemCode(string $code)
     {
         $voucher = Vouchers::check($code);
 
-        if ($voucher->users()->wherePivot('contact_id', $this->id)->exists()) {
+        if ($voucher->users()->wherePivot('contact_id', $this->attributes['id'])->exists()) {
             throw VoucherAlreadyRedeemed::create($voucher);
         }
         if ($voucher->isExpired()) {
@@ -40,9 +37,6 @@ trait CanRedeemVouchers
 
     /**
      * @param Voucher $voucher
-     * @throws VoucherExpired
-     * @throws VoucherIsInvalid
-     * @throws VoucherAlreadyRedeemed
      * @return mixed
      */
     public function redeemVoucher(Voucher $voucher)
