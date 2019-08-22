@@ -2,8 +2,6 @@
 
 namespace App\CommandBus\Commands;
 
-use LBHurtado\Missive\Models\SMS;
-
 class BroadcastCommand
 {
     /*
