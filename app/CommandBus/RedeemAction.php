@@ -2,10 +2,10 @@
 
 namespace App\CommandBus;
 
-use App\CommandBus\Commands\RedeemVoucherCommand;
-use App\CommandBus\Handlers\RedeemVoucherHandler;
+use App\CommandBus\Commands\RedeemCommand;
+use App\CommandBus\Handlers\RedeemHandler;
 
-class RedeemVoucherAction extends BaseAction
+class RedeemAction extends BaseAction
 {
     protected $permission = 'send message';
 
@@ -20,11 +20,11 @@ class RedeemVoucherAction extends BaseAction
 
     protected function assumeListenerRole(array $data)
     {
-        $this->bus->dispatch(RedeemVoucherCommand::class, $data);
+        $this->bus->dispatch(RedeemCommand::class, $data);
     }
 
     protected function addBusHandlers()
     {
-        $this->bus->addHandler(RedeemVoucherCommand::class, RedeemVoucherHandler::class);
+        $this->bus->addHandler(RedeemCommand::class, RedeemHandler::class);
     }
 }

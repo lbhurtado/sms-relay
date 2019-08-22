@@ -1,6 +1,6 @@
 <?php
 
-use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemVoucherAction, ListenAction};
+use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemAction, ListenAction};
 
 $router = resolve('missive:router');
 
@@ -12,6 +12,6 @@ $router->register('PING', app(PingAction::class));
 
 //$allowed = config('vouchers.characters');
 //$email = '[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})';
-$router->register('{code=(.*)-(.*)} {email=(.*)}', app(RedeemVoucherAction::class));
+$router->register('{code=(.*)-(.*)} {email=(.*)}', app(RedeemAction::class));
 
 $router->register('LISTEN {tags}', app(ListenAction::class));

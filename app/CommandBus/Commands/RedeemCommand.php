@@ -4,7 +4,7 @@ namespace App\CommandBus\Commands;
 
 use App\Contact;
 
-class RedeemVoucherCommand
+class RedeemCommand
 {
     /**
      * @var Contact

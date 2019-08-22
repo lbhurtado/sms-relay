@@ -13,7 +13,12 @@ class VoucherSeeder extends Seeder
      */
     public function run()
     {
-        $role = Role::where('name','listener')->first();
-        Vouchers::create($role, 3);
+        $records = config('sms-relay.vouchers');
+
+        foreach ($records as $name => $qty) {
+            optional(Role::where('name', $name)->first(), function ($role) use ($qty) {
+                Vouchers::create($role, $qty);
+            });
+        }
     }
 }

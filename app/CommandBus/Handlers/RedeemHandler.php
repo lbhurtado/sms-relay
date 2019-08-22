@@ -2,10 +2,10 @@
 
 namespace App\CommandBus\Handlers;
 
-use App\CommandBus\Commands\RedeemVoucherCommand;
+use App\CommandBus\Commands\RedeemCommand;
 use League\Pipeline\Pipeline;
 
-class RedeemVoucherHandler
+class RedeemHandler
 {
     /**
      * @var \BeyondCode\Vouchers\Models\Voucher
@@ -13,9 +13,9 @@ class RedeemVoucherHandler
     protected $voucher;
 
     /**
-     * @param RedeemVoucherCommand $command
+     * @param RedeemCommand $command
      */
-    public function handle(RedeemVoucherCommand $command)
+    public function handle(RedeemCommand $command)
     {
         (new Pipeline)->pipe(function ($command) {
             tap($command->origin, function ($contact) use ($command) {

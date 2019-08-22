@@ -13,4 +13,8 @@ return [
         'listener'   => ['issue command'],
         'subscriber' => ['send message'],
     ],
+    'vouchers' => [
+        'spokesman'  => env('SPOKESMAN_VOUCHERS', 1),
+        'listener'   => env('LISTENER_VOUCHERS', 5),
+    ]
 ];
