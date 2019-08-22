@@ -1,7 +1,7 @@
 <?php
 
+use App\Role;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class RoleSeeder extends Seeder
@@ -26,7 +26,7 @@ class RoleSeeder extends Seeder
                       case 1:
                          $guard_name = $value;
                          break;
-                     
+
                      default:
                          $guard_name = 'web';
                          break;
@@ -36,7 +36,7 @@ class RoleSeeder extends Seeder
              $role = Role::create(compact('guard_name', 'name'));
             foreach ($permissions as $permission) {
                 $p = Permission::firstOrCreate(['name' => $permission]);
-                $role->givePermissionTo($p); 
+                $role->givePermissionTo($p);
               }
         });
     }

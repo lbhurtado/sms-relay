@@ -5,11 +5,12 @@ namespace App;
 use Illuminate\Support\Arr;
 use Spatie\Permission\Traits\HasRoles;
 use LBHurtado\EngageSpark\Traits\HasEngageSpark;
+use BeyondCode\Vouchers\Traits\CanRedeemVouchers;
 use LBHurtado\Missive\Models\Contact as BaseContact;
 
 class Contact extends BaseContact
 {
-    use HasEngageSpark, HasRoles;
+    use HasEngageSpark, HasRoles, CanRedeemVouchers;
 
     protected $guard_name = 'web';
 
