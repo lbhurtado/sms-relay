@@ -46,4 +46,9 @@ class Contact extends BaseContact
 
         return $this;
     }
+
+    public function routeNotificationForMail()
+    {
+        return $this->email;
+    }
 }
