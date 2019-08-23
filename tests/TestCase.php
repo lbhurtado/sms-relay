@@ -6,6 +6,7 @@ use App\Role;
 use BeyondCode\Vouchers\Models\Voucher;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use App\Providers\RouteServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -15,8 +16,10 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
+        require base_path('routes/sms.php');
 
         $this->faker = $this->makeFaker('en_PH');
+
     }
 
     protected function getRandomMobile()

@@ -23,23 +23,62 @@ class PingTest extends TestCase
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
-        $this->artisan('db:seed', ['--class' => 'VoucherSeeder']);
     }
 
     /** @test */
     public function spokesman_sends_a_ping_receives_a_pong()
     {
         /*** arrange ***/
-        $from = $this->getRandomMobile(); $to = $this->getRandomMobile(); $message = $this->keyword;
-        $contact = factory(Contact::class)->create(['mobile' => $from]);
-        $contact->syncRoles('spokesman');
-        Notification::fake();
+        $from = '09171111111'; $to = '09182222222'; $message = $this->keyword;
+        $contact = factory(Contact::class)
+            ->create(['mobile' => $from])
+            ->syncRoles('spokesman');
 
         /*** act ***/
+        Notification::fake();
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        usleep(1);
 
         /*** assert ***/
         $response->assertStatus(200);
         Notification::assertSentTo($contact, Pong::class);
+    }
+
+    /** @test */
+    public function listener_sends_a_ping_receives_a_pong()
+    {
+        /*** arrange ***/
+        $from = '09171111111'; $to = '09182222222'; $message = $this->keyword;
+        $contact = factory(Contact::class)
+            ->create(['mobile' => $from])
+            ->syncRoles('listener');
+
+        /*** act ***/
+        Notification::fake();
+        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        usleep(1);
+
+        /*** assert ***/
+        $response->assertStatus(200);
+        Notification::assertSentTo($contact, Pong::class);
+    }
+
+    /** @test */
+    public function subscriber_sends_a_ping_does_not_receive_a_pong()
+    {
+        /*** arrange ***/
+        $from = '09171111111'; $to = '09182222222'; $message = $this->keyword;
+        $contact = factory(Contact::class)
+            ->create(['mobile' => $from])
+            ->syncRoles('subscriber');
+
+        /*** act ***/
+        Notification::fake();
+        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        usleep(1);
+
+        /*** assert ***/
+        $response->assertStatus(200);
+        Notification::assertNotSentTo($contact, Pong::class);
     }
 }
