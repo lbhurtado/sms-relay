@@ -16,6 +16,8 @@ class Contact extends BaseContact
 
     public static function bearing($mobile)
     {
+        $mobile = phone($mobile, 'PH')->formatE164();
+
     	return static::where('mobile', $mobile)->first();
     }
 
