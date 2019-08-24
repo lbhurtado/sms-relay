@@ -9,7 +9,7 @@ return [
         'hashtags' => env('RELAY_HASHTAGS', true),
     ],
     'permissions' => [
-        'spokesman'  => ['send message', 'issue command'],
+        'spokesman'  => ['send message', 'issue command', 'send broadcast'],
         'listener'   => ['issue command'],
         'subscriber' => ['send message'],
     ],

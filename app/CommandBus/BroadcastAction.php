@@ -7,10 +7,12 @@ use App\CommandBus\Handlers\BroadcastHandler;
 
 class BroadcastAction extends BaseAction
 {
+    protected $permission = 'send broadcast';
+
     public function __invoke(string $path, array $values)
     {
-        optional($this->permittedContact(), function() use ($values) {
-            $this->broadcastMessage($values);
+        optional($this->permittedContact(), function($origin) use ($values) {
+            $this->broadcastMessage(array_merge($values, compact('origin')));
         });
     }
 

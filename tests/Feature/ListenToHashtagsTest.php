@@ -10,10 +10,6 @@ class ListenToHashtagsTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $method = 'POST';
-
-    protected $uri = '/api/sms/relay';
-
     protected $keyword = 'LISTEN';
 
     public function setUp(): void
@@ -45,7 +41,7 @@ class ListenToHashtagsTest extends TestCase
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(1);
+        usleep(500);
 
         /*** assert ***/
         $response->assertStatus(200);

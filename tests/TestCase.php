@@ -10,8 +10,10 @@ use App\Providers\RouteServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
-    use WithFaker;
-    use CreatesApplication;
+    use CreatesApplication, WithFaker;
+
+    protected $method = 'POST';
+    protected $uri = '/api/sms/relay';
 
     public function setUp(): void
     {

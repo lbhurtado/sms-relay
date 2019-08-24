@@ -12,10 +12,6 @@ class RelayHashtagsTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $method = 'POST';
-
-    protected $uri = '/api/sms/relay';
-
     public function setUp(): void
     {
         parent::setUp();

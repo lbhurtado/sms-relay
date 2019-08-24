@@ -12,10 +12,6 @@ class PingTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $method = 'POST';
-
-    protected $uri = '/api/sms/relay';
-
     protected $keyword = 'PING';
 
     public function setUp(): void
@@ -75,7 +71,7 @@ class PingTest extends TestCase
         /*** act ***/
         Notification::fake();
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(1);
+        usleep(500);
 
         /*** assert ***/
         $response->assertStatus(200);

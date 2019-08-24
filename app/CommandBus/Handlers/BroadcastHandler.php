@@ -2,8 +2,9 @@
 
 namespace App\CommandBus\Handlers;
 
+use App\Notifications\Broadcast;
+use App\Notifications\BroadcastFeedback;
 use App\CommandBus\Commands\BroadcastCommand;
-use LBHurtado\EngageSpark\Notifications\Adhoc;
 use LBHurtado\Missive\Repositories\ContactRepository;
 
 class BroadcastHandler
@@ -25,7 +26,8 @@ class BroadcastHandler
     public function handle(BroadcastCommand $command)
     {
         $this->contacts->all()->each(function ($contact) use ($command) {
-            $contact->notify(new Adhoc($command->message));
+            $contact->notify(new Broadcast($command->message));
         });
+        $command->origin->notify(new BroadcastFeedback);
     }
 }
