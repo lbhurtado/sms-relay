@@ -3,13 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use App\Mail\ForwardSMSToMail;
 use LBHurtado\Missive\Models\SMS;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class MailHashtags extends Notification
+class MailHashtags extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -33,22 +32,18 @@ class MailHashtags extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return \App\Mail\ForwardSMSToMail
      */
     public function toMail($notifiable)
     {
-        return (new ForwardSMSToMail($this->sms))->to($notifiable->email);
-//        return (new MailMessage)
-//                    ->line('The introduction to the notification.')
-//                    ->action('Notification Action', url('/'))
-//                    ->line('Thank you for using our application!');
+        return (new ForwardSMSToMail($notifiable, $this->sms));
     }
 
     /**
@@ -60,7 +55,7 @@ class MailHashtags extends Notification
     public function toArray($notifiable)
     {
         return [
-//            'sms' => $this->sms
+            'sms' => $this->sms
         ];
     }
 }

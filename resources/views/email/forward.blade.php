@@ -1,6 +1,6 @@
 @component('mail::message')
-    Mobile **{{$mobile}}**,  {{-- use double space for line break --}}
-    **{{$message}}**
+    Mobile **{{$sms->from}}**,  {{-- use double space for line break --}}
+    **{{$sms->getMessage()}}**
 
     Click below to start working right now
     @component('mail::button', ['url' => $link])

@@ -2,31 +2,31 @@
 
 namespace App\Mail;
 
+use App\Contact;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use League\Pipeline\Pipeline;
 use LBHurtado\Missive\Models\SMS;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-
-class ForwardSMSToMail extends Mailable
+class ForwardSMSToMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $mobile;
+    public $contact;
 
-    public $message;
+    public $sms;
 
-    public function __construct(SMS $sms)
+    public function __construct(Contact $contact, SMS $sms)
     {
-        $this->mobile = $sms->origin->mobile;
-        $this->message = $sms->getMessage();
+        $this->contact = $contact;
+        $this->sms = $sms;
     }
 
     public function build()
     {
         return $this->subject('Forward SMS To Mail')
+            ->to($this->contact->email)
             ->markdown('email.forward')
             ->with([
                 'name' => 'New Mailtrap User',
