@@ -51,4 +51,17 @@ class Contact extends BaseContact
     {
         return $this->email;
     }
+
+    public function setEmailAttribute($value)
+    {
+        $this->extra_attributes['email'] = $value;
+    }
+
+    public function setEmail(string $email)
+    {
+        $this->email = $email;
+        $this->save();
+
+        return $this;
+    }
 }
