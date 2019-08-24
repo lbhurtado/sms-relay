@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\HasEmail;
 use Illuminate\Support\Arr;
 use App\Traits\CanRedeemVouchers;
 use Spatie\Permission\Traits\HasRoles;
@@ -10,25 +11,23 @@ use LBHurtado\Missive\Models\Contact as BaseContact;
 
 class Contact extends BaseContact
 {
-    use HasEngageSpark, HasRoles, CanRedeemVouchers;
+    use HasEngageSpark, HasRoles, CanRedeemVouchers, HasEmail;
 
     protected $guard_name = 'web';
 
     public static function bearing($mobile)
     {
-        $mobile = phone($mobile, 'PH')->formatE164();
-
-    	return static::where('mobile', $mobile)->first();
+        return static::whereMobile(phone($mobile, 'PH')
+            ->formatE164())
+            ->first()
+            ;
     }
 
     public function setMobileAttribute($value)
     {
-        $this->attributes['mobile'] = phone($value, 'PH')->formatE164();
-    }
-
-    public function getEmailAttribute()
-    {
-        return Arr::get($this->extra_attributes, 'email');
+        Arr::set($this->attributes, 'mobile', phone($value, 'PH')
+            ->formatE164())
+        ;
     }
 
     public function hashtags()
@@ -47,21 +46,5 @@ class Contact extends BaseContact
         return $this;
     }
 
-    public function routeNotificationForMail()
-    {
-        return $this->email;
-    }
 
-    public function setEmailAttribute($value)
-    {
-        $this->extra_attributes['email'] = $value;
-    }
-
-    public function setEmail(string $email)
-    {
-        $this->email = $email;
-        $this->save();
-
-        return $this;
-    }
 }

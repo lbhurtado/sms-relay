@@ -2,8 +2,8 @@
 
 namespace App\CommandBus\Handlers;
 
-use App\CommandBus\Commands\RedeemCommand;
 use League\Pipeline\Pipeline;
+use App\CommandBus\Commands\RedeemCommand;
 
 class RedeemHandler
 {
@@ -35,8 +35,8 @@ class RedeemHandler
             return $command;
         })->pipe(function ($command) {
             tap($command->origin, function ($contact) use ($command) {
-                $contact->extra_attributes['email'] = $command->email;
-            })->save();
+                $contact->setEmail($command->email);
+            });
 
             return $command;
         })->process($command);
