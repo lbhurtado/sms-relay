@@ -23,7 +23,7 @@ class RedeemCodeJobTest extends TestCase
     public function redeem_code_job_works()
     {
         /*** arrange ***/
-        $contact = Contact::create(['mobile' => '09108888888']);
+        $contact = factory(Contact::class)->create(['mobile' => '09108888888']);
         $code = $this->getVoucherCode('listener');
         $email = $this->faker->email;
 

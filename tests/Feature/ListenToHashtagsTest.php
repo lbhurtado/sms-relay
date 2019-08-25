@@ -30,7 +30,7 @@ class ListenToHashtagsTest extends TestCase
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(1);
+        usleep(500);
 
         /*** assert ***/
         $response->assertStatus(200);
