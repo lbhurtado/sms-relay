@@ -4,9 +4,10 @@ namespace Tests\Feature;
 
 use App\Contact;
 use Tests\TestCase;
+use Akaunting\Setting\Facade as Setting;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Notifications\{MailHashtags, SMSAcknowledged};
+use App\Notifications\{MailHashtags, SMSAcknowledged, SMSForwarded};
 
 class RelayHashtagsTest extends TestCase
 {
@@ -17,6 +18,8 @@ class RelayHashtagsTest extends TestCase
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
+        $this->artisan('db:seed', ['--class' => 'SettingSeeder']);
+        $this->artisan('db:seed', ['--class' => 'ContactSeeder']);
     }
 
     /** @test */
@@ -71,5 +74,10 @@ class RelayHashtagsTest extends TestCase
         Notification::assertSentTo($listener3, MailHashtags::class);
         Notification::assertSentTo($listener4, MailHashtags::class);
         Notification::assertNotSentTo($listener5, MailHashtags::class);
+        $mobiles = Setting::get('forwarding.mobiles');
+        foreach ($mobiles as $mobile) {
+            $contact = Contact::bearing($mobile);
+            Notification::assertSentTo($contact, SMSForwarded::class);
+        }
     }
 }

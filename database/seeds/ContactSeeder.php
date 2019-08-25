@@ -12,6 +12,16 @@ class ContactSeeder extends Seeder
      */
     public function run()
     {
+        $mobiles = Setting::get('forwarding.mobiles');
+        $i = 1;
+        foreach ($mobiles as $mobile) {
+            $handle = "SMS Forward " .  $i++;
+            Contact::create(compact('mobile', 'handle'))->syncRoles('forwarder');
+        }
+    }
+
+    protected function deprecate_seed()
+    {
         $records = [
             ['09171111111', 'spokesman'],
             ['09182222222', 'listener', '09182222222@lgu.gov.ph', ['*']],
@@ -21,6 +31,7 @@ class ContactSeeder extends Seeder
             ['09186666666', 'listener', '09186666666@lgu.gov.ph', ['inquire', 'followup']],
             ['09187777777', 'listener', '09187777777@lgu.gov.ph', ['inquire', 'appointment']],
         ];
+
         foreach ($records as $record) {
             $mobile = $record[0];
             $contact = Contact::create(compact('mobile'))->assignRole($record[1]);

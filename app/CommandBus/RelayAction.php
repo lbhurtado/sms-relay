@@ -2,11 +2,9 @@
 
 namespace App\CommandBus;
 
-//use App\CommandBus\Commands\ForwardSMSToMobileCommand;
-//use App\CommandBus\Handlers\ForwardSMSToMobileHandler;
 use App\CommandBus\Commands\RelayCommand;
 use App\CommandBus\Handlers\RelayHandler;
-use App\CommandBus\Middlewares\{LogMiddleware, EmailMiddleware, ReplyMiddleware};
+use App\CommandBus\Middlewares\{LogMiddleware, EmailMiddleware, ReplyMiddleware, ForwardMiddleware};
 
 class RelayAction extends BaseAction
 {
@@ -20,7 +18,7 @@ class RelayAction extends BaseAction
 
         $this->log($go->log)
             ->email($go->email)
-//            ->relayToMobile($go->mobile)
+            ->forward($go->mobile)
             ->reply($go->reply)
             ->relayHashtagsToEmail($go->hashtags);
     }
@@ -39,12 +37,12 @@ class RelayAction extends BaseAction
         return $this;
     }
 
-//    protected function relayToMobile(bool $go = true)
-//    {
-//        ! $go || $this->bus->dispatch(ForwardSMSToMobileCommand::class, $this->getData(), $this->getMiddlewares());
-//
-//        return $this;
-//    }
+    protected function forward(bool $go = true)
+    {
+        ! $go || $this->addMiddleWare(ForwardMiddleware::class);
+
+        return $this;
+    }
 
     protected function reply(bool $go = true)
     {
@@ -62,7 +60,6 @@ class RelayAction extends BaseAction
 
     protected function addBusHandlers()
     {
-//        $this->bus->addHandler(ForwardSMSToMobileCommand::class, ForwardSMSToMobileHandler::class);
         $this->bus->addHandler(RelayCommand::class, RelayHandler::class);
     }
 
