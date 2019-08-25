@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Contact;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,21 +12,26 @@ class RedeemCodeJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /** @var Contact */
+    /** @var \App\Contact */
     public $contact;
 
     /** @var string */
     public $code;
 
+    /** @var string */
+    public $email;
+
     /**
      * RedeemCode constructor.
-     * @param Contact $contact
+     * @param \App\Contact $contact
      * @param string $code
+     * @param string $email
      */
-    public function __construct(Contact $contact, string $code)
+    public function __construct(\App\Contact $contact, string $code, string $email)
     {
         $this->contact = $contact;
         $this->code = $code;
+        $this->email = $email;
     }
 
     /**
@@ -37,9 +41,15 @@ class RedeemCodeJob implements ShouldQueue
      */
     public function handle()
     {
-        tap($this->getVoucher()->model, function ($role) {
-            $this->contact->syncRoles($role);
-        });
+        $this->contact
+            ->syncRoles($this->getRole())
+            ->setEmail($this->email)
+        ;
+    }
+
+    protected function getRole(): \App\Role
+    {
+        return $this->getVoucher()->model;
     }
 
     protected function getVoucher(): \BeyondCode\Vouchers\Models\Voucher

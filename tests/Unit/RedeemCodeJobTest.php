@@ -28,11 +28,12 @@ class RedeemCodeJobTest extends TestCase
         $email = $this->faker->email;
 
         /*** act ***/
-        $job = new RedeemCodeJob($contact, $code);
+        $job = new RedeemCodeJob($contact, $code, $email);
         $job->handle();
 
         /*** assert ***/
         $this->assertFalse($contact->hasRole('subscriber'));
         $this->assertTrue($contact->hasRole('listener'));
+        $this->assertEquals($email, $contact->email);
     }
 }

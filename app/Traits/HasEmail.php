@@ -23,7 +23,8 @@ trait HasEmail
 
     public function setEmail(string $email)
     {
-        $this->update(compact('email'));
+        $this->email = $email;
+        $this->save();
 
         return $this;
     }

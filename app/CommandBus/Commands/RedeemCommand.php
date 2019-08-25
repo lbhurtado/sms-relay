@@ -2,12 +2,10 @@
 
 namespace App\CommandBus\Commands;
 
-use App\Contact;
-
 class RedeemCommand
 {
     /**
-     * @var Contact
+     * @var \App\Contact
      */
     public $origin;
 
@@ -23,11 +21,11 @@ class RedeemCommand
 
     /**
      * VoucherCommand constructor.
-     * @param Contact $origin
+     * @param \App\Contact $origin
      * @param string $code
      * @param string $email
      */
-    public function __construct(Contact $origin, string $code, string $email)
+    public function __construct(\App\Contact $origin, string $code, string $email)
     {
     	$this->origin = $origin;
     	$this->code = $code;
