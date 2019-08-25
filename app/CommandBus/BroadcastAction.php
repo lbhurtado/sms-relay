@@ -23,7 +23,7 @@ class BroadcastAction extends BaseAction
      */
     public function broadcastMessage(array $data = [])
     {
-        $this->bus->dispatch(BroadcastCommand::class, $data, $this->middlewares);
+        $this->bus->dispatch(BroadcastCommand::class, $data, $this->getMiddlewares());
 
         return $this;
     }

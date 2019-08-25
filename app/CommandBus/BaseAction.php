@@ -3,7 +3,6 @@
 namespace App\CommandBus;
 
 use LBHurtado\Missive\Routing\Router;
-use App\CommandBus\Middlewares\LogMiddleware;
 use LBHurtado\Missive\Repositories\ContactRepository;
 use Joselfonseca\LaravelTactician\CommandBusInterface;
 
@@ -13,18 +12,17 @@ abstract class BaseAction
 
     protected $router;
 
-    protected $middlewares;
-
     protected $contacts;
 
     protected $permission = 'issue command';
+
+    private $middlewares = [];
 
     public function __construct(Router $router, ContactRepository $contacts)
     {
         $this->router = $router;
         $this->contacts = $contacts;
         $this->bus = app(CommandBusInterface::class);
-        $this->middlewares = $this->getMiddlewares();
         $this->addBusHandlers();
     }
 
@@ -37,10 +35,16 @@ abstract class BaseAction
         return $contact->hasPermissionTo($permission ?? $this->permission) ? $contact : null;
     }
 
-    private function getMiddlewares(): array
+    protected function getMiddlewares(): array
     {
-        return [
-          LogMiddleware::class
-        ];
+        return $this->middlewares;
+    }
+
+    protected function addMiddleWare(string $middleware)
+    {
+        if (! in_array($middleware, $this->middlewares))
+            array_push($this->middlewares, $middleware);
+
+        return $this;
     }
 }

@@ -2,8 +2,7 @@
 
 namespace App\CommandBus;
 
-use App\CommandBus\Commands\LogCommand;
-use App\CommandBus\Handlers\LogHandler;
+use App\CommandBus\Middlewares\LogMiddleware;
 use App\CommandBus\Commands\ReplyCommand;
 use App\CommandBus\Handlers\ReplyHandler;
 use App\CommandBus\Commands\ForwardSMSToMailCommand;
@@ -24,53 +23,52 @@ class RelayAction extends BaseAction
         $go = (object) config('sms-relay.relay');
 
         $this->log($go->log)
-            ->relayToEmail($go->email)
-            ->relayToMobile($go->mobile)
-            ->reply($go->reply)
+//            ->relayToEmail($go->email)
+//            ->relayToMobile($go->mobile)
+//            ->reply($go->reply)
             ->relayHashtagsToEmail($go->hashtags);
     }
 
     protected function log(bool $go = true)
     {
-        ! $go || $this->bus->dispatch(LogCommand::class, $this->getData(), $this->middlewares);
+        ! $go || $this->addMiddleWare(LogMiddleware::class);
 
         return $this;
     }
 
     protected function relayToEmail(bool $go = true)
     {
-        ! $go ||  $this->bus->dispatch(ForwardSMSToMailCommand::class, $this->getData(), $this->middlewares);
+        ! $go ||  $this->bus->dispatch(ForwardSMSToMailCommand::class, $this->getData(), $this->getMiddlewares());
 
         return $this;
     }
 
     protected function relayToMobile(bool $go = true)
     {
-        ! $go || $this->bus->dispatch(ForwardSMSToMobileCommand::class, $this->getData(), $this->middlewares);
+        ! $go || $this->bus->dispatch(ForwardSMSToMobileCommand::class, $this->getData(), $this->getMiddlewares());
 
         return $this;
     }
 
     protected function reply(bool $go = true)
     {
-        ! $go || $this->bus->dispatch(ReplyCommand::class, $this->getData(), $this->middlewares);
+        ! $go || $this->bus->dispatch(ReplyCommand::class, $this->getData(), $this->getMiddlewares());
 
         return $this;
     }
 
     protected function relayHashtagsToEmail(bool $go = true)
     {
-        ! $go || $this->bus->dispatch(ForwardHashtagsToEmailCommand::class, $this->getData(), $this->middlewares);
+        ! $go || $this->bus->dispatch(ForwardHashtagsToEmailCommand::class, $this->getData(), $this->getMiddlewares());
 
         return $this;
     }
 
     protected function addBusHandlers()
     {
-        $this->bus->addHandler(LogCommand::class, LogHandler::class);
-        $this->bus->addHandler(ReplyCommand::class, ReplyHandler::class);
-        $this->bus->addHandler(ForwardSMSToMailCommand::class, ForwardSMSToMailHandler::class);
-        $this->bus->addHandler(ForwardSMSToMobileCommand::class, ForwardSMSToMobileHandler::class);
+//        $this->bus->addHandler(ReplyCommand::class, ReplyHandler::class);
+//        $this->bus->addHandler(ForwardSMSToMailCommand::class, ForwardSMSToMailHandler::class);
+//        $this->bus->addHandler(ForwardSMSToMobileCommand::class, ForwardSMSToMobileHandler::class);
         $this->bus->addHandler(ForwardHashtagsToEmailCommand::class, ForwardHashtagsToEmailHandler::class);
     }
 

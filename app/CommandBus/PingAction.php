@@ -18,7 +18,7 @@ class PingAction extends BaseAction
 
     public function sendReply(Contact $origin)
     {
-        $this->bus->dispatch(PingCommand::class, compact('origin'), [LogMiddleware::class]);
+        $this->bus->dispatch(PingCommand::class, compact('origin'), $this->getMiddlewares());
 
         return $this;
     }
