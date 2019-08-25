@@ -4,7 +4,7 @@ namespace App\CommandBus\Commands;
 
 use LBHurtado\Missive\Models\SMS;
 
-class ForwardHashtagsToEmailCommand extends BaseCommand
+class RelayCommand extends BaseCommand
 {
     /** @var SMS */
     public $sms;

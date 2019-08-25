@@ -4,9 +4,9 @@ namespace Tests\Feature;
 
 use App\Contact;
 use Tests\TestCase;
-use App\Notifications\MailHashtags;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Notifications\{MailHashtags, SMSAcknowledged};
 
 class RelayHashtagsTest extends TestCase
 {
@@ -64,6 +64,7 @@ class RelayHashtagsTest extends TestCase
 
         /*** assert ***/
         $response->assertStatus(200);
+        Notification::assertSentTo(Contact::bearing($from), SMSAcknowledged::class);
         Notification::assertSentTo($spokesman, MailHashtags::class);
         Notification::assertSentTo($listener1, MailHashtags::class);
         Notification::assertSentTo($listener2, MailHashtags::class);

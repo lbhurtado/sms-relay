@@ -7,9 +7,9 @@ use Twitter\Text\Extractor;
 use Illuminate\Support\Arr;
 use App\Notifications\MailHashtags;
 use Illuminate\Support\Facades\Notification;
-use App\CommandBus\Commands\ForwardHashtagsToEmailCommand;
+use App\CommandBus\Commands\RelayCommand;
 
-class ForwardHashtagsToEmailHandler
+class RelayHandler
 {
     /**
      * @var Extractor
@@ -26,9 +26,9 @@ class ForwardHashtagsToEmailHandler
     }
 
     /**
-     * @param ForwardHashtagsToEmailCommand $command
+     * @param RelayCommand $command
      */
-    public function handle(ForwardHashtagsToEmailCommand $command)
+    public function handle(RelayCommand $command)
     {
         foreach ($this->getHashtags($command) as $hashtag) {
             optional($this->getContacts($hashtag), function ($contacts) use ($command) {
@@ -38,10 +38,10 @@ class ForwardHashtagsToEmailHandler
     }
 
     /**
-     * @param ForwardHashtagsToEmailCommand $command
+     * @param RelayCommand $command
      * @return array
      */
-    protected function getHashtags(ForwardHashtagsToEmailCommand $command): array
+    protected function getHashtags(RelayCommand $command): array
     {
         $extracted = $this->extractor->extract($command->sms->getMessage());
 

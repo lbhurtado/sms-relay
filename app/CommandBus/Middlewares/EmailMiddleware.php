@@ -7,7 +7,7 @@ use App\Notifications\SMSArrived;
 use Akaunting\Setting\Facade as Setting;
 use Illuminate\Support\Facades\Notification;
 
-class ForwardSMSToEmailMiddleware implements Middleware
+class EmailMiddleware implements Middleware
 {
     public function execute($command, callable $next)
     {
