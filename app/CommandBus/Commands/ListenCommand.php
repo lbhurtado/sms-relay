@@ -4,7 +4,7 @@ namespace App\CommandBus\Commands;
 
 use App\Contact;
 
-class ListenCommand
+class ListenCommand extends BaseCommand
 {
     /** @var Contact */
     public $origin;

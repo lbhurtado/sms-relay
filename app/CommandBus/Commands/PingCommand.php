@@ -4,7 +4,7 @@ namespace App\CommandBus\Commands;
 
 use App\Contact;
 
-class PingCommand
+class PingCommand extends BaseCommand
 {
     /** @var Contact */
     public $origin;

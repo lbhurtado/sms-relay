@@ -2,7 +2,7 @@
 
 namespace App\CommandBus\Commands;
 
-class RedeemCommand
+class RedeemCommand extends BaseCommand
 {
     /**
      * @var \App\Contact

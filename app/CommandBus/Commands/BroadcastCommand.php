@@ -4,7 +4,7 @@ namespace App\CommandBus\Commands;
 
 use App\Contact;
 
-class BroadcastCommand
+class BroadcastCommand extends BaseCommand
 {
     /** @var Contact */
     public $origin;

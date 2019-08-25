@@ -4,7 +4,7 @@ namespace App\CommandBus\Commands;
 
 use LBHurtado\Missive\Models\SMS;
 
-class ReplyCommand
+class ReplyCommand extends BaseCommand
 {
     /** @var SMS */
     public $sms;

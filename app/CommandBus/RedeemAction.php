@@ -20,7 +20,7 @@ class RedeemAction extends BaseAction
 
     protected function assumeListenerRole(array $data)
     {
-        $this->bus->dispatch(RedeemCommand::class, $data);
+        $this->bus->dispatch(RedeemCommand::class, $data, $this->middlewares);
     }
 
     protected function addBusHandlers()

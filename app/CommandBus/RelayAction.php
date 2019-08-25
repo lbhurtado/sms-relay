@@ -32,35 +32,35 @@ class RelayAction extends BaseAction
 
     protected function log(bool $go = true)
     {
-        ! $go || $this->bus->dispatch(LogCommand::class, $this->getData());
+        ! $go || $this->bus->dispatch(LogCommand::class, $this->getData(), $this->middlewares);
 
         return $this;
     }
 
     protected function relayToEmail(bool $go = true)
     {
-        ! $go ||  $this->bus->dispatch(ForwardSMSToMailCommand::class, $this->getData());
+        ! $go ||  $this->bus->dispatch(ForwardSMSToMailCommand::class, $this->getData(), $this->middlewares);
 
         return $this;
     }
 
     protected function relayToMobile(bool $go = true)
     {
-        ! $go || $this->bus->dispatch(ForwardSMSToMobileCommand::class, $this->getData());
+        ! $go || $this->bus->dispatch(ForwardSMSToMobileCommand::class, $this->getData(), $this->middlewares);
 
         return $this;
     }
 
     protected function reply(bool $go = true)
     {
-        ! $go || $this->bus->dispatch(ReplyCommand::class, $this->getData());
+        ! $go || $this->bus->dispatch(ReplyCommand::class, $this->getData(), $this->middlewares);
 
         return $this;
     }
 
     protected function relayHashtagsToEmail(bool $go = true)
     {
-        ! $go || $this->bus->dispatch(ForwardHashtagsToEmailCommand::class, $this->getData());
+        ! $go || $this->bus->dispatch(ForwardHashtagsToEmailCommand::class, $this->getData(), $this->middlewares);
 
         return $this;
     }

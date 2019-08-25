@@ -20,7 +20,7 @@ class ListenAction extends BaseAction
 
     protected function catchHashtags(array $data)
     {
-        $this->bus->dispatch(ListenCommand::class, $data);
+        $this->bus->dispatch(ListenCommand::class, $data, $this->middlewares);
     }
 
     protected function addBusHandlers()

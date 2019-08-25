@@ -5,6 +5,7 @@ namespace App\CommandBus;
 use App\Contact;
 use App\CommandBus\Commands\PingCommand;
 use App\CommandBus\Handlers\PingHandler;
+use App\CommandBus\Middlewares\LogMiddleware;
 
 class PingAction extends BaseAction
 {
@@ -17,7 +18,7 @@ class PingAction extends BaseAction
 
     public function sendReply(Contact $origin)
     {
-        $this->bus->dispatch(PingCommand::class, compact('origin'));
+        $this->bus->dispatch(PingCommand::class, compact('origin'), [LogMiddleware::class]);
 
         return $this;
     }
