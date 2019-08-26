@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use LBHurtado\EngageSpark\Notifications\BaseNotification;
 
-class Broadcast extends BaseNotification
+class Feedback extends BaseNotification
 {
     public function getContent($notifiable)
     {

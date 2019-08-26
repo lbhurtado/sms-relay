@@ -3,7 +3,7 @@
 namespace App\CommandBus\Handlers;
 
 use App\Notifications\Broadcast;
-use App\Notifications\BroadcastFeedback;
+use App\Notifications\Feedback;
 use App\CommandBus\Commands\BroadcastCommand;
 use LBHurtado\Missive\Repositories\ContactRepository;
 
@@ -28,6 +28,6 @@ class BroadcastHandler
         $this->contacts->all()->each(function ($contact) use ($command) {
             $contact->notify(new Broadcast($command->message));
         });
-        $command->origin->notify(new BroadcastFeedback);
+        $command->origin->notify(new Feedback($command->message));
     }
 }

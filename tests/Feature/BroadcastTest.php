@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Contact;
 use Tests\TestCase;
 use App\Notifications\Broadcast;
-use App\Notifications\BroadcastFeedback;
+use App\Notifications\Feedback;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -53,6 +53,9 @@ class BroadcastTest extends TestCase
     /** @test */
     public function spokesman_can_broadcast_and_receive_feedback()
     {
+
+        //TODO Test for Broadcast Action being fired instead of the notification, na-test na kasi sa BroadcastActionTest
+
         /*** arrange ***/
         Notification::fake();
         $sender = $this->spokesman;
@@ -67,11 +70,11 @@ class BroadcastTest extends TestCase
         tap(Contact::all(), function ($contact) {
             Notification::assertSentTo($contact, Broadcast::class);
         });
-        Notification::assertSentTo($sender, BroadcastFeedback::class);
-        Notification::assertNotSentTo($this->listener, BroadcastFeedback::class);
-        Notification::assertNotSentTo($this->subscriber1, BroadcastFeedback::class);
-        Notification::assertNotSentTo($this->subscriber2, BroadcastFeedback::class);
-        Notification::assertNotSentTo($this->subscriber3, BroadcastFeedback::class);
+        Notification::assertSentTo($sender, Feedback::class);
+        Notification::assertNotSentTo($this->listener, Feedback::class);
+        Notification::assertNotSentTo($this->subscriber1, Feedback::class);
+        Notification::assertNotSentTo($this->subscriber2, Feedback::class);
+        Notification::assertNotSentTo($this->subscriber3, Feedback::class);
         //TODO test received feedback
     }
 
@@ -91,7 +94,7 @@ class BroadcastTest extends TestCase
         $response->assertStatus(200);
         tap(Contact::all(), function ($contact) {
             Notification::assertNotSentTo($contact, Broadcast::class);
-            Notification::assertNotSentTo($contact, BroadcastFeedback::class);
+            Notification::assertNotSentTo($contact, Feedback::class);
         });
     }
 
@@ -111,7 +114,7 @@ class BroadcastTest extends TestCase
         $response->assertStatus(200);
         tap(Contact::all(), function ($contact) {
             Notification::assertNotSentTo($contact, Broadcast::class);
-            Notification::assertNotSentTo($contact, BroadcastFeedback::class);
+            Notification::assertNotSentTo($contact, Feedback::class);
         });
     }
 }
