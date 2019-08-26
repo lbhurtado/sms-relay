@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class SMSArrived extends Notification implements ShouldQueue
+class Arrived extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -43,7 +43,7 @@ class SMSArrived extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->markdown('mail.sms.arrived', ['sms' => $this->sms]);
+        return (new MailMessage)->markdown('sms.arrived', ['sms' => $this->sms]);
     }
 
     /**

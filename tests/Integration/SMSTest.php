@@ -23,11 +23,11 @@ class SMSTest extends TestCase
     public function sender_of_any_message_becomes_a_subscriber()
     {
         /*** arrange ***/
-        $from = '09171111111'; $to = '09182222222'; $message = $this->faker->sentence;
+        $from = '09171234567'; $to = '09187654321'; $message = $this->faker->sentence;
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);

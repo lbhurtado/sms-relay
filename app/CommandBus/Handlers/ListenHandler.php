@@ -2,6 +2,7 @@
 
 namespace App\CommandBus\Handlers;
 
+use App\Notifications\Listened;
 use App\CommandBus\Commands\ListenCommand;
 
 class ListenHandler
@@ -12,7 +13,10 @@ class ListenHandler
     public function handle(ListenCommand $command)
     {
         tap($command->origin, function ($contact) use ($command) {
-            $contact->catch($this->getHashtags($command));
+            if ($hashtags = $this->getHashtags($command)) {
+                $contact->catch($this->getHashtags($command));
+                $contact->notify(new Listened);
+            }
         });
     }
 

@@ -6,7 +6,7 @@ use App\Contact;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class RedeemVoucherTest extends TestCase
+class RedeemTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -30,7 +30,7 @@ class RedeemVoucherTest extends TestCase
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);
@@ -51,7 +51,7 @@ class RedeemVoucherTest extends TestCase
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);
@@ -71,7 +71,7 @@ class RedeemVoucherTest extends TestCase
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);
@@ -90,7 +90,7 @@ class RedeemVoucherTest extends TestCase
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);

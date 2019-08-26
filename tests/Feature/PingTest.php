@@ -33,7 +33,7 @@ class PingTest extends TestCase
         /*** act ***/
         Notification::fake();
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(1);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);
@@ -52,7 +52,26 @@ class PingTest extends TestCase
         /*** act ***/
         Notification::fake();
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(1);
+        $this->sleep_after_url();
+
+        /*** assert ***/
+        $response->assertStatus(200);
+        Notification::assertSentTo($contact, Pong::class);
+    }
+
+    /** @test */
+    public function forwarder_sends_a_ping_receives_a_pong()
+    {
+        /*** arrange ***/
+        $from = '09171111111'; $to = '09182222222'; $message = $this->keyword;
+        $contact = factory(Contact::class)
+            ->create(['mobile' => $from])
+            ->syncRoles('forwarder');
+
+        /*** act ***/
+        Notification::fake();
+        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);
@@ -71,7 +90,7 @@ class PingTest extends TestCase
         /*** act ***/
         Notification::fake();
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);

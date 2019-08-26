@@ -7,9 +7,9 @@ use Tests\TestCase;
 use Akaunting\Setting\Facade as Setting;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Notifications\{MailHashtags, SMSAcknowledged, SMSForwarded};
+use App\Notifications\{Hashtags, Acknowledged, Forwarded};
 
-class RelayHashtagsTest extends TestCase
+class RelayTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -63,21 +63,21 @@ class RelayHashtagsTest extends TestCase
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);
-        Notification::assertSentTo(Contact::bearing($from), SMSAcknowledged::class);
-        Notification::assertSentTo($spokesman, MailHashtags::class);
-        Notification::assertSentTo($listener1, MailHashtags::class);
-        Notification::assertSentTo($listener2, MailHashtags::class);
-        Notification::assertSentTo($listener3, MailHashtags::class);
-        Notification::assertSentTo($listener4, MailHashtags::class);
-        Notification::assertNotSentTo($listener5, MailHashtags::class);
+        Notification::assertSentTo(Contact::bearing($from), Acknowledged::class);
+        Notification::assertSentTo($spokesman, Hashtags::class);
+        Notification::assertSentTo($listener1, Hashtags::class);
+        Notification::assertSentTo($listener2, Hashtags::class);
+        Notification::assertSentTo($listener3, Hashtags::class);
+        Notification::assertSentTo($listener4, Hashtags::class);
+        Notification::assertNotSentTo($listener5, Hashtags::class);
         $mobiles = Setting::get('forwarding.mobiles');
         foreach ($mobiles as $mobile) {
             $contact = Contact::bearing($mobile);
-            Notification::assertSentTo($contact, SMSForwarded::class);
+            Notification::assertSentTo($contact, Forwarded::class);
         }
     }
 }

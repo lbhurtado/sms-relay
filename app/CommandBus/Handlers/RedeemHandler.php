@@ -2,7 +2,7 @@
 
 namespace App\CommandBus\Handlers;
 
-use App\Jobs\RedeemCodeJob;
+use App\Jobs\Redeem;
 use App\CommandBus\Commands\RedeemCommand;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
@@ -15,6 +15,6 @@ class RedeemHandler
      */
     public function handle(RedeemCommand $command)
     {
-        $this->dispatch(new RedeemCodeJob($command->origin, $command->code, $command->email));
+        $this->dispatch(new Redeem($command->origin, $command->code, $command->email));
     }
 }

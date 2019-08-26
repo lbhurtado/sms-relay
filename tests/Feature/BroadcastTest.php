@@ -13,6 +13,8 @@ class BroadcastTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $keyword = 'BROADCAST';
+
     /** @var Contact */
     protected $spokesman, $listener, $subscriber1, $subscriber2, $subscriber3;
 
@@ -22,25 +24,26 @@ class BroadcastTest extends TestCase
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
 
-        $this->spokesman = Contact::create(['mobile' => '09654444444'])
+        $this->spokesman = factory(Contact::class)->create(['mobile' => '09654444444'])
             ->syncRoles('spokesman')
             ->setEmail('spokesman@lgu.gov.ph')
         ;
-        $this->listener = Contact::create(['mobile' => '09108888888'])
+
+        $this->listener = factory(Contact::class)->create(['mobile' => '09108888888'])
             ->syncRoles('listener')
             ->setEmail('lister1@@lgu.gov.ph')
         ;
-        $this->subscriber1 = Contact::create(['mobile' => '09209999999'])
+        $this->subscriber1 = factory(Contact::class)->create(['mobile' => '09209999999'])
             ->syncRoles('subscriber')
             ->setEmail('subscriber1@lgu.gov.ph')
         ;
 
-        $this->subscriber2 = Contact::create(['mobile' => '09307777777'])
+        $this->subscriber2 = factory(Contact::class)->create(['mobile' => '09307777777'])
             ->syncRoles('listener')
             ->setEmail('$subscriber2@lgu.gov.ph')
             ->catch(['tag2'])
         ;
-        $this->subscriber3 = Contact::create(['mobile' => '09456666666'])
+        $this->subscriber3 = factory(Contact::class)->create(['mobile' => '09456666666'])
             ->syncRoles('listener')
             ->setEmail('$subscriber3@lgu.gov.ph')
             ->catch(['tag3'])
@@ -53,11 +56,11 @@ class BroadcastTest extends TestCase
         /*** arrange ***/
         Notification::fake();
         $sender = $this->spokesman;
-        $from = $sender->mobile; $to = '09182222222'; $message = "BROADCAST This is a broadcast.";
+        $from = $sender->mobile; $to = '09182222222'; $message = "{$this->keyword} {$this->faker->sentence}";
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);
@@ -69,6 +72,7 @@ class BroadcastTest extends TestCase
         Notification::assertNotSentTo($this->subscriber1, BroadcastFeedback::class);
         Notification::assertNotSentTo($this->subscriber2, BroadcastFeedback::class);
         Notification::assertNotSentTo($this->subscriber3, BroadcastFeedback::class);
+        //TODO test received feedback
     }
 
     /** @test */
@@ -77,11 +81,11 @@ class BroadcastTest extends TestCase
         /*** arrange ***/
         Notification::fake();
         $sender = $this->listener;
-        $from = $sender->mobile; $to = '09182222222'; $message = "BROADCAST This is a broadcast.";
+        $from = $sender->mobile; $to = '09182222222'; $message = "{$this->keyword} {$this->faker->sentence}";
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);
@@ -97,11 +101,11 @@ class BroadcastTest extends TestCase
         /*** arrange ***/
         Notification::fake();
         $sender = $this->subscriber1;
-        $from = $sender->mobile; $to = '09182222222'; $message = "BROADCAST This is a broadcast.";
+        $from = $sender->mobile; $to = '09182222222'; $message = "{$this->keyword} {$this->faker->sentence}";
 
         /*** act ***/
         $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        usleep(500);
+        $this->sleep_after_url();
 
         /*** assert ***/
         $response->assertStatus(200);

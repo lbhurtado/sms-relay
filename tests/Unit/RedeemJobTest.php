@@ -4,10 +4,10 @@ namespace Tests\Unit;
 
 use App\Contact;
 use Tests\TestCase;
-use App\Jobs\RedeemCodeJob;
+use App\Jobs\Redeem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class RedeemCodeJobTest extends TestCase
+class RedeemJobTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -23,17 +23,17 @@ class RedeemCodeJobTest extends TestCase
     public function redeem_code_job_works()
     {
         /*** arrange ***/
-        $contact = factory(Contact::class)->create(['mobile' => '09108888888']);
+        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
         $code = $this->getVoucherCode('listener');
         $email = $this->faker->email;
 
         /*** act ***/
-        $job = new RedeemCodeJob($contact, $code, $email);
+        $job = new Redeem($contact, $code, $email);
         $job->handle();
 
         /*** assert ***/
-        $this->assertFalse($contact->hasRole('subscriber'));
-        $this->assertTrue($contact->hasRole('listener'));
+        $this->assertFalse ($contact->hasRole('subscriber'));
+        $this->assertTrue  ($contact->hasRole('listener'));
         $this->assertEquals($email, $contact->email);
     }
 }

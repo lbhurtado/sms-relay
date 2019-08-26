@@ -10,7 +10,7 @@ class ContactTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $mobile = '09108888888';
+    protected $mobile = '09171234567';
     protected $contact;
 
     public function setUp(): void
@@ -28,6 +28,7 @@ class ContactTest extends TestCase
         $this->assertTrue($this->contact->hasRole('subscriber'));
         $this->assertFalse($this->contact->hasRole('listener'));
         $this->assertFalse($this->contact->hasRole('spokesman'));
+        $this->assertFalse($this->contact->hasRole('forwarder'));
     }
 
     /** @test */
@@ -38,17 +39,20 @@ class ContactTest extends TestCase
     }
 
     /** @test */
-    public function contact_has_no_tags_initially()
+    public function contact_has_no_tag_initially()
     {
         /*** assert ***/
         $this->assertEmpty($this->contact->hashtags);
     }
 
     /** @test */
-    public function contact_can_be_searched_with_mobile()
+    public function contact_can_be_searched_using_mobile_number()
     {
         /*** arrange ***/
-        $contact = Contact::bearing($this->mobile);
+        $mobile = $this->mobile;
+
+        /*** act ***/
+        $contact = Contact::bearing($mobile);
 
         /*** assert ***/
         $this->assertTrue($this->contact->is($contact));

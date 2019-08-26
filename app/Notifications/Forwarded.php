@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use LBHurtado\EngageSpark\Notifications\BaseNotification;
 
-class SMSForwarded extends BaseNotification
+class Forwarded extends BaseNotification
 {
     public function getContent($notifiable)
     {

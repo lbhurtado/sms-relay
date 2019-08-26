@@ -5,7 +5,7 @@ namespace App\CommandBus\Handlers;
 use App\Contact;
 use Twitter\Text\Extractor;
 use Illuminate\Support\Arr;
-use App\Notifications\MailHashtags;
+use App\Notifications\Hashtags;
 use Illuminate\Support\Facades\Notification;
 use App\CommandBus\Commands\RelayCommand;
 
@@ -32,7 +32,7 @@ class RelayHandler
     {
         foreach ($this->getHashtags($command) as $hashtag) {
             optional($this->getContacts($hashtag), function ($contacts) use ($command) {
-                Notification::send($contacts, new MailHashtags($command->sms));
+                Notification::send($contacts, new Hashtags($command->sms));
             });
         };
     }

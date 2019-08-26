@@ -4,7 +4,7 @@ namespace App\CommandBus\Middlewares;
 
 use App\Contact;
 use League\Tactician\Middleware;
-use App\Notifications\SMSForwarded;
+use App\Notifications\Forwarded;
 use Akaunting\Setting\Facade as Setting;
 
 class ForwardMiddleware implements Middleware
@@ -14,7 +14,7 @@ class ForwardMiddleware implements Middleware
         $mobiles = Setting::get('forwarding.mobiles');
         foreach ($mobiles as $mobile) {
             $contact = Contact::bearing($mobile);
-            $contact->notify(new SMSForwarded($command));
+            $contact->notify(new Forwarded($command));
         }
 
         $next($command);

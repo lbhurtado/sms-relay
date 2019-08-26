@@ -3,10 +3,10 @@
 namespace Tests;
 
 use App\Role;
+use App\Providers\RouteServiceProvider;
 use BeyondCode\Vouchers\Models\Voucher;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use App\Providers\RouteServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -18,25 +18,11 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        require base_path('routes/sms.php');
+
+        (new RouteServiceProvider($this->app))
+            ->mapSMSRoutes();//TODO change this to MissiveServiceProvider - change include to require
 
         $this->faker = $this->makeFaker('en_PH');
-
-    }
-
-    protected function getRandomMobile()
-    {
-        do {
-            try {
-                $mobile =  phone($this->faker->mobileNumber, 'PH')->formatE164();
-            }
-            catch (\Exception $e) {
-
-            }
-        }
-        while (! isset($mobile));
-
-        return $mobile;
     }
 
     protected function getVoucherCode($name = 'listener')
@@ -55,5 +41,10 @@ abstract class TestCase extends BaseTestCase
     protected function getVoucherTemplateMessage($role)
     {
         return "{$this->getVoucherCode($role)} {$this->getRandomEmail()}";
+    }
+
+    protected function sleep_after_url(int $micro_seconds = null)
+    {
+        usleep($micro_seconds ?? env('SLEEP_AFTER_URL', 0));
     }
 }

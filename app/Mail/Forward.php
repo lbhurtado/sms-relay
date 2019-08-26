@@ -9,7 +9,7 @@ use LBHurtado\Missive\Models\SMS;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ForwardSMSToMail extends Mailable implements ShouldQueue
+class Forward extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -27,7 +27,7 @@ class ForwardSMSToMail extends Mailable implements ShouldQueue
     {
         return $this->subject('Forward SMS To Mail')
             ->to($this->contact->email)
-            ->markdown('email.forward')
+            ->markdown('mail.forward')
             ->with([
                 'name' => 'New Mailtrap User',
                 'link' => 'https://mailtrap.io/inboxes'
