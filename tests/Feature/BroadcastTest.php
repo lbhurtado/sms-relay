@@ -67,7 +67,7 @@ class BroadcastTest extends TestCase
 
         /*** assert ***/
         $response->assertStatus(200);
-        tap(Contact::all(), function ($contact) {
+        tap(Contact::whereNotIn('mobile',[$sender->mobile])->get(), function ($contact) {
             Notification::assertSentTo($contact, Broadcast::class);
         });
         Notification::assertSentTo($sender, Feedback::class);

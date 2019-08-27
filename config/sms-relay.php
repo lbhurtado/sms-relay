@@ -17,5 +17,6 @@ return [
     'vouchers' => [
         'spokesman'  => env('SPOKESMAN_VOUCHERS', 1),
         'listener'   => env('LISTENER_VOUCHERS', 5),
-    ]
+    ],
+    'signature' => env('SIGNATURE', 'SMS Relay'),
 ];

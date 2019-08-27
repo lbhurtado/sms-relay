@@ -25,7 +25,7 @@ class BroadcastHandler
      */
     public function handle(BroadcastCommand $command)
     {
-        $this->contacts->all()->each(function ($contact) use ($command) {
+        $this->contacts->findWhereNotIn('mobile', [$command->origin->mobile])->each(function ($contact) use ($command) {
             $contact->notify(new Broadcast($command->message));
         });
         $command->origin->notify(new Feedback($command->message));
