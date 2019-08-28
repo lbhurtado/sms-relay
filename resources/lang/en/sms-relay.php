@@ -9,4 +9,5 @@ return [
     ],
     'broadcast' => ":handle, :message - \n:signature",
     'feedback' => "Feedback: :handle, :message - \n:signature",
+    'listen' => "Listened: :handle, :message - \n:signature",
 ];

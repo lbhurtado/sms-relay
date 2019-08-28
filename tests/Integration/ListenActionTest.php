@@ -37,7 +37,9 @@ class ListenActionTest extends TestCase
     {
         /*** arrange ***/
         Bus::fake();
+        Notification::fake();
         $tags = $this->faker->sentence;
+        $tags = 'tag1 tag2 tag3';
 
         /*** act ***/
         app(ListenAction::class)->__invoke('', compact('tags'));
@@ -45,6 +47,11 @@ class ListenActionTest extends TestCase
         /*** assert ***/
         Bus::assertDispatched(Listen::class, function ($job) use ($tags) {
             return $job->contact === $this->sms->origin && $job->tags == $tags;
+        });
+        tap(Contact::bearing($this->sms->origin->mobile), function ($listener) use ($tags) {
+            Notification::assertSentTo($listener, Listened::class, function ($notification) use ($listener, $tags) {
+                return Listened::getFormattedMessage($listener, $tags) == $notification->getContent($listener);
+            });
         });
     }
 
