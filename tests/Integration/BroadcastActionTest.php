@@ -2,7 +2,6 @@
 
 namespace Tests\Integration;
 
-use App\Role;
 use App\Contact;
 use Tests\TestCase;
 use LBHurtado\Missive\Missive;
@@ -28,7 +27,7 @@ class BroadcastActionTest extends TestCase
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
 
         //this needs to be assigned to a class variable, scoping issues with service layer
-        $this->sms = $this->createBroadcastSMSBySpokesman(); 
+        $this->sms = $this->createBroadcastSMSBySpokesman();
     }
 
     /** @test */
@@ -63,8 +62,8 @@ class BroadcastActionTest extends TestCase
         $sms = factory(SMS::class)->create(compact('from'));
         $this->createSpokesman($from);
 
-        $missive = app(Missive::class)->setSMS($sms);  
-        (new Router($missive))->process($sms);      
+        $missive = app(Missive::class)->setSMS($sms);
+        (new Router($missive))->process($sms);
 
         return $sms;
     }
@@ -81,7 +80,7 @@ class BroadcastActionTest extends TestCase
 
     protected function createSubscribers(int $count)
     {
-        for ($i=0; $i < $count; $i++) { 
+        for ($i=0; $i < $count; $i++) {
             $mobile = '0918123456'. $i;
             factory(Contact::class)->create(compact('mobile'));
         }

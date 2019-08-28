@@ -2,21 +2,23 @@
 
 namespace App\CommandBus\Handlers;
 
+use App\Jobs\Listen;
 use App\Notifications\Listened;
 use App\CommandBus\Commands\ListenCommand;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class ListenHandler
 {
+    use DispatchesJobs;
+
     /**
      * @param ListenCommand $command
      */
     public function handle(ListenCommand $command)
     {
         tap($command->origin, function ($contact) use ($command) {
-            if ($hashtags = $this->getHashtags($command)) {
-                $contact->catch($this->getHashtags($command));
-                $contact->notify(new Listened);
-            }
+            $this->dispatch(new Listen($contact, $command->tags));
+            $contact->notify(new Listened);
         });
     }
 
