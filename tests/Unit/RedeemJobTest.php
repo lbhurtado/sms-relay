@@ -20,7 +20,7 @@ class RedeemJobTest extends TestCase
     }
 
     /** @test */
-    public function redeem_code_job_works()
+    public function redeem_code_job_works_for_listener()
     {
         /*** arrange ***/
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
@@ -34,6 +34,24 @@ class RedeemJobTest extends TestCase
         /*** assert ***/
         $this->assertFalse ($contact->hasRole('subscriber'));
         $this->assertTrue  ($contact->hasRole('listener'));
+        $this->assertEquals($email, $contact->email);
+    }
+
+    /** @test */
+    public function redeem_code_job_works_for_spokesman()
+    {
+        /*** arrange ***/
+        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
+        $code = $this->getVoucherCode('spokesman');
+        $email = $this->faker->email;
+
+        /*** act ***/
+        $job = new Redeem($contact, $code, $email);
+        $job->handle();
+
+        /*** assert ***/
+        $this->assertFalse ($contact->hasRole('subscriber'));
+        $this->assertTrue  ($contact->hasRole('spokesman'));
         $this->assertEquals($email, $contact->email);
     }
 }
