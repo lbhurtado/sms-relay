@@ -39,7 +39,6 @@ class ListenActionTest extends TestCase
         Bus::fake();
         Notification::fake();
         $tags = $this->faker->sentence;
-        $tags = 'tag1 tag2 tag3';
 
         /*** act ***/
         app(ListenAction::class)->__invoke('', compact('tags'));
@@ -69,7 +68,7 @@ class ListenActionTest extends TestCase
 
     protected function createListener(string $mobile)
     {
-        $this->spokesman = factory(Contact::class)
+        factory(Contact::class)
             ->create(compact('mobile'))
             ->syncRoles('listener')
         ;

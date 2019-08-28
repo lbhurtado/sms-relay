@@ -18,7 +18,7 @@ class ListenHandler
     {
         tap($command->origin, function ($contact) use ($command) {
             $this->dispatch(new Listen($contact, $command->tags));
-            $contact->notify(new Listened($command->tags));
+            $contact->notify(new Listened($command->tags));//TODO create a succession - job first then notify
         });
     }
 
