@@ -5,6 +5,7 @@ namespace App\Events;
 use App\Contact;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
+use BeyondCode\Vouchers\Models\Voucher;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -21,6 +22,9 @@ class SMSRelayEvent
     /** @var array */
     protected $hashtags;
 
+    /** @var Voucher */
+    protected $voucher;
+
     /**
      * SMSRelayEvent constructor.
      * @param Contact $contact
@@ -28,6 +32,25 @@ class SMSRelayEvent
     public function __construct(Contact $contact)
     {
         $this->contact = $contact;
+    }
+
+    /**
+     * @return Voucher
+     */
+    public function getVoucher(): Voucher
+    {
+        return $this->voucher;
+    }
+
+    /**
+     * @param Voucher $voucher
+     * @return SMSRelayEvent
+     */
+    public function setVoucher(Voucher $voucher): SMSRelayEvent
+    {
+        $this->voucher = $voucher;
+
+        return $this;
     }
 
     /**
@@ -64,18 +87,6 @@ class SMSRelayEvent
     {
         return $this->contact;
     }
-
-    /**
-     * @param Contact $contact
-     * @return SMSRelayEvent
-     */
-    public function setContact(Contact $contact): SMSRelayEvent
-    {
-        $this->contact = $contact;
-
-        return $this;
-    }
-
 
     /**
      * Get the channels the event should broadcast on.

@@ -5,10 +5,9 @@ namespace Tests\Unit;
 use App\Contact;
 use Tests\TestCase;
 use App\Jobs\Listen;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-use Illuminate\Support\Facades\Notification;
 use App\Notifications\Listened;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ListenJobTest extends TestCase
 {

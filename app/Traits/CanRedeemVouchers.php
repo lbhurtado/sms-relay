@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Vouchers;
 use BeyondCode\Vouchers\Models\Voucher;
-use BeyondCode\Vouchers\Events\VoucherRedeemed;
+use App\Events\{SMSRelayEvents, SMSRelayEvent};
 use BeyondCode\Vouchers\Exceptions\VoucherExpired;
 use BeyondCode\Vouchers\Exceptions\VoucherIsInvalid;
 use BeyondCode\Vouchers\Exceptions\VoucherAlreadyRedeemed;
@@ -30,7 +30,7 @@ trait CanRedeemVouchers
             'redeemed_at' => now()
         ]);
 
-        event(new VoucherRedeemed($this, $voucher));
+        event(SMSRelayEvents::REDEEMED, (new SMSRelayEvent($this))->setVoucher($voucher));
 
         return $voucher;
     }
