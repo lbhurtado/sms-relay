@@ -20,7 +20,7 @@ class RelayAction extends BaseAction
             ->email($go->email)
             ->forward($go->mobile)
             ->reply($go->reply)
-            ->relayHashtagsToEmail($go->hashtags);
+            ->relay($go->hashtags);
     }
 
     protected function log(bool $go = true)
@@ -51,7 +51,7 @@ class RelayAction extends BaseAction
         return $this;
     }
 
-    protected function relayHashtagsToEmail(bool $go = true)
+    protected function relay(bool $go = true)
     {
         ! $go || $this->bus->dispatch(RelayCommand::class, $this->getData(), $this->getMiddlewares());
 

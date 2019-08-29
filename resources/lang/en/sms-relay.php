@@ -11,4 +11,5 @@ return [
     'feedback' => "Feedback: :handle, :message - \n:signature",
     'listen' => "Listened: :handle, :message - \n:signature",
     'redeem' => "Redeemed: :handle, :message - \n:signature",
+    'relay' => "Relayed: :handle, :message - \n:signature",
 ];

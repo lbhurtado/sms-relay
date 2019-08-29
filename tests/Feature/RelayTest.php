@@ -7,7 +7,7 @@ use Tests\TestCase;
 use Akaunting\Setting\Facade as Setting;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Notifications\{Hashtags, Acknowledged, Forwarded};
+use App\Notifications\{Hashtags, Acknowledged, Forwarded, Relayed};
 
 class RelayTest extends TestCase
 {
@@ -79,5 +79,6 @@ class RelayTest extends TestCase
             $contact = Contact::bearing($mobile);
             Notification::assertSentTo($contact, Forwarded::class);
         }
+        Notification::assertSentTo(Contact::bearing($from), Relayed::class);
     }
 }

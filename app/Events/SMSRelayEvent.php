@@ -25,6 +25,9 @@ class SMSRelayEvent
     /** @var Voucher */
     protected $voucher;
 
+    /** @var string */
+    protected $message;
+
     /**
      * SMSRelayEvent constructor.
      * @param Contact $contact
@@ -96,5 +99,24 @@ class SMSRelayEvent
     public function broadcastOn()
     {
         return new PrivateChannel('channel-name');
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param string $message
+     * @return SMSRelayEvent
+     */
+    public function setMessage(string $message): SMSRelayEvent
+    {
+        $this->message = $message;
+
+        return $this;
     }
 }

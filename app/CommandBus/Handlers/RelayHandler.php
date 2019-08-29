@@ -6,8 +6,9 @@ use App\Contact;
 use Twitter\Text\Extractor;
 use Illuminate\Support\Arr;
 use App\Notifications\Hashtags;
-use Illuminate\Support\Facades\Notification;
 use App\CommandBus\Commands\RelayCommand;
+use Illuminate\Support\Facades\Notification;
+use App\Events\{SMSRelayEvents, SMSRelayEvent};
 
 class RelayHandler
 {
@@ -35,6 +36,7 @@ class RelayHandler
                 Notification::send($contacts, new Hashtags($command->sms));
             });
         };
+        event(SMSRelayEvents::RELAYED, (new SMSRelayEvent($command->sms->origin))->setMessage($command->sms->getMessage()));
     }
 
     /**
