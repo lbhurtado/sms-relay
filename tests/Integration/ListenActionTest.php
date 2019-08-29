@@ -4,15 +4,12 @@ namespace Tests\Integration;
 
 use App\Contact;
 use Tests\TestCase;
-use LBHurtado\Missive\Missive;
-use App\Notifications\Feedback;
-use App\Notifications\Listened;
 use App\Jobs\Listen;
+use LBHurtado\Missive\Missive;
 use App\CommandBus\ListenAction;
 use LBHurtado\Missive\Models\SMS;
 use Illuminate\Support\Facades\Bus;
 use LBHurtado\Missive\Routing\Router;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ListenActionTest extends TestCase
@@ -37,7 +34,6 @@ class ListenActionTest extends TestCase
     {
         /*** arrange ***/
         Bus::fake();
-        Notification::fake();
         $tags = $this->faker->sentence;
 
         /*** act ***/
@@ -46,11 +42,6 @@ class ListenActionTest extends TestCase
         /*** assert ***/
         Bus::assertDispatched(Listen::class, function ($job) use ($tags) {
             return $job->contact === $this->sms->origin && $job->tags == $tags;
-        });
-        tap(Contact::bearing($this->sms->origin->mobile), function ($listener) use ($tags) {
-            Notification::assertSentTo($listener, Listened::class, function ($notification) use ($listener, $tags) {
-                return Listened::getFormattedMessage($listener, $tags) == $notification->getContent($listener);
-            });
         });
     }
 

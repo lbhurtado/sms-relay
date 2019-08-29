@@ -8,6 +8,7 @@ use App\Traits\CanRedeemVouchers;
 use Spatie\Permission\Traits\HasRoles;
 use LBHurtado\EngageSpark\Traits\HasEngageSpark;
 use LBHurtado\Missive\Models\Contact as BaseContact;
+use App\Events\{SMSRelayEvents, SMSRelayEvent};
 
 class Contact extends BaseContact
 {
@@ -42,6 +43,7 @@ class Contact extends BaseContact
             $tags[] = ['tag' => $tag];
         }
         $this->hashtags()->createMany($tags);
+        event(SMSRelayEvents::LISTENED, (new SMSRelayEvent($this))->setHashtags($hashtags));
 
         return $this;
     }

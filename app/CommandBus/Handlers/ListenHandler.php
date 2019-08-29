@@ -3,7 +3,6 @@
 namespace App\CommandBus\Handlers;
 
 use App\Jobs\Listen;
-use App\Notifications\Listened;
 use App\CommandBus\Commands\ListenCommand;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
@@ -18,7 +17,6 @@ class ListenHandler
     {
         tap($command->origin, function ($contact) use ($command) {
             $this->dispatch(new Listen($contact, $command->tags));
-            $contact->notify(new Listened($command->tags));//TODO create a succession - job first then notify
         });
     }
 
