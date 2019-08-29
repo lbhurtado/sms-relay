@@ -19,11 +19,15 @@ class BroadcastActionTest extends TestCase
 
     protected $contact;
 
+    /** @var int */
+    protected $count;
+
     public function setUp(): void
     {
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
+        $this->createSubscribers($this->count = 2);
     }
 
     /** @test */
@@ -31,10 +35,8 @@ class BroadcastActionTest extends TestCase
     {
         /*** arrange ***/
         Notification::fake();
-        $this->createSubscribers($count = 2);
         $message = $this->faker->sentence;
-        //this needs to be assigned to a class variable, scoping issues with service layer
-        $sms = $this->createBroadcastSMS('spokesman');
+        $sms = $this->prepareToBroadcastAs('spokesman');
 
         /*** act ***/
         app(BroadcastAction::class)->__invoke('', compact('message'));
@@ -46,7 +48,7 @@ class BroadcastActionTest extends TestCase
                 return Broadcast::getFormattedMessage($contact, $message) == $notification->getContent($contact);
             });
         });
-        $this->assertEquals($i, $count);
+        $this->assertEquals($i, $this->count);
         tap(Contact::bearing($sms->origin->mobile), function ($spokesman) use ($message) {
             Notification::assertSentTo($spokesman, Feedback::class, function ($notification) use ($spokesman, $message) {
                 return Feedback::getFormattedMessage($spokesman, $message) == $notification->getContent($spokesman);
@@ -55,12 +57,12 @@ class BroadcastActionTest extends TestCase
     }
 
     /** @test */
-    public function listener_broadcast_action_will_not()
+    public function listener_broadcast_action_does_nothing()
     {
         /*** arrange ***/
         Notification::fake();
         $message = $this->faker->sentence;
-        $sms = $this->createBroadcastSMS('listener');
+        $sms = $this->prepareToBroadcastAs('listener');
 
         /*** act ***/
         app(BroadcastAction::class)->__invoke('', compact('message'));
@@ -76,12 +78,12 @@ class BroadcastActionTest extends TestCase
     }
 
     /** @test */
-    public function subscriber_broadcast_action_will_not()
+    public function subscriber_broadcast_action_does_nothing()
     {
         /*** arrange ***/
         Notification::fake();
         $message = $this->faker->sentence;
-        $sms = $this->createBroadcastSMS('subscriber');
+        $sms = $this->prepareToBroadcastAs('subscriber');
 
         /*** act ***/
         app(BroadcastAction::class)->__invoke('', compact('message'));
@@ -96,7 +98,7 @@ class BroadcastActionTest extends TestCase
         });
     }
 
-    protected function createBroadcastSMS(string $role): \LBHurtado\Missive\Models\SMS
+    protected function prepareToBroadcastAs(string $role): \LBHurtado\Missive\Models\SMS
     {
         $from = '+639191234567';
         $sms = factory(SMS::class)->create(compact('from'));
