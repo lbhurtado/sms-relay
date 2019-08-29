@@ -2,7 +2,7 @@
 
 namespace App\CommandBus\Handlers;
 
-use App\Notifications\Pong;
+use App\Notifications\Pinged;
 use App\CommandBus\Commands\PingCommand;
 
 class PingHandler
@@ -12,6 +12,6 @@ class PingHandler
      */
     public function handle(PingCommand $command)
     {
-        $command->origin->notify(new Pong);
+        $command->origin->notify(new Pinged);
     }
 }

@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Contact;
 use Tests\TestCase;
-use App\Notifications\Pong;
+use App\Notifications\Pinged;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -37,7 +37,7 @@ class PingTest extends TestCase
 
         /*** assert ***/
         $response->assertStatus(200);
-        Notification::assertSentTo($contact, Pong::class);
+        Notification::assertSentTo($contact, Pinged::class);
     }
 
     /** @test */
@@ -56,7 +56,7 @@ class PingTest extends TestCase
 
         /*** assert ***/
         $response->assertStatus(200);
-        Notification::assertSentTo($contact, Pong::class);
+        Notification::assertSentTo($contact, Pinged::class);
     }
 
     /** @test */
@@ -75,7 +75,7 @@ class PingTest extends TestCase
 
         /*** assert ***/
         $response->assertStatus(200);
-        Notification::assertSentTo($contact, Pong::class);
+        Notification::assertSentTo($contact, Pinged::class);
     }
 
     /** @test */
@@ -94,6 +94,6 @@ class PingTest extends TestCase
 
         /*** assert ***/
         $response->assertStatus(200);
-        Notification::assertNotSentTo($contact, Pong::class);
+        Notification::assertNotSentTo($contact, Pinged::class);
     }
 }

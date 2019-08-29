@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use LBHurtado\EngageSpark\Notifications\BaseNotification;
 
-class Pong extends BaseNotification
+class Pinged extends BaseNotification
 {
     public function getContent($notifiable)
     {
