@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Contact;
+use Mockery;
 use Tests\TestCase;
-use App\Notifications\Pinged;
-use Illuminate\Support\Facades\Notification;
+use App\CommandBus\PingAction;
+use LBHurtado\Missive\Routing\Router;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PingTest extends TestCase
@@ -14,86 +14,48 @@ class PingTest extends TestCase
 
     protected $keyword = 'PING';
 
+    protected $router;
+
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
+
+        $this->router = app(Router::class);
+        $this->action = Mockery::mock(PingAction::class);
+        $this->router->register("{$this->keyword}", $this->action);
     }
 
     /** @test */
-    public function spokesman_sends_a_ping_receives_a_pong()
+    public function ping_keyword_invokes_ping_action()
     {
         /*** arrange ***/
-        $from = '09171111111'; $to = '09182222222'; $message = $this->keyword;
-        $contact = factory(Contact::class)
-            ->create(['mobile' => $from])
-            ->syncRoles('spokesman');
+        $space = '   ';
+        $from = '09171234567'; $to = '09182222222'; $message = "{$this->keyword}{$space}";
 
         /*** act ***/
-        Notification::fake();
-        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
         $this->sleep_after_url();
 
         /*** assert ***/
-        $response->assertStatus(200);
-        Notification::assertSentTo($contact, Pinged::class);
+        $this->action->shouldHaveReceived('__invoke')->once();
     }
 
     /** @test */
-    public function listener_sends_a_ping_receives_a_pong()
+    public function none_ping_keyword_deos_not_invoke_ping_action()
     {
         /*** arrange ***/
-        $from = '09171111111'; $to = '09182222222'; $message = $this->keyword;
-        $contact = factory(Contact::class)
-            ->create(['mobile' => $from])
-            ->syncRoles('listener');
+        $space = '   ';
+        $from = '09171234567'; $to = '09182222222'; $message = "{$this->faker->word}{$space}";
 
         /*** act ***/
-        Notification::fake();
-        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
         $this->sleep_after_url();
 
         /*** assert ***/
-        $response->assertStatus(200);
-        Notification::assertSentTo($contact, Pinged::class);
-    }
-
-    /** @test */
-    public function forwarder_sends_a_ping_receives_a_pong()
-    {
-        /*** arrange ***/
-        $from = '09171111111'; $to = '09182222222'; $message = $this->keyword;
-        $contact = factory(Contact::class)
-            ->create(['mobile' => $from])
-            ->syncRoles('forwarder');
-
-        /*** act ***/
-        Notification::fake();
-        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        $this->sleep_after_url();
-
-        /*** assert ***/
-        $response->assertStatus(200);
-        Notification::assertSentTo($contact, Pinged::class);
-    }
-
-    /** @test */
-    public function subscriber_sends_a_ping_does_not_receive_a_pong()
-    {
-        /*** arrange ***/
-        $from = '09171111111'; $to = '09182222222'; $message = $this->keyword;
-        $contact = factory(Contact::class)
-            ->create(['mobile' => $from])
-            ->syncRoles('subscriber');
-
-        /*** act ***/
-        Notification::fake();
-        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
-        $this->sleep_after_url();
-
-        /*** assert ***/
-        $response->assertStatus(200);
-        Notification::assertNotSentTo($contact, Pinged::class);
+        $this->action->shouldNotHaveReceived('__invoke');
     }
 }
