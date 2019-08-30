@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Contact;
+use Mockery;
 use Tests\TestCase;
-use App\Notifications\Listened;
-use Illuminate\Support\Facades\Notification;
+use App\CommandBus\ListenAction;
+use LBHurtado\Missive\Routing\Router;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ListenTest extends TestCase
@@ -14,8 +14,6 @@ class ListenTest extends TestCase
 
     protected $keyword = 'LISTEN';
 
-    protected $contact;
-
     protected $tags = ['tag1', 'tag2', 'tag3'];
 
     public function setUp(): void
@@ -23,45 +21,58 @@ class ListenTest extends TestCase
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
-        $this->contact = factory(Contact::class)->create(['mobile' => '09171234567']);
+
+        $this->router = app(Router::class);
+        $this->action = Mockery::mock(ListenAction::class);
+        $this->router->register("{$this->keyword} {tags}", $this->action);
     }
 
     /** @test */
-    public function listener_sends_listen_command_receives_hashtags()
+    public function listen_keyword_space_tags_invokes_listen_action()
     {
         /*** arrange ***/
-        Notification::fake();
-        $this->contact->syncRoles('listener');
-
-        $from = $this->contact->mobile; $to = '09182222222'; $message = "{$this->keyword} {$this->getSpaceDelimitedTags()}";
+        $keyword = $this->keyword;
+        $tags = $this->getSpaceDelimitedTags();
+        $from = '09171234567'; $to = '09182222222'; $message = "{$keyword} {$tags}";
 
         /*** act ***/
-        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
         $this->sleep_after_url();
 
         /*** assert ***/
-        $response->assertStatus(200);
-        $this->assertEquals($this->tags, $this->contact->hashtags->pluck('tag')->toArray());
-        Notification::assertSentTo($this->contact, Listened::class);
+        $this->action->shouldHaveReceived('__invoke')->once();
     }
 
     /** @test */
-    public function subscriber_sends_listen_command_does_not_receive_hashtags()
+    public function listen_keyword_alone_does_not_invoke_listen_action()
     {
         /*** arrange ***/
-        Notification::fake();
-        $this->contact->syncRoles('subscriber');
-
-        $from = $this->contact->mobile; $to = '09182222222'; $message = "{$this->keyword} {$this->getSpaceDelimitedTags()}";
+        $keyword = $this->keyword;
+        $space = '  ';
+        $from = '09171234567'; $to = '09182222222'; $message = "{$keyword}{$space}";
 
         /*** act ***/
-        $response = $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
         $this->sleep_after_url();
 
         /*** assert ***/
-        $response->assertStatus(200);
-        $this->assertEmpty($this->contact->hashtags->pluck('tag')->toArray());
-        Notification::assertNotSentTo($this->contact, Listened::class);
+        $this->action->shouldNotHaveReceived('__invoke');
+    }
+
+    /** @test */
+    public function non_listen_keyword_space_tags_does_not_invoke_listen_action()
+    {
+        /*** arrange ***/
+        $keyword = $this->faker->word;
+        $tags = $this->getSpaceDelimitedTags();
+        $from = '09171234567'; $to = '09182222222'; $message = "{$keyword} {$tags}";
+
+        /*** act ***/
+        $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        $this->sleep_after_url();
+
+        /*** assert ***/
+        $this->action->shouldNotHaveReceived('__invoke');
     }
 
     /**

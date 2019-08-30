@@ -9,7 +9,7 @@ use App\CommandBus\BroadcastAction;
 use LBHurtado\Missive\Routing\Router;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class BroadcastRouteTest extends TestCase
+class BroadcastTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -49,7 +49,7 @@ class BroadcastRouteTest extends TestCase
     }
 
     /** @test */
-    public function broadcast_keyword_does_not_invoke_broadcast_action()
+    public function broadcast_keyword_alone_does_not_invoke_broadcast_action()
     {
         /*** arrange ***/
         $keyword = $this->keyword;
