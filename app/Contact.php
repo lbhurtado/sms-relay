@@ -57,4 +57,13 @@ class Contact extends BaseContact
     {
         return $this->catchHashtags($hashtags);
     }
+
+    /**
+     * @param array $hashtags
+     * @return Contact
+     */
+    public function uncatch(array $hashtags): Contact
+    {
+        return $this->uncatchHashtags($hashtags);
+    }
 }

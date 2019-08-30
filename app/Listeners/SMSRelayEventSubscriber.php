@@ -4,8 +4,8 @@ namespace App\Listeners;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Notifications\{Redeemed, Listened, Relayed};
 use App\Events\{SMSRelayEvent, SMSRelayEvents};
+use App\Notifications\{Redeemed, Listened, Relayed, Unlistened};
 
 class SMSRelayEventSubscriber implements ShouldQueue
 {
@@ -32,6 +32,13 @@ class SMSRelayEventSubscriber implements ShouldQueue
         });
     }
 
+    public function onSMSRelayUnlistened(SMSRelayEvent $event)
+    {
+        tap($event->getContact(), function ($contact) use ($event) {
+            $contact->notify(new Unlistened($event->getTags()));
+        });
+    }
+
     public function subscribe($events)
     {
         $events->listen(
@@ -48,6 +55,9 @@ class SMSRelayEventSubscriber implements ShouldQueue
             SMSRelayEvents::RELAYED,
             SMSRelayEventSubscriber::class.'@onSMSRelayRelayed'
         );
-
+        $events->listen(
+            SMSRelayEvents::UNLISTENED,
+            SMSRelayEventSubscriber::class.'@onSMSRelayUnlistened'
+        );
     }
 }

@@ -5,7 +5,7 @@ namespace App\Notifications;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use LBHurtado\EngageSpark\Notifications\BaseNotification;
 
-class Listened extends BaseNotification implements ShouldQueue
+class Unlistened extends BaseNotification implements ShouldQueue
 {
     public function getContent($notifiable)
     {
@@ -17,6 +17,6 @@ class Listened extends BaseNotification implements ShouldQueue
         $handle = $notifiable->handle ?? $notifiable->mobile;
         $signature = config('sms-relay.signature');
 
-        return trans('sms-relay.listen', compact('handle', 'message', 'signature'));
+        return trans('sms-relay.unlisten', compact('handle', 'message', 'signature'));
     }
 }

@@ -19,9 +19,4 @@ class ListenHandler
             $this->dispatch(new Listen($contact, $command->tags));
         });
     }
-
-    protected function getHashtags(ListenCommand $command)
-    {
-        return explode(' ', $command->tags);
-    }
 }
