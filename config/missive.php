@@ -36,7 +36,7 @@ return [
                     \LBHurtado\Missive\Validators\CreateSMSValidator::class,
                     \LBHurtado\Missive\Transforms\CreateSMSTransform::class,
                     \LBHurtado\Missive\Responders\CreateSMSResponder::class,
-                \LBHurtado\Missive\Actions\Middleware\ChargeSMSMiddleware::class,
+                    \LBHurtado\Missive\Actions\Middleware\ChargeSMSMiddleware::class,
                 ],
                 'verify' => [
                     \LBHurtado\Missive\Validators\CreateSMSValidator::class,

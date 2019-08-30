@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(AirtimeSeeder::class);
         $this->call(SettingSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(ContactSeeder::class);
