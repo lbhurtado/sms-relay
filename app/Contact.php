@@ -22,7 +22,7 @@ class Contact extends BaseContact
      * @param $mobile
      * @return Contact|null
      */
-    public static function bearing($mobile):?Contact
+    public static function bearing($mobile):?Contact //TODO change this to by
     {
         return static::whereMobile(phone($mobile, 'PH')
             ->formatE164())
@@ -89,5 +89,12 @@ class Contact extends BaseContact
         return $query->whereHas('hashtags', function ($q) use ($hashtag) {
             return $q->where('tag', $hashtag);
         });
+    }
+
+    public function scopeNotBearing($query, ...$mobiles)
+    {
+        $mobiles = Arr::flatten($mobiles);
+
+        return $query->whereNotIn('mobile', $mobiles);
     }
 }

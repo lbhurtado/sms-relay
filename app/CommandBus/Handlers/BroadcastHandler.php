@@ -2,8 +2,8 @@
 
 namespace App\CommandBus\Handlers;
 
-use App\Notifications\Broadcast;
 use App\Notifications\Feedback;
+use App\Notifications\Broadcast;
 use App\CommandBus\Commands\BroadcastCommand;
 use LBHurtado\Missive\Repositories\ContactRepository;
 

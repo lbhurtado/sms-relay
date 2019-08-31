@@ -13,4 +13,5 @@ return [
     'redeem' => "Redeemed: :handle, :message - \n:signature",
     'relay' => "Relayed: :handle, :message - \n:signature",
     'unlisten' => "Unlistened: :handle, :message - \n:signature",
+    'post' => "Post: :handle, :message - \n:signature",
 ];
