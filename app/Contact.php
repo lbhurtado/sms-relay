@@ -4,6 +4,7 @@ namespace App;
 
 use App\Traits\HasEmail;
 use Illuminate\Support\Arr;
+use LBHurtado\Missive\Models\SMS;
 use Spatie\Permission\Traits\HasRoles;
 use LBHurtado\EngageSpark\Traits\HasEngageSpark;
 use LBHurtado\Missive\Models\Contact as BaseContact;
@@ -14,6 +15,8 @@ class Contact extends BaseContact
     use HasEngageSpark, HasRoles, CanRedeemVouchers, HasEmail, CanSegregateHashtags;
 
     protected $guard_name = 'web';
+
+    protected $appends = array('email');
 
     /**
      * @param $mobile
@@ -65,5 +68,26 @@ class Contact extends BaseContact
     public function uncatch(array $hashtags): Contact
     {
         return $this->uncatchHashtags($hashtags);
+    }
+
+    public function smss()
+    {
+        return $this->hasMany(SMS::class, 'from', 'mobile');
+    }
+
+    public function scopeWithinHashtags($query, ...$hashtags)
+    {
+        $hashtags = Arr::flatten($hashtags);
+
+        return $query->whereHas('hashtags', function ($q) use ($hashtags) {
+            return $q->whereIn('tag', $hashtags);
+        });
+    }
+
+    public function scopeWithHashtag($query, $hashtag)
+    {
+        return $query->whereHas('hashtags', function ($q) use ($hashtag) {
+            return $q->where('tag', $hashtag);
+        });
     }
 }
