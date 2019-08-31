@@ -44,7 +44,7 @@ class PostHandler
      */
     protected function getHashtags(PostCommand $command): array
     {
-        $extracted = $this->extractor->extract($command->sms->getMessage());
+        $extracted = $this->extractor->extract($command->message);
 
         return Arr::get($extracted, 'hashtags');
     }

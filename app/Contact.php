@@ -53,11 +53,13 @@ class Contact extends BaseContact
     }
 
     /**
-     * @param array $hashtags
+     * @param mixed ...$hashtags
      * @return Contact
      */
-    public function catch(array $hashtags): Contact
+    public function catch(...$hashtags): Contact
     {
+        $hashtags = Arr::flatten($hashtags);
+
         return $this->catchHashtags($hashtags);
     }
 

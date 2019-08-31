@@ -1,12 +1,14 @@
 <?php
 
-use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemAction, ListenAction, UnlistenAction};
+use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemAction, ListenAction, UnlistenAction, PostAction};
 
 $router = resolve('missive:router'); extract(redeem_regex());
 
 $router->register('{message}', app(RelayAction::class));
 
 $router->register('BROADCAST {message}', app(BroadcastAction::class));
+
+$router->register('POST {message}', app(PostAction::class));
 
 $router->register('PING', app(PingAction::class));
 
