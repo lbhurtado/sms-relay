@@ -8,4 +8,5 @@ class SMSRelayEvents
     const REDEEMED = 'sms-relay.redeemed';
     const RELAYED = 'sms-relay.relayed';
     const UNLISTENED = 'sms-relay.unlistened';
+    const CREDITED = 'sms-relay.credited';
 }

@@ -28,6 +28,9 @@ class SMSRelayEvent
     /** @var string */
     protected $message;
 
+    /** @var int */
+    protected $amount;
+
     /**
      * SMSRelayEvent constructor.
      * @param Contact $contact
@@ -49,7 +52,7 @@ class SMSRelayEvent
      * @param Voucher $voucher
      * @return SMSRelayEvent
      */
-    public function setVoucher(Voucher $voucher): SMSRelayEvent
+    public function setVoucher(Voucher $voucher): self
     {
         $this->voucher = $voucher;
 
@@ -68,7 +71,7 @@ class SMSRelayEvent
      * @param array $hashtags
      * @return SMSRelayEvent
      */
-    public function setHashtags(array $hashtags): SMSRelayEvent
+    public function setHashtags(array $hashtags): self
     {
         $this->hashtags = $hashtags;
 
@@ -113,9 +116,28 @@ class SMSRelayEvent
      * @param string $message
      * @return SMSRelayEvent
      */
-    public function setMessage(string $message): SMSRelayEvent
+    public function setMessage(string $message): self
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmount(): int
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param int $amount
+     * @return SMSRelayEvent
+     */
+    public function setAmount(int $amount): self
+    {
+        $this->amount = $amount;
 
         return $this;
     }

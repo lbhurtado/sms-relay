@@ -8,6 +8,8 @@ use App\Jobs\Redeem;
 use App\Notifications\Redeemed;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use App\Events\SMSRelayEvent;
 
 class RedeemJobTest extends TestCase
 {
@@ -57,7 +59,6 @@ class RedeemJobTest extends TestCase
         $this->assertFalse ($contact->hasRole('subscriber'));
         $this->assertTrue  ($contact->hasRole('spokesman'));
         $this->assertEquals($email, $contact->email);
-        $this->assertEquals(config('sms-relay.credits.initial.spokesman'), $contact->balance);//TODO test job test
     }
 
     /** @test */

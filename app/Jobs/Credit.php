@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Events\{SMSRelayEvents, SMSRelayEvent};
 
 class Credit implements ShouldQueue
 {
@@ -37,5 +38,7 @@ class Credit implements ShouldQueue
     public function handle()
     {
         $this->contact->increase($this->amount);
+
+        event(SMSRelayEvents::CREDITED, (new SMSRelayEvent($this->contact))->setAmount($this->amount));
     }
 }
