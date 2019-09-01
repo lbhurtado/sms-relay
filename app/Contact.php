@@ -9,6 +9,7 @@ use Spatie\Permission\Traits\HasRoles;
 use LBHurtado\EngageSpark\Traits\HasEngageSpark;
 use LBHurtado\Missive\Models\Contact as BaseContact;
 use App\Traits\{CanRedeemVouchers, CanSegregateHashtags};
+use Illuminatech\Balance\Facades\Balance;
 
 class Contact extends BaseContact
 {
@@ -98,5 +99,26 @@ class Contact extends BaseContact
         $mobiles = Arr::flatten($mobiles);
 
         return $query->whereNotIn('mobile', $mobiles);
+    }
+
+    public function increase(int $amount)
+    {
+        Balance::increase(
+            [
+                'contact_id' => $this->id,
+                'type' => 'sms-credits',
+            ],
+            $amount,
+            [
+                'org_id' => config('engagespark.org_id'),
+            ]
+        );
+
+        return $this;
+    }
+
+    public function getBalanceAttribute()
+    {
+        return Balance::calculateBalance($this->id);
     }
 }

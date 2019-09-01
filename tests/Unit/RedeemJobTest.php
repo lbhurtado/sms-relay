@@ -42,7 +42,7 @@ class RedeemJobTest extends TestCase
     }
 
     /** @test */
-    public function redeem_code_job_subscriber_becomes_spokesman_assumes_email_address()
+    public function redeem_code_job_subscriber_becomes_spokesman_assumes_email_address_gets_initial_credits()
     {
         /*** arrange ***/
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
@@ -57,6 +57,7 @@ class RedeemJobTest extends TestCase
         $this->assertFalse ($contact->hasRole('subscriber'));
         $this->assertTrue  ($contact->hasRole('spokesman'));
         $this->assertEquals($email, $contact->email);
+        $this->assertEquals(config('sms-relay.credits.initial.spokesman'), $contact->balance);//TODO test job test
     }
 
     /** @test */

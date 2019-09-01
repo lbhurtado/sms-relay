@@ -13,7 +13,7 @@ Backend software for DEC SMS Relay
 * Reply - [x]
 * Broadcast
     * All - [x]
-    * Tags
+    * Tags - [x] //Post
 * Setting - [x]
 * Airtime Charges - [x] 
 * Message Quotas

@@ -20,4 +20,9 @@ return [
         'forwarder'   => env('FORWARDER_VOUCHERS', 2),
     ],
     'signature' => env('SIGNATURE', 'SMS Relay'),
+    'credits' => [
+        'initial' => [
+            'spokesman' => env('SPOKESMAN_CREDIT', 10),
+        ],
+    ]
 ];

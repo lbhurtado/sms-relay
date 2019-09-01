@@ -2,14 +2,16 @@
 
 namespace App\Listeners;
 
+use App\Jobs\Credit;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Events\{SMSRelayEvent, SMSRelayEvents};
 use App\Notifications\{Redeemed, Listened, Relayed, Unlistened};
 
 class SMSRelayEventSubscriber implements ShouldQueue
 {
-    use InteractsWithQueue;
+    use InteractsWithQueue, DispatchesJobs;
 
     public function onSMSRelayListened(SMSRelayEvent $event)
     {
@@ -21,6 +23,7 @@ class SMSRelayEventSubscriber implements ShouldQueue
     public function onSMSRelayRedeemed(SMSRelayEvent $event)
     {
         tap($event->getContact(), function ($contact) use ($event) {
+            $this->dispatch(new Credit($contact, config('sms-relay.credits.initial.spokesman')));
             $contact->notify(new Redeemed($event->getVoucher()));
         });
     }
