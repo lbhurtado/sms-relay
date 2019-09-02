@@ -3,19 +3,23 @@
 namespace Tests\Unit;
 
 use Mockery;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Events\{SMSRelayEvent, SMSRelayEvents};
-use Illuminate\Support\Facades\Event;
 use App\Contact;
-use BeyondCode\Vouchers\Models\Voucher;
-use Illuminate\Support\Facades\Bus;
+use Tests\TestCase;
 use App\Jobs\Credit;
+use App\Events\SMSRelayEvent;
+use App\Notifications\Redeemed;
+use Illuminate\Support\Facades\Bus;
+use BeyondCode\Vouchers\Models\Voucher;
 use App\Listeners\SMSRelayEventSubscriber;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SMSRelayEventTest extends TestCase
 {
     use RefreshDatabase;
+
+    /** @var SMSRelayEvent */
+    protected $event;
 
     public function setUp(): void
     {
@@ -27,21 +31,33 @@ class SMSRelayEventTest extends TestCase
     }
 
     /** @test */
-    public function listener_works()
+    public function redeemed_event_dispatches_credit_job_and_redeemed_notification()
     {
         /*** arrange ***/
         Bus::fake();
-        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
-        $code = $this->getVoucherCode('spokesman');
-        $voucher = Voucher::whereCode($code)->first();
-
-        $this->event->shouldReceive('getContact')->once()->andReturn($contact);
-        $this->event->shouldReceive('getVoucher')->once()->andReturn($voucher);
+        Notification::fake();
+        $this->event->shouldReceive('getContact')->once()->andReturn($contact = $this->getContact());
+        $this->event->shouldReceive('getVoucher')->once()->andReturn($this->getVoucher());
 
         /*** act ***/
-        $listener = (new SMSRelayEventSubscriber)->onSMSRelayRedeemed($this->event);
+        (new SMSRelayEventSubscriber)->onSMSRelayRedeemed($this->event);
 
         /*** assert ***/
-        Bus::assertDispatched(Credit::class);
+        Bus::assertDispatched(Credit::class, function ($job) use ($contact) {
+            return $job->contact->is($contact) && config('sms-relay.credits.initial.spokesman') == $job->amount;
+        });
+        Notification::assertSentTo($contact, Redeemed::class);
+    }
+
+    protected function getContact()
+    {
+        return factory(Contact::class)->create(['mobile' => '09171234567']);
+    }
+
+    protected function getVoucher()
+    {
+        $code = $this->getVoucherCode('spokesman');
+
+        return Voucher::whereCode($code)->first();
     }
 }
