@@ -5,11 +5,9 @@ namespace Tests\Unit;
 use App\Contact;
 use Tests\TestCase;
 use App\Jobs\Redeem;
-use App\Notifications\Redeemed;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Events\SMSRelayEvents;
 use Illuminate\Support\Facades\Event;
-use App\Events\SMSRelayEvent;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RedeemJobTest extends TestCase
 {
@@ -24,10 +22,10 @@ class RedeemJobTest extends TestCase
     }
 
     /** @test */
-    public function redeem_code_job_subscriber_becomes_listener_assumes_email_address()
+    public function redeem_code_job_subscriber_becomes_listener_assumes_email_address_sends_redeem_event()
     {
         /*** arrange ***/
-        Notification::fake();
+        Event::fake();
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
         $code = $this->getVoucherCode('listener');
         $email = $this->faker->email;
@@ -40,13 +38,14 @@ class RedeemJobTest extends TestCase
         $this->assertFalse ($contact->hasRole('subscriber'));
         $this->assertTrue  ($contact->hasRole('listener'));
         $this->assertEquals($email, $contact->email);
-        Notification::assertSentTo($contact, Redeemed::class);//TODO fix this in the future
+        Event::assertDispatched(SMSRelayEvents::REDEEMED);
     }
 
     /** @test */
-    public function redeem_code_job_subscriber_becomes_spokesman_assumes_email_address_gets_initial_credits()
+    public function redeem_code_job_subscriber_becomes_spokesman_assumes_email_address_sends_redeem_event()
     {
         /*** arrange ***/
+        Event::fake();
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
         $code = $this->getVoucherCode('spokesman');
         $email = $this->faker->email;
@@ -59,12 +58,14 @@ class RedeemJobTest extends TestCase
         $this->assertFalse ($contact->hasRole('subscriber'));
         $this->assertTrue  ($contact->hasRole('spokesman'));
         $this->assertEquals($email, $contact->email);
+        Event::assertDispatched(SMSRelayEvents::REDEEMED);
     }
 
     /** @test */
-    public function redeem_code_job_subscriber_becomes_forwarder_assumes_email_address()
+    public function redeem_code_job_subscriber_becomes_forwarder_assumes_email_address_sends_redeem_event()
     {
         /*** arrange ***/
+        Event::fake();
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
         $code = $this->getVoucherCode('forwarder');
         $email = $this->faker->email;
@@ -77,12 +78,14 @@ class RedeemJobTest extends TestCase
         $this->assertFalse ($contact->hasRole('subscriber'));
         $this->assertTrue  ($contact->hasRole('forwarder'));
         $this->assertEquals($email, $contact->email);
+        Event::assertDispatched(SMSRelayEvents::REDEEMED);
     }
 
     /** @test */
     public function invalid_redeem_code_job_subscriber_becomes_nothing()
     {
         /*** arrange ***/
+        Event::fake();
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
         $code = $this->faker->word;
         $email = $this->faker->email;
@@ -93,5 +96,8 @@ class RedeemJobTest extends TestCase
         /*** act ***/
         $job = new Redeem($contact, $code, $email);
         $job->handle();
+
+        /*** assert ***/
+        Event::assertNotDispatched(SMSRelayEvents::REDEEMED);
     }
 }

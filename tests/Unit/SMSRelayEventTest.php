@@ -10,6 +10,7 @@ use App\Contact;
 use BeyondCode\Vouchers\Models\Voucher;
 use Illuminate\Support\Facades\Bus;
 use App\Jobs\Credit;
+use App\Listeners\SMSRelayEventSubscriber;
 
 class SMSRelayEventTest extends TestCase
 {
@@ -36,7 +37,8 @@ class SMSRelayEventTest extends TestCase
         $code = $this->getVoucherCode('spokesman');
 
         /*** act ***/
-        event(SMSRelayEvents::REDEEMED, (new SMSRelayEvent($contact))->setVoucher(Voucher::where('code', $code)->first()));
+        Event::listen(SMSRelayEvents::REDEEMED, SMSRelayEventSubscriber::class);
+//        event(SMSRelayEvents::REDEEMED, (new SMSRelayEvent($contact))->setVoucher(Voucher::where('code', $code)->first()));
 
         /*** assert ***/
         $this->assertTrue(true);
