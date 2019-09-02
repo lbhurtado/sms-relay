@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Events\{SMSRelayEvent, SMSRelayEvents};
 use App\Notifications\{Redeemed, Listened, Relayed, Unlistened, Credited};
 
-class SMSRelayEventSubscriber implements ShouldQueue
+class  SMSRelayEventSubscriber implements ShouldQueue
 {
     use InteractsWithQueue, DispatchesJobs;
 

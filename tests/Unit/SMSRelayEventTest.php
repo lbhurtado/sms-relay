@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Mockery;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Events\{SMSRelayEvent, SMSRelayEvents};
@@ -22,26 +23,25 @@ class SMSRelayEventTest extends TestCase
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
         $this->artisan('db:seed', ['--class' => 'VoucherSeeder']);
+        $this->event = Mockery::mock(SMSRelayEvent::class);
     }
 
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function testExample()
+    /** @test */
+    public function listener_works()
     {
         /*** arrange ***/
         Bus::fake();
-        $contact = factory(Contact::class)->create(['mobile' => '09171234567'])->setEmail($this->faker->email);
+        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
         $code = $this->getVoucherCode('spokesman');
+        $voucher = Voucher::whereCode($code)->first();
+
+        $this->event->shouldReceive('getContact')->once()->andReturn($contact);
+        $this->event->shouldReceive('getVoucher')->once()->andReturn($voucher);
 
         /*** act ***/
-        Event::listen(SMSRelayEvents::REDEEMED, SMSRelayEventSubscriber::class);
-//        event(SMSRelayEvents::REDEEMED, (new SMSRelayEvent($contact))->setVoucher(Voucher::where('code', $code)->first()));
+        $listener = (new SMSRelayEventSubscriber)->onSMSRelayRedeemed($this->event);
 
         /*** assert ***/
-        $this->assertTrue(true);
         Bus::assertDispatched(Credit::class);
     }
 }
