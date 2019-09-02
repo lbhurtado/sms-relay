@@ -12,10 +12,16 @@ class AirtimeSeeder extends Seeder
      */
     public function run()
     {
-        Airtime::create([ 'key' => 'incoming-sms',  'credits' =>    0.005   ]);
-        Airtime::create([ 'key' => 'outgoing-sms',  'credits' =>    0.02    ]);
-        Airtime::create([ 'key' => 'lbs',           'credits' =>    0.05    ]);
-        Airtime::create([ 'key' => 'load-10',       'credits' =>    0.27    ]);
-        Airtime::create([ 'key' => 'load-25',       'credits' =>    0.61    ]);
+//        Airtime::create([ 'key' => 'incoming-sms',  'credits' =>    0.005   ]);
+//        Airtime::create([ 'key' => 'outgoing-sms',  'credits' =>    0.02    ]);
+//        Airtime::create([ 'key' => 'lbs',           'credits' =>    0.05    ]);
+//        Airtime::create([ 'key' => 'load-10',       'credits' =>    0.27    ]);
+//        Airtime::create([ 'key' => 'load-25',       'credits' =>    0.61    ]);
+
+        Airtime::create([ 'key' => 'incoming-sms',  'credits' =>    0.25    ]);
+        Airtime::create([ 'key' => 'outgoing-sms',  'credits' =>    1.00    ]);
+        Airtime::create([ 'key' => 'lbs',           'credits' =>    2.50    ]);
+        Airtime::create([ 'key' => 'load-10',       'credits' =>   10.00    ]);
+        Airtime::create([ 'key' => 'load-25',       'credits' =>   25.00    ]);
     }
 }

@@ -25,3 +25,4 @@ Backend software for DEC SMS Relay
 * On-demand Info
     * statistics
     * organization
+* Multi-Organization

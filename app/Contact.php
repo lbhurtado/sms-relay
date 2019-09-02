@@ -119,6 +119,15 @@ class Contact extends BaseContact
 
     public function getBalanceAttribute()
     {
-        return Balance::calculateBalance($this->id);
+        $contact_id = $this->id;
+
+        return Balance::calculateBalance(compact('contact_id'));
+    }
+
+    public function getUsageAttribute()
+    {
+        return $this->airtimes->sum(function ($airtime) {
+            return $airtime->credits * $airtime->pivot->qty;
+        });
     }
 }

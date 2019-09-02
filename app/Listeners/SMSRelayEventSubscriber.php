@@ -65,7 +65,7 @@ class SMSRelayEventSubscriber implements ShouldQueue
             SMSRelayEvents::RELAYED,
             SMSRelayEventSubscriber::class.'@onSMSRelayRelayed'
         );
-        
+
         $events->listen(
             SMSRelayEvents::UNLISTENED,
             SMSRelayEventSubscriber::class.'@onSMSRelayUnlistened'
