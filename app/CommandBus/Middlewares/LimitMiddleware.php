@@ -3,6 +3,7 @@
 namespace App\CommandBus\Middlewares;
 
 use League\Tactician\Middleware;
+use App\Exceptions\NotEnoughCredits;
 
 class LimitMiddleware implements Middleware
 {
@@ -11,8 +12,9 @@ class LimitMiddleware implements Middleware
         $usage = $command->origin->usage;
         $balance = $command->origin->balance;
 
-        if (! $usage > $balance)
-            throw new \Exception("Balance of {$balance} is less than the usage {$usage}.");
+        if ($usage > $balance){
+            throw new NotEnoughCredits("Balance of {$balance} is less than the usage {$usage}.");
+        }
 
         $next($command);
     }

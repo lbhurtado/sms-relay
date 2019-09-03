@@ -16,7 +16,7 @@ Backend software for DEC SMS Relay
     * Tags - [x] //Post
 * Setting - [x]
 * Airtime Charges - [x] 
-* Message Quotas
+* Message Quotas for Spokesman - [x]
 * Support Tickets
 * Email the Vouchers for distribution
 * Online/Offline Modes
