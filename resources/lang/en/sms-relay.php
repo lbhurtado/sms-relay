@@ -15,4 +15,5 @@ return [
     'unlisten' => "Unlistened: :handle, :message - \n:signature",
     'post' => "Posted: :handle, :message - \n:signature",
     'credit' => "Credited: :handle, :message - \n:signature",
+    'voucher' => "Vouchers::message - \n:signature",
 ];
