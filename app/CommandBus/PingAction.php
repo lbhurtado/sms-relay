@@ -5,7 +5,6 @@ namespace App\CommandBus;
 use App\Contact;
 use App\CommandBus\Commands\PingCommand;
 use App\CommandBus\Handlers\PingHandler;
-use App\CommandBus\Middlewares\LogMiddleware;
 
 class PingAction extends BaseAction
 {
