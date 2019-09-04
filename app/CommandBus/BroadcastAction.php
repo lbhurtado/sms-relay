@@ -4,6 +4,7 @@ namespace App\CommandBus;
 
 use App\CommandBus\Commands\BroadcastCommand;
 use App\CommandBus\Handlers\BroadcastHandler;
+use App\CommandBus\Middlewares\LimitMiddleware;
 
 class BroadcastAction extends BaseAction
 {
@@ -11,7 +12,7 @@ class BroadcastAction extends BaseAction
 
     public function __invoke(string $path, array $values)
     {
-//        $this->addMiddleWare(LimitMiddleware::class);
+        $this->addMiddleWare(LimitMiddleware::class);
 
         optional($this->permittedContact(), function($origin) use ($values) {
             $this->broadcastMessage(array_merge($values, compact('origin')));

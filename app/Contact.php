@@ -120,8 +120,9 @@ class Contact extends BaseContact
     public function getBalanceAttribute()
     {
         $contact_id = $this->id;
+        $type = 'sms-credits';
 
-        return Balance::calculateBalance(compact('contact_id'));
+        return Balance::calculateBalance(compact('contact_id', 'type'));
     }
 
     public function getUsageAttribute()

@@ -3,7 +3,6 @@
 namespace App\CommandBus;
 
 use LBHurtado\Missive\Routing\Router;
-use App\CommandBus\Middlewares\LimitMiddleware;
 use LBHurtado\Missive\Repositories\ContactRepository;
 use Joselfonseca\LaravelTactician\CommandBusInterface;
 
@@ -25,7 +24,6 @@ abstract class BaseAction
         $this->contacts = $contacts;
         $this->bus = app(CommandBusInterface::class);
         $this->addBusHandlers();
-        $this->addMiddleWare(LimitMiddleware::class);
     }
 
     abstract protected function addBusHandlers();
@@ -48,5 +46,12 @@ abstract class BaseAction
             array_push($this->middlewares, $middleware);
 
         return $this;
+    }
+
+    protected function addOrigin(array $data)
+    {
+        $origin = $this->permittedContact();
+
+        return array_merge($data, compact('origin'));
     }
 }

@@ -26,6 +26,7 @@ class BroadcastActionTest extends TestCase
     {
         parent::setUp();
 
+        $this->artisan('db:seed', ['--class' => 'AirtimeSeeder']);
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
         $this->createSubscribers($this->count = 2);
     }

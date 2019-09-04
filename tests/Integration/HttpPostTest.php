@@ -14,6 +14,7 @@ class HttpPostTest extends TestCase
     {
         parent::setUp();
 
+        $this->artisan('db:seed', ['--class' => 'AirtimeSeeder']);
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
         $this->artisan('db:seed', ['--class' => 'SettingSeeder']);
         $this->artisan('db:seed', ['--class' => 'ContactSeeder']);
