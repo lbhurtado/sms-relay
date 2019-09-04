@@ -12,6 +12,7 @@ class LimitMiddleware implements Middleware
         $usage = $command->origin->usage;
         $balance = $command->origin->balance;
 
+        //TODO get projected usage instead
         if ($usage > $balance){
             throw new NotEnoughCredits("Balance of {$balance} is less than the usage {$usage}.");
         }
