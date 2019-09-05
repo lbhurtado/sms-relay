@@ -15,10 +15,14 @@ Backend software for DEC SMS Relay
     * All - [x]
     * Tags - [x] //Post
 * Setting - [x]
-* Airtime Charges - [x] 
+* Airtime Charges - [x]
 * Message Quotas for Spokesman - [x]
 * Support Tickets
-* Email the Vouchers for distribution
+	* Open Ticket
+	* Update Ticket
+	* Follow-up Ticket
+	* Close Ticket
+* Retrieve Vouchers via SMS for distribution - [x]
 * Online/Offline Modes
 * Template-based Messages
 * Queued Messages
