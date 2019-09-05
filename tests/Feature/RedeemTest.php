@@ -4,10 +4,9 @@ namespace Tests\Feature;
 
 use Mockery;
 use Tests\TestCase;
+use App\CommandBus\RedeemAction;
 use LBHurtado\Missive\Routing\Router;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
-use App\CommandBus\RedeemAction;
 
 class RedeemTest extends TestCase
 {
