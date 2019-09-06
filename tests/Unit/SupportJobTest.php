@@ -31,7 +31,7 @@ class SupportJobTest extends TestCase
 
         /*** assert ***/
         $ticket = Ticketing::first();
-        $array = Ticketing::getHasher()->decode($ticket->ticket_id);
+        $array = Ticketing::hashids()->decode($ticket->ticket_id);
         $this->assertEquals($array[0], $ticket->id);
         $this->assertEquals($array[1], $contact->id);
     }

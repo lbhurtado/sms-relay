@@ -11,11 +11,10 @@ class TicketObserver
      * Handle the ticket "created" event.
      *
      * @param Ticket $ticket
-     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
     public function created(Ticket $ticket)
     {
-        $ticket->assignTicketId()->setStatus('open', 'initial');
+        $ticket->generateHashIds();
     }
 
     /**

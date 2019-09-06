@@ -37,6 +37,6 @@ class Support implements ShouldQueue
      */
     public function handle()
     {
-        Ticket::generate($this->contact, $this->message);
+        Ticket::open($this->contact, $this->message);
     }
 }
