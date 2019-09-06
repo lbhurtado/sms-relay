@@ -3,16 +3,15 @@
 namespace App;
 
 use Hashids\Hashids;
+use Spatie\ModelStatus\HasStatuses;
 use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
 {
-    protected $fillable = [
-        'title', 'message', 'status'
-    ];
+    use HasStatuses;
 
-    protected $attributes = [
-       'status' => 'open',
+    protected $fillable = [
+        'title', 'message'
     ];
 
     public static function generate(Contact $contact, string $title, string $message)
@@ -33,7 +32,7 @@ class Ticket extends Model
     		$ticket_id = $hashids->encode($this->id, $this->contact->id);
     		static::unguard();
     		$this->update(compact('ticket_id'));
-    		static::reguard(); 	
+    		static::reguard();
     	 });
 
     	return $this;

@@ -18,7 +18,7 @@ Backend software for DEC SMS Relay
 * Airtime Charges - [x]
 * Message Quotas for Spokesman - [x]
 * Support Tickets
-	* Open Ticket
+	* Open Ticket- [x]
 	* Update Ticket
 	* Follow-up Ticket
 	* Close Ticket

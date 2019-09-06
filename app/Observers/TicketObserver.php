@@ -6,15 +6,16 @@ use App\Ticket;
 
 class TicketObserver
 {
+
     /**
      * Handle the ticket "created" event.
      *
-     * @param  \App\Ticket  $ticket
-     * @return void
+     * @param Ticket $ticket
+     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
      */
     public function created(Ticket $ticket)
     {
-        $ticket->assignTicketId();
+        $ticket->assignTicketId()->setStatus('open', 'initial');
     }
 
     /**

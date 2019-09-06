@@ -19,7 +19,7 @@ class TicketJobTest extends TestCase
     }
 
     /** @test */
-    public function ticket_job_subscriber_gets_a_ticket()
+    public function ticket_job_generates_a_ticket()
     {
         /*** arrange ***/
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
@@ -32,12 +32,8 @@ class TicketJobTest extends TestCase
 
         /*** assert ***/
         $ticket = Ticketing::first();
-        $this->assertTrue($ticket->contact->is($contact));
-        $this->assertEquals($message, $ticket->message);
-        $this->assertEquals($title, $ticket->title);
-        $this->assertEquals($message, $ticket->message);
-        tap(Ticketing::getHasher()->encode($ticket->id, $ticket->contact->id), function ($ticket_id) use ($ticket) {
-            $this->assertEquals($ticket_id, $ticket->ticket_id);
-        });
+        $array = Ticketing::getHasher()->decode($ticket->ticket_id);
+        $this->assertEquals($array[0], $ticket->id);
+        $this->assertEquals($array[1], $contact->id);
     }
 }
