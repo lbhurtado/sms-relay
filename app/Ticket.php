@@ -11,12 +11,12 @@ class Ticket extends Model
     use HasStatuses;
 
     protected $fillable = [
-        'title', 'message'
+        'message'
     ];
 
-    public static function generate(Contact $contact, string $title, string $message)
+    public static function generate(Contact $contact, string $message)
     {
-    	return tap(static::make(compact('title', 'message'))
+    	return tap(static::make(compact( 'message'))
     		->contact()->associate($contact)
     	)->save();
     }

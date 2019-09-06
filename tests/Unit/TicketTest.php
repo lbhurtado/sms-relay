@@ -22,16 +22,14 @@ class TicketTest extends TestCase
     {
         /*** arrange ***/
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
-        $title = $this->faker->title;
         $message = $this->faker->sentence;
 
         /*** act ***/
-        $ticket = Ticket::generate($contact, $title, $message);
+        $ticket = Ticket::generate($contact, $message);
 
         /*** assert ***/
         $this->assertTrue($ticket->contact->is($contact));
         $this->assertEquals($message, $ticket->message);
-        $this->assertEquals($title, $ticket->title);
         $this->assertEquals($message, $ticket->message);
         tap(Ticket::getHasher()->encode($ticket->id, $ticket->contact->id), function ($ticket_id) use ($ticket) {
             $this->assertEquals($ticket_id, $ticket->ticket_id);

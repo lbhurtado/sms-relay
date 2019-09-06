@@ -4,15 +4,15 @@ namespace Tests\Integration;
 
 use App\Contact;
 use Tests\TestCase;
-use App\Jobs\Ticket;
+use App\Jobs\Support;
 use LBHurtado\Missive\Missive;
-use App\CommandBus\TicketAction;
+use App\CommandBus\SupportAction;
 use LBHurtado\Missive\Models\SMS;
 use Illuminate\Support\Facades\Bus;
 use LBHurtado\Missive\Routing\Router;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TicketActionTest extends TestCase
+class SupportActionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -29,15 +29,14 @@ class TicketActionTest extends TestCase
         /*** arrange ***/
         Bus::fake();
         $sms = $this->prepareToRedeemAs('subscriber');
-        $title = $this->faker->title;
         $message = $this->faker->sentence;
 
         /*** act ***/
-        app(TicketAction::class)->__invoke('', compact('title', 'message'));
+        app(SupportAction::class)->__invoke('', compact('title', 'message'));
 
         /*** assert ***/
-        Bus::assertDispatched(Ticket::class, function ($job) use ($sms, $title, $message) {
-            return $job->contact === $sms->origin && $job->title == $title && $job->message == $message;
+        Bus::assertDispatched(Support::class, function ($job) use ($sms, $message) {
+            return $job->contact === $sms->origin && $job->message == $message;
         });
     }
 

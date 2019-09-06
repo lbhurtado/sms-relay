@@ -2,14 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Ticket as Ticketing;
+use App\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class Ticket implements ShouldQueue
+class Support implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -17,21 +17,16 @@ class Ticket implements ShouldQueue
     public $contact;
 
     /** @var string */
-    public $title;
-
-    /** @var string */
     public $message;
 
     /**
      * RedeemCode constructor.
      * @param \App\Contact $contact
-     * @param string $title
      * @param string $message
      */
-    public function __construct(\App\Contact $contact, string $title, string $message)
+    public function __construct(\App\Contact $contact, string $message)
     {
         $this->contact = $contact;
-        $this->title = $title;
         $this->message = $message;
     }
 
@@ -42,6 +37,6 @@ class Ticket implements ShouldQueue
      */
     public function handle()
     {
-        Ticketing::generate($this->contact, $this->title, $this->message);
+        Ticket::generate($this->contact, $this->message);
     }
 }

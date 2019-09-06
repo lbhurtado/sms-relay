@@ -17,7 +17,6 @@ class CreateTicketsTable extends Migration
             $table->increments('id');
             $table->integer('contact_id')->unsigned();
             $table->string('ticket_id')->unique()->nullable();
-            $table->string('title');
             $table->text('message');
             $table->timestamps();
             $table->foreign('contact_id')->references('id')->on('contacts')->onDelete('restrict');

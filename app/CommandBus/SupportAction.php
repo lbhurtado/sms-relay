@@ -2,10 +2,10 @@
 
 namespace App\CommandBus;
 
-use App\CommandBus\Commands\TicketCommand;
-use App\CommandBus\Handlers\TicketHandler;
+use App\CommandBus\Commands\SupportCommand;
+use App\CommandBus\Handlers\SupportHandler;
 
-class TicketAction extends BaseAction
+class SupportAction extends BaseAction
 {
     protected $permission = 'send message';
 
@@ -20,11 +20,11 @@ class TicketAction extends BaseAction
 
     protected function generateTicket(array $data)
     {
-        $this->bus->dispatch(TicketCommand::class, $data, $this->getMiddlewares());
+        $this->bus->dispatch(SupportCommand::class, $data, $this->getMiddlewares());
     }
 
     protected function addBusHandlers()
     {
-        $this->bus->addHandler(TicketCommand::class, TicketHandler::class);
+        $this->bus->addHandler(SupportCommand::class, SupportHandler::class);
     }
 }

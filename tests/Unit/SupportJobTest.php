@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Jobs\Ticket;
+use App\Jobs\Support;
 use App\{Contact, Ticket as Ticketing};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TicketJobTest extends TestCase
+class SupportJobTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -23,11 +23,10 @@ class TicketJobTest extends TestCase
     {
         /*** arrange ***/
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
-        $title = $this->faker->title;
         $message = $this->faker->sentence;
 
         /*** act ***/
-        $job = new Ticket($contact, $title, $message);
+        $job = new Support($contact, $message);
         $job->handle();
 
         /*** assert ***/

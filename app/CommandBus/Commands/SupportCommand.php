@@ -4,28 +4,23 @@ namespace App\CommandBus\Commands;
 
 use App\Contact;
 
-class TicketCommand extends BaseCommand
+class SupportCommand extends BaseCommand
 {
     /** @var Contact */
     public $origin;
 
     /** @var string */
-    public $title;
-
-    /** @var string */
     public $message;
 
     /**
-     * BroadcastCommand constructor.
+     * SupportCommand constructor.
      *
      * @param Contact $origin
-     * @param string title
      * @param string $message
      */
-    public function __construct(Contact $origin, string $title, string $message)
+    public function __construct(Contact $origin, string $message)
     {
         $this->origin = $origin;
-        $this->title = $title;
         $this->message = $message;
     }
 }
