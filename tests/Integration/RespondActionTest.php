@@ -2,17 +2,18 @@
 
 namespace Tests\Integration;
 
-use App\Contact;
+
 use Tests\TestCase;
-use App\Jobs\Support;
+use App\Jobs\Respond;
+use App\{Contact, Ticket};
 use LBHurtado\Missive\Missive;
-use App\CommandBus\SupportAction;
+use App\CommandBus\RespondAction;
 use LBHurtado\Missive\Models\SMS;
 use Illuminate\Support\Facades\Bus;
 use LBHurtado\Missive\Routing\Router;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class SupportActionTest extends TestCase
+class RespondActionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,23 +25,26 @@ class SupportActionTest extends TestCase
     }
 
     /** @test */
-    public function subscriber_support_action_dispatches_ticket_job()
+    public function listener_respond_action_dispatches_response_job()
     {
         /*** arrange ***/
         Bus::fake();
-        $sms = $this->prepareToRedeemAs('subscriber');
+        $sms = $this->prepareToRespondAs('listener');
+        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
         $message = $this->faker->sentence;
+        $ticket = Ticket::open($contact, $message);
+        $ticket_id = $ticket->ticket_id;
 
         /*** act ***/
-        app(SupportAction::class)->__invoke('', compact('title', 'message'));
+        app(RespondAction::class)->__invoke('', compact('ticket_id', 'message'));
 
         /*** assert ***/
-        Bus::assertDispatched(Support::class, function ($job) use ($sms, $message) {
-            return $job->contact === $sms->origin && $job->message == $message;
+        Bus::assertDispatched(Respond::class, function ($job) use ($sms, $ticket_id, $message) {
+            return $job->contact === $sms->origin && $job->ticket_id == $ticket_id && $job->message == $message;
         });
     }
 
-    protected function prepareToRedeemAs(string $role): \LBHurtado\Missive\Models\SMS
+    protected function prepareToRespondAs(string $role): \LBHurtado\Missive\Models\SMS
     {
         $from = '+639191234567';
         $sms = factory(SMS::class)->create(compact('from'));

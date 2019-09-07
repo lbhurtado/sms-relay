@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Ticket;
+use App\Contact;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -17,6 +18,9 @@ class TicketEvent
 
     /** @var Ticket */
     protected $ticket;
+
+    /** @var Contact */
+    protected $responder;
 
     /**
      * TicketEvent constructor.
@@ -45,4 +49,24 @@ class TicketEvent
 
         return $this;
     }
+
+    /**
+     * @return Contact
+     */
+    public function getResponder(): Contact
+    {
+        return $this->responder;
+    }
+
+    /**
+     * @param Contact $responder
+     * @return TicketEvent
+     */
+    public function setResponder(Contact $responder): self
+    {
+        $this->responder = $responder;
+
+        return $this;
+    }
+
 }

@@ -14,6 +14,7 @@ class ListenCommand extends BaseCommand
 
     /**
      * ListenCommand constructor.
+     *
      * @param Contact $origin
      * @param string $tags i.e. space delimited e.g. word1 word2 word3
      */

@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Jobs;
 
 use Tests\TestCase;
 use App\Jobs\Support;
-use App\{Contact, Ticket as Ticketing};
+use App\{Contact, Ticket};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SupportJobTest extends TestCase
@@ -19,7 +19,7 @@ class SupportJobTest extends TestCase
     }
 
     /** @test */
-    public function ticket_job_generates_a_ticket()
+    public function support_job_generates_a_ticket()
     {
         /*** arrange ***/
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
@@ -30,8 +30,8 @@ class SupportJobTest extends TestCase
         $job->handle();
 
         /*** assert ***/
-        $ticket = Ticketing::first();
-        $array = Ticketing::hashids()->decode($ticket->ticket_id);
+        $ticket = Ticket::first();
+        $array = Ticket::hashids()->decode($ticket->ticket_id);
         $this->assertEquals($array[0], $ticket->id);
         $this->assertEquals($array[1], $contact->id);
     }
