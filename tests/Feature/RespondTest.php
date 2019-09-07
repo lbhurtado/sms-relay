@@ -30,7 +30,7 @@ class RespondTest extends TestCase
 
         $this->router = app(Router::class);
         $this->action = Mockery::mock(RespondAction::class);
-        $this->router->register("{$this->keyword} {ticket_id} {message}", $this->action);
+        $this->router->register("{$this->keyword} {ticket_id=\w+} {message}", $this->action);
     }
 
     /** @test */
