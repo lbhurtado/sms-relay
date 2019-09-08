@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Mockery;
 use Tests\TestCase;
-use App\CommandBus\SupportAction;
+use App\CommandBus\ApproachAction;
 use LBHurtado\Missive\Routing\Router;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -25,7 +25,7 @@ class SupportTest extends TestCase
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
 
         $this->router = app(Router::class);
-        $this->action = Mockery::mock(SupportAction::class);
+        $this->action = Mockery::mock(ApproachAction::class);
         $this->router->register("{$this->keyword} {message}", $this->action);
     }
 

@@ -4,9 +4,9 @@ namespace Tests\Integration;
 
 use App\Contact;
 use Tests\TestCase;
-use App\Jobs\Support;
+use App\Jobs\Approach;
 use LBHurtado\Missive\Missive;
-use App\CommandBus\SupportAction;
+use App\CommandBus\ApproachAction;
 use LBHurtado\Missive\Models\SMS;
 use Illuminate\Support\Facades\Bus;
 use LBHurtado\Missive\Routing\Router;
@@ -32,11 +32,11 @@ class SupportActionTest extends TestCase
         $message = $this->faker->sentence;
 
         /*** act ***/
-        app(SupportAction::class)->__invoke('', compact('title', 'message'));
+        app(ApproachAction::class)->__invoke('', compact('title', 'message'));
 
         /*** assert ***/
-        Bus::assertDispatched(Support::class, function ($job) use ($sms, $message) {
-            return $job->contact === $sms->origin && $job->message == $message;
+        Bus::assertDispatched(Approach::class, function ($job) use ($sms, $message) {
+            return $job->origin === $sms->origin && $job->message == $message;
         });
     }
 

@@ -2,66 +2,60 @@
 
 namespace App;
 
-use Hashids\Hashids;
-use Illuminate\Support\Arr;
+use App\Traits\HasHashes;
+use App\Classes\SupportStage;
 use Spatie\ModelStatus\HasStatuses;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\{TicketEvents, TicketEvent};
 
+
 class Ticket extends Model
 {
-    use HasStatuses;
+    use HasStatuses, HasHashes;
+
+    //TODO - create duplicate middleware
 
     protected $fillable = [
         'message'
     ];
 
-    public static function open(Contact $contact, string $message)
+    public static function open(Contact $origin, string $message)
     {
-    	$ticket = tap(static::make(compact( 'message'))->contact()->associate($contact))
-            ->save()
-            ->setStatus('open', 'initial')
-        ;
-
-        event(TicketEvents::OPENED, new TicketEvent($ticket));
-
-        return $ticket;
+    	return self::fromScratch($origin, $message)->setStage(SupportStage::OPENED());
     }
 
-    public static function respond(Contact $contact, string $ticket_id, string $message)
+    public function endorse()
     {
-        $id = Arr::get(static::hashids()->decode($ticket_id), 0);
-        $ticket = static::findOrFail($id);
-        $ticket->setStatus('update', $message);
-
-        event(TicketEvents::UPDATED, (new TicketEvent($ticket))->setResponder($contact));
-
-        return $ticket;
+        return $this->setStage(SupportStage::ENDORSED());
     }
 
-    public static function hashids()
+    public function approach()
     {
-    	return new Hashids('', 4, config('vouchers.characters'));
+        return $this->setStage(SupportStage::PENDING());
     }
 
-    public function generateHashIds()
+    public function respond(Contact $responder, string $message)
     {
-    	 tap(static::hashids(), function ($hashids) {
-    		$ticket_id = $hashids->encode($this->getCompositeKeys());
-    		static::unguard();
-    		$this->update(compact('ticket_id'));
-    		static::reguard();
-    	 });
-
-    	return $this;
+        return $this->setStage(SupportStage::HANDLED(), $responder, $message);
     }
 
-    protected function getCompositeKeys()
+    public function setStage(SupportStage $stage, Contact $responder = null, string $message = null)
     {
-        return [
-            $this->id,
-            $this->contact->id
-        ];
+        $this->setStatus($stage);
+
+        switch ($stage) {
+            case SupportStage::OPENED:
+                event(TicketEvents::OPENED, new TicketEvent($this));
+                break;
+            case SupportStage::ENDORSED:
+                event(TicketEvents::ENDORSED, new TicketEvent($this));
+                break;
+            case SupportStage::HANDLED:
+                event(TicketEvents::UPDATED, (new TicketEvent($this))->setResponder($responder)->setMessage($message));
+                break;
+        }
+
+        return $this;
     }
 
     public function contact()

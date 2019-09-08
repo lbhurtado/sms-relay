@@ -14,7 +14,7 @@ class Respond implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /** @var \App\Contact */
-    public $contact;
+    public $origin;
 
     /** @var string */
     public $ticket_id;
@@ -23,14 +23,14 @@ class Respond implements ShouldQueue
     public $message;
 
     /**
-     * RedeemCode constructor.
-     * @param Contact $contact
+     * Respond constructor.
+     * @param Contact $origin
      * @param string $ticket_id
      * @param string $message
      */
-    public function __construct(Contact $contact, string $ticket_id, string $message)
+    public function __construct(Contact $origin, string $ticket_id, string $message)
     {
-        $this->contact = $contact;
+        $this->origin = $origin;
         $this->ticket_id = $ticket_id;
         $this->message = $message;
     }
@@ -42,6 +42,6 @@ class Respond implements ShouldQueue
      */
     public function handle()
     {
-        Ticket::respond($this->contact, $this->ticket_id, $this->message);
+        Ticket::fromHash($this->ticket_id)->respond($this->origin, $this->message);
     }
 }

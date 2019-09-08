@@ -4,7 +4,9 @@ namespace Tests\Unit\Jobs;
 
 use Tests\TestCase;
 use App\Jobs\Respond;
-use App\{Contact, Ticket};
+use App\{
+    Classes\SupportStage, Contact, Ticket
+};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RespondJobTest extends TestCase
@@ -31,6 +33,6 @@ class RespondJobTest extends TestCase
         $job->handle();
 
         /*** assert ***/
-        $this->assertEquals($message, $ticket->latestStatus('update')->reason );
+        $this->assertEquals(SupportStage::HANDLED, $ticket->status );
     }
 }

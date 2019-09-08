@@ -4,7 +4,7 @@ namespace App\CommandBus\Commands;
 
 use App\Contact;
 
-class SupportCommand extends BaseCommand
+class ApproachCommand extends BaseCommand
 {
     /** @var Contact */
     public $origin;
@@ -13,7 +13,7 @@ class SupportCommand extends BaseCommand
     public $message;
 
     /**
-     * SupportCommand constructor.
+     * ApproachCommand constructor.
      *
      * @param Contact $origin
      * @param string $message

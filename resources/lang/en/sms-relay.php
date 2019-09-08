@@ -17,6 +17,7 @@ return [
     'credit' => "Credited: :handle, :message - \n:signature",
     'voucher' => "Vouchers::message - \n:signature",
     'support' => "Supported::message - \n:signature",
+    'endorse' => "Endorsed::message - \n:signature",
     'update' => "Updated::message - \n:signature",
     'respond' => "Responded::message - \n:signature",
 

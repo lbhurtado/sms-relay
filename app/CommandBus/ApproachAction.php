@@ -2,10 +2,10 @@
 
 namespace App\CommandBus;
 
-use App\CommandBus\Commands\SupportCommand;
-use App\CommandBus\Handlers\SupportHandler;
+use App\CommandBus\Commands\ApproachCommand;
+use App\CommandBus\Handlers\ApproachHandler;
 
-class SupportAction extends BaseAction
+class ApproachAction extends BaseAction
 {
     protected $permission = 'send message';
 
@@ -20,11 +20,11 @@ class SupportAction extends BaseAction
 
     protected function generateTicket(array $data)
     {
-        $this->bus->dispatch(SupportCommand::class, $data, $this->getMiddlewares());
+        $this->bus->dispatch(ApproachCommand::class, $data, $this->getMiddlewares());
     }
 
     protected function addBusHandlers()
     {
-        $this->bus->addHandler(SupportCommand::class, SupportHandler::class);
+        $this->bus->addHandler(ApproachCommand::class, ApproachHandler::class);
     }
 }

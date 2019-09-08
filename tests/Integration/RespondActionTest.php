@@ -40,7 +40,7 @@ class RespondActionTest extends TestCase
 
         /*** assert ***/
         Bus::assertDispatched(Respond::class, function ($job) use ($sms, $ticket_id, $message) {
-            return $job->contact === $sms->origin && $job->ticket_id == $ticket_id && $job->message == $message;
+            return $job->origin === $sms->origin && $job->ticket_id == $ticket_id && $job->message == $message;
         });
     }
 

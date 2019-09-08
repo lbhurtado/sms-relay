@@ -3,7 +3,7 @@
 namespace Tests\Unit\Jobs;
 
 use Tests\TestCase;
-use App\Jobs\Support;
+use App\Jobs\Approach;
 use App\{Contact, Ticket};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -26,7 +26,7 @@ class SupportJobTest extends TestCase
         $message = $this->faker->sentence;
 
         /*** act ***/
-        $job = new Support($contact, $message);
+        $job = new Approach($contact, $message);
         $job->handle();
 
         /*** assert ***/

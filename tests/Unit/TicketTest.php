@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\{Contact, Ticket};
 use App\Events\TicketEvents;
+use App\Classes\SupportStage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -20,7 +21,7 @@ class TicketTest extends TestCase
     }
 
     /** @test */
-    public function ticket_needs_contact_title_message_generates_ticket_id_with_initial_open_status()
+    public function ticket_needs_contact_title_message_generates_ticket_id_with_initial_pending_status()
     {
         /*** arrange ***/
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
@@ -36,11 +37,26 @@ class TicketTest extends TestCase
         tap(Ticket::hashids()->encode($ticket->id, $ticket->contact->id), function ($ticket_id) use ($ticket) {
             $this->assertEquals($ticket_id, $ticket->ticket_id);
         });
-        $this->assertEquals('open', $ticket->status);
+        $this->assertEquals(SupportStage::PENDING, $ticket->status);
     }
 
     /** @test */
-    public function generates_ticket_emits_ticketevent_open()
+    public function generated_ticket_emits_ticket_event_open()
+    {
+        /*** arrange ***/
+        Event::fake();
+        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
+        $message = $this->faker->sentence;
+
+        /*** act ***/
+        $ticket = Ticket::open($contact, $message);
+
+        /*** assert ***/
+        Event::assertDispatched(TicketEvents::OPENED);
+    }
+
+    /** @test */
+    public function ticket_must_be_closed_in_order_to_open_a_new_one()
     {
         /*** arrange ***/
         Event::fake();

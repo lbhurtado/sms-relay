@@ -1,12 +1,12 @@
 <?php
 
-use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemAction, ListenAction, UnlistenAction, PostAction, VoucherAction, SupportAction, RespondAction};
+use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemAction, ListenAction, UnlistenAction, PostAction, VoucherAction, ApproachAction, RespondAction};
 
 $router = resolve('missive:router'); extract(redeem_regex());
 
 $router->register('{message}', RelayAction::class);
 
-$router->register("{message=(.*)\?}", SupportAction::class);
+$router->register("{message=(.*)\?}", ApproachAction::class);
 
 $router->register('BROADCAST {message}', BroadcastAction::class);
 
@@ -20,6 +20,6 @@ $router->register('UNLISTEN {tags}', UnlistenAction::class);
 
 $router->register("VOUCHER {pin}", VoucherAction::class);
 
-$router->register("RESPOND {ticket_id=\w+} {message}", RespondAction::class);
+$router->register("@{ticket_id=\w{4}} {message}", RespondAction::class);
 
 $router->register("{code={$regex_code}} {email={$regex_email}}", RedeemAction::class);

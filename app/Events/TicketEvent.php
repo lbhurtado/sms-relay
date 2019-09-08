@@ -22,6 +22,12 @@ class TicketEvent
     /** @var Contact */
     protected $responder;
 
+    /** @var string */
+    protected $ticket_id;
+
+    /** @var string */
+    protected $message;
+
     /**
      * TicketEvent constructor.
      * @param Ticket $ticket
@@ -53,6 +59,14 @@ class TicketEvent
     /**
      * @return Contact
      */
+    public function getOrigin(): Contact
+    {
+        return $this->getTicket()->contact;
+    }
+
+    /**
+     * @return Contact
+     */
     public function getResponder(): Contact
     {
         return $this->responder;
@@ -69,4 +83,41 @@ class TicketEvent
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getTicketId(): string
+    {
+        return $this->ticket_id;
+    }
+
+    /**
+     * @param string $ticket_id
+     * @return TicketEvent
+     */
+    public function setTicketId(string $ticket_id): self
+    {
+        $this->ticket_id = $ticket_id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param string $message
+     * @return TicketEvent
+     */
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
+
+        return $this;
+    }
 }
