@@ -15,10 +15,10 @@ class ApproachAction extends BaseAction
 
         $data = array_merge($values, compact('origin'));
 
-        $this->generateTicket($data);
+        $this->approach($data);
     }
 
-    protected function generateTicket(array $data)
+    protected function approach(array $data)
     {
         $this->bus->dispatch(ApproachCommand::class, $data, $this->getMiddlewares());
     }

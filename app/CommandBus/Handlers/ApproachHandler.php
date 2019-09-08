@@ -15,6 +15,6 @@ class ApproachHandler
      */
     public function handle(ApproachCommand $command)
     {
-        $this->dispatch(new Approach($command->origin, $command->message));//TODO add feedback to subscriber
+        $this->dispatch(new Approach($command->origin, $command->message));
     }
 }

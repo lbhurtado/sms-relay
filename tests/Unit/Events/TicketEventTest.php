@@ -10,7 +10,7 @@ use App\Events\TicketEvent;
 use App\Listeners\TicketEventSubscriber;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Notifications\{Approach, Endorse, Responded, Updated};
+use App\Notifications\{Endorsed, Approach, Responded, Updated};
 
 use App\Classes\SupportStage;
 
@@ -52,9 +52,9 @@ class TicketEventTest extends TestCase
         (new TicketEventSubscriber)->subscribe($this->event);
 
         /*** assert ***/
-        Notification::assertSentTo($ticket->contact, Approach::class);
+        Notification::assertSentTo($ticket->contact, Endorsed::class);
         Contact::role('supporter')->each(function($supporter) {
-            Notification::assertSentTo($supporter, Endorse::class);
+            Notification::assertSentTo($supporter, Approach::class);
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Contact;
 use App\Events\TicketEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use LBHurtado\EngageSpark\Notifications\BaseNotification;
@@ -18,23 +19,23 @@ class Approach extends BaseNotification implements ShouldQueue
         $handle = $notifiable->handle ?? $notifiable->mobile;
         $signature = config('sms-relay.signature');
 
-        return trans('sms-relay.support', compact('handle', 'message', 'signature'));
+        return trans('sms-relay.approach', compact('handle', 'message', 'signature'));
     }
 
     public function handle(TicketEvent $event)
     {
-        $this->sendApproach($event);
+        $this->sendEndorsements();
 
-        $event->getTicket()->approach();
+        $event->getTicket()->endorse();
     }
 
-    /**
-     * @param TicketEvent $event
-     */
-    protected function sendApproach(TicketEvent $event): void
+    protected function sendEndorsements(): void
     {
-        tap(app(\Illuminate\Contracts\Notifications\Dispatcher::class), function ($dispatcher) use ($event) {
-            $dispatcher->sendNow($event->getOrigin(), $this);
+        tap(app(\Illuminate\Contracts\Notifications\Dispatcher::class), function ($dispatcher) {
+            Contact::role('supporter')->each(function ($contact) use ($dispatcher) {
+                $dispatcher->sendNow($contact, $this);
+            });
+
         });
     }
 }
