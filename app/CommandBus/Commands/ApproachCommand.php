@@ -3,8 +3,9 @@
 namespace App\CommandBus\Commands;
 
 use App\Contact;
+use App\Contracts\GetTicketInterface;
 
-class ApproachCommand extends BaseCommand
+class ApproachCommand extends BaseCommand implements GetTicketInterface
 {
     /** @var Contact */
     public $origin;
@@ -22,5 +23,10 @@ class ApproachCommand extends BaseCommand
     {
         $this->origin = $origin;
         $this->message = $message;
+    }
+
+    public function getTicket()
+    {
+        return $this->origin->tickets->last();
     }
 }

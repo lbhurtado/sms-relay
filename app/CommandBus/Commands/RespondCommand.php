@@ -2,9 +2,10 @@
 
 namespace App\CommandBus\Commands;
 
-use App\Contact;
+use App\{Contact, Ticket};
+use App\Contracts\GetTicketInterface;
 
-class RespondCommand extends BaseCommand
+class RespondCommand extends BaseCommand implements GetTicketInterface
 {
     /** @var Contact */
     public $origin;
@@ -27,5 +28,10 @@ class RespondCommand extends BaseCommand
         $this->origin = $origin;
         $this->ticket_id = $ticket_id;
         $this->message = $message;
+    }
+
+    public function getTicket()
+    {
+        return Ticket::fromHash($this->ticket_id);
     }
 }

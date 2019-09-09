@@ -3,8 +3,8 @@
 namespace App\CommandBus;
 
 use LBHurtado\Missive\Routing\Router;
-use App\CommandBus\Commands\ApproachCommand;
-use App\CommandBus\Handlers\ApproachHandler;
+use App\CommandBus\Commands\{ApproachCommand, RespondCommand};
+use App\CommandBus\Handlers\{ApproachHandler, RespondHandler};
 use App\CommandBus\Middlewares\ConfineMiddleware;
 use LBHurtado\Missive\Repositories\ContactRepository;
 
@@ -39,5 +39,6 @@ class ApproachAction extends BaseAction
     protected function addBusHandlers()
     {
         $this->bus->addHandler(ApproachCommand::class, ApproachHandler::class);
+        $this->bus->addHandler(RespondCommand::class, RespondHandler::class);
     }
 }
