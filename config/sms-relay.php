@@ -31,5 +31,8 @@ return [
             'spokesman' => env('SPOKESMAN_CREDIT', 10),
             'supporter' => env('SUPPORTER_CREDIT', 10),
         ],
-    ]
+    ],
+    'approach' => [
+        'maximum' => env('APPROACH_MAXIMUM', 1),
+    ],
 ];

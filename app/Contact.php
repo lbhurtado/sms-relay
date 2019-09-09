@@ -6,10 +6,10 @@ use App\Traits\HasEmail;
 use Illuminate\Support\Arr;
 use LBHurtado\Missive\Models\SMS;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminatech\Balance\Facades\Balance;
 use LBHurtado\EngageSpark\Traits\HasEngageSpark;
 use LBHurtado\Missive\Models\Contact as BaseContact;
 use App\Traits\{CanRedeemVouchers, CanSegregateHashtags};
-use Illuminatech\Balance\Facades\Balance;
 
 class Contact extends BaseContact
 {
@@ -130,5 +130,10 @@ class Contact extends BaseContact
         return $this->airtimes->sum(function ($airtime) {
             return $airtime->credits * $airtime->pivot->qty;
         });
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
     }
 }

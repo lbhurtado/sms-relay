@@ -2,12 +2,22 @@
 
 namespace App\CommandBus;
 
+use LBHurtado\Missive\Routing\Router;
 use App\CommandBus\Commands\ApproachCommand;
 use App\CommandBus\Handlers\ApproachHandler;
+use App\CommandBus\Middlewares\ConfineMiddleware;
+use LBHurtado\Missive\Repositories\ContactRepository;
 
 class ApproachAction extends BaseAction
 {
     protected $permission = 'send message';
+
+    public function __construct(Router $router, ContactRepository $contacts)
+    {
+        parent::__construct($router, $contacts);
+
+        $this->addMiddleWare(ConfineMiddleware::class);
+    }
 
     public function __invoke(string $path, array $values)
     {
