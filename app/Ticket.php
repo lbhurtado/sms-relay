@@ -22,13 +22,7 @@ class Ticket extends Model
 
     public static function open(Contact $origin, string $message)
     {
-        $ticket = self::fromScratch($origin, $message)->setStage(SupportStage::OPENED());
-
-        optional($origin->smss->last(), function ($sms) use ($ticket) {
-            $ticket->addSMS($sms);
-        });
-
-    	return $ticket;
+    	return self::fromScratch($origin, $message)->setStage(SupportStage::OPENED());
     }
 
     public function endorse()

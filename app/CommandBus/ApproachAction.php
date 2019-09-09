@@ -8,6 +8,8 @@ use App\CommandBus\Handlers\ApproachHandler;
 use App\CommandBus\Middlewares\ConfineMiddleware;
 use LBHurtado\Missive\Repositories\ContactRepository;
 
+use App\CommandBus\Middlewares\AttachSMSMiddleware;
+
 class ApproachAction extends BaseAction
 {
     protected $permission = 'send message';
@@ -17,6 +19,7 @@ class ApproachAction extends BaseAction
         parent::__construct($router, $contacts);
 
         $this->addMiddleWare(ConfineMiddleware::class);
+        $this->addMiddleWare(AttachSMSMiddleware::class);
     }
 
     public function __invoke(string $path, array $values)

@@ -2,12 +2,22 @@
 
 namespace App\CommandBus;
 
+use LBHurtado\Missive\Routing\Router;
 use App\CommandBus\Commands\RespondCommand;
 use App\CommandBus\Handlers\RespondHandler;
+use App\CommandBus\Middlewares\AttachSMSMiddleware;
+use LBHurtado\Missive\Repositories\ContactRepository;
 
 class RespondAction extends BaseAction
 {
     protected $permission = 'issue command';
+
+    public function __construct(Router $router, ContactRepository $contacts)
+    {
+        parent::__construct($router, $contacts);
+
+        $this->addMiddleWare(AttachSMSMiddleware::class);
+    }
 
     public function __invoke(string $path, array $values)
     {
