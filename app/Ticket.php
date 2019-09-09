@@ -8,12 +8,13 @@ use Spatie\ModelStatus\HasStatuses;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\{TicketEvents, TicketEvent};
 
+use App\SMSTicket as Pivot;
+use LBHurtado\Missive\Models\SMS;
+use LBHurtado\Missive\Routing\Router;
 
 class Ticket extends Model
 {
     use HasStatuses, HasHashes;
-
-    //TODO - create duplicate middleware
 
     protected $fillable = [
         'message'
@@ -21,7 +22,13 @@ class Ticket extends Model
 
     public static function open(Contact $origin, string $message)
     {
-    	return self::fromScratch($origin, $message)->setStage(SupportStage::OPENED());
+        $ticket = self::fromScratch($origin, $message)->setStage(SupportStage::OPENED());
+
+        optional($origin->smss->last(), function ($sms) use ($ticket) {
+            $ticket->addSMS($sms);
+        });
+
+    	return $ticket;
     }
 
     public function endorse()
@@ -61,5 +68,20 @@ class Ticket extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function smss()
+    {
+        return $this->belongsToMany(SMS::class)
+            // ->withPivot('contact_id')
+            ->using(Pivot::class)
+            ->withTimestamps();
+    }
+
+    public function addSMS(SMS $sms, array $attributes = [])
+    {
+        $this->smss()->attach($sms, $attributes);
+
+        return $this; 
     }
 }

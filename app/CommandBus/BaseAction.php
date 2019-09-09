@@ -54,4 +54,9 @@ abstract class BaseAction
 
         return array_merge($data, compact('origin'));
     }
+
+    protected function getSMS()
+    {
+        return $this->router->missive->getSMS();
+    }
 }
