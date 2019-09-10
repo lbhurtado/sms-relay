@@ -30,7 +30,7 @@ class RelayAction extends BaseAction
             ->email($go->email)
             ->forward($go->mobile)
             ->reply($go->reply)
-            ->converse(true)
+            ->converse($go->converse)
             ->relay($go->hashtags && ! $this->shouldBroadcast())
             ->broadcast($this->shouldBroadcast())
             ;

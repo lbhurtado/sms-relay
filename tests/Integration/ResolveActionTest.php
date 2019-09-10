@@ -25,11 +25,11 @@ class ResolveActionTest extends TestCase
     }
 
     /** @test */
-    public function listener_resolve_action_dispatches_resolve_job()
+    public function supporter_resolve_action_dispatches_resolve_job()
     {
         /*** arrange ***/
         Bus::fake();
-        $sms = $this->prepareToResolveAs('listener');
+        $sms = $this->prepareToResolveAs('supporter');
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
         $message = $this->faker->sentence;
         $ticket = Ticket::open($contact, $message);
@@ -42,6 +42,24 @@ class ResolveActionTest extends TestCase
         Bus::assertDispatched(Resolve::class, function ($job) use ($sms, $ticket_id, $message) {
             return $job->origin === $sms->origin && $job->ticket_id == $ticket_id && $job->message == $message;
         });
+    }
+
+    /** @test */
+    public function subscriber_resolve_action_does_not_dispatch_resolve_job()
+    {
+        /*** arrange ***/
+        Bus::fake();
+        $sms = $this->prepareToResolveAs('subscriber');
+        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
+        $message = $this->faker->sentence;
+        $ticket = Ticket::open($contact, $message);
+        $ticket_id = $ticket->ticket_id;
+
+        /*** act ***/
+        app(ResolveAction::class)->__invoke('', compact('ticket_id', 'message'));
+
+        /*** assert ***/
+        Bus::assertNotDispatched(Resolve::class);
     }
 
     protected function prepareToResolveAs(string $role): \LBHurtado\Missive\Models\SMS

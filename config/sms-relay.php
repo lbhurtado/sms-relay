@@ -1,5 +1,7 @@
 <?php
 
+use App\Classes\SupportStage;
+
 return [
     'relay' => [
         'log'       => env('RELAY_LOG',       true),
@@ -7,6 +9,7 @@ return [
         'mobile'    => env('RELAY_MOBILE',    true),
         'reply'     => env('RELAY_REPLY',     true),
         'hashtags'  => env('RELAY_HASHTAGS',  true),
+        'converse'  => env('RELAY_CONVERSE',  true),
     ],
     'broadcast' => [
         'keyword'   => 'BROADCAST',
@@ -34,5 +37,11 @@ return [
     ],
     'approach' => [
         'maximum' => env('APPROACH_MAXIMUM', 1),
+    ],
+    'stages' => [
+        'end' => [
+            SupportStage::RESOLVED,
+            SupportStage::CLOSED
+        ],
     ],
 ];

@@ -45,6 +45,19 @@ class Ticket extends Model
 
     public function setStage(SupportStage $stage, Contact $responder = null, string $message = null)
     {
+//        $array = array_keys(SupportStage::members());
+//
+//        $nextStageIndex = array_search($stage, $array);
+//
+//        $currentStageIndex = array_search($this->status, $array);
+
+//        if ($nextStageIndex > $currentStageIndex) {
+//            $this->setStatus($stage);
+//        }
+//        if (! in_array($stage, $this->statuses->pluck('name')->unique()->toArray())) {
+//            $this->setStatus($stage);
+//        }
+
         $this->setStatus($stage);
 
         switch ($stage) {

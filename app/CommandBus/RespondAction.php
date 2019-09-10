@@ -5,8 +5,8 @@ namespace App\CommandBus;
 use LBHurtado\Missive\Routing\Router;
 use App\CommandBus\Commands\RespondCommand;
 use App\CommandBus\Handlers\RespondHandler;
-use App\CommandBus\Middlewares\ConverseMiddleware;
 use LBHurtado\Missive\Repositories\ContactRepository;
+use App\CommandBus\Middlewares\{ConverseMiddleware, Statuses};
 
 class RespondAction extends BaseAction
 {
@@ -16,6 +16,7 @@ class RespondAction extends BaseAction
     {
         parent::__construct($router, $contacts);
 
+        $this->addMiddleWare(Statuses::class);
         $this->addMiddleWare(ConverseMiddleware::class);
     }
 

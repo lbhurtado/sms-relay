@@ -27,11 +27,15 @@ class ApproachCommand extends BaseCommand implements GetTicketInterface
 
     public function getTicket()
     {
+        $this->origin->load('tickets');
+
         return $this->origin->tickets->last();
     }
 
     public function getSMS()
     {
+        $this->origin->load('smss');
+
         return $this->origin->smss->last();
     }
 }

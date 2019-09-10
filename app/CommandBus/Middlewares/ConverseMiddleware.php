@@ -20,6 +20,6 @@ class ConverseMiddleware implements Middleware
             tap($command->getSMS(), function ($sms) use ($ticket) {
                 $ticket->addSMS($sms);
             });
-        });
+        }); //TODO: Test this, solution is to load relations, check Command
     }
 }

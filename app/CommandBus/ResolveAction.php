@@ -5,7 +5,7 @@ namespace App\CommandBus;
 use LBHurtado\Missive\Routing\Router;
 use App\CommandBus\Commands\ResolveCommand;
 use App\CommandBus\Handlers\ResolveHandler;
-use App\CommandBus\Middlewares\ConverseMiddleware;
+use App\CommandBus\Middlewares\{ConverseMiddleware, Statuses};
 use LBHurtado\Missive\Repositories\ContactRepository;
 
 class ResolveAction extends BaseAction
@@ -16,6 +16,7 @@ class ResolveAction extends BaseAction
     {
         parent::__construct($router, $contacts);
 
+        $this->addMiddleWare(Statuses::class);
         $this->addMiddleWare(ConverseMiddleware::class);
     }
 

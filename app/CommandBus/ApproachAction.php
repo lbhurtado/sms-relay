@@ -3,6 +3,7 @@
 namespace App\CommandBus;
 
 use App\Exceptions\MaximumApproach;
+use App\CommandBus\Middlewares\Statuses;
 use App\CommandBus\Middlewares\ConfineMiddleware;
 use App\CommandBus\Middlewares\ConverseMiddleware;
 use App\CommandBus\Commands\{ApproachCommand, RespondCommand};
@@ -22,18 +23,25 @@ class ApproachAction extends BaseAction
             $this->approach($data);
         }
         catch (MaximumApproach $e) {
-            $this->respond($this->addHashToData($data));
+            $this->respond($this->addHashToData($data));//TODO: if resolved or close, new approach should open ticket
         }
     }
 
     protected function approach(array $data)
     {
-        $this->bus->dispatch(ApproachCommand::class, $data, [ConfineMiddleware::class, ConverseMiddleware::class]);
+        $this->bus->dispatch(ApproachCommand::class, $data, [
+            ConfineMiddleware::class,
+            Statuses::class,
+            ConverseMiddleware::class
+        ]);
     }
 
     protected function respond(array $data)
     {
-        $this->bus->dispatch(RespondCommand::class, $data, [ConverseMiddleware::class]);
+        $this->bus->dispatch(RespondCommand::class, $data, [
+            Statuses::class,
+            ConverseMiddleware::class
+        ]);
     }
 
     protected function addBusHandlers()
