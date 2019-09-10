@@ -20,5 +20,6 @@ return [
     'endorse' => "Endorsed::message - \n:signature",
     'update' => "Updated::message - \n:signature",
     'respond' => "Responded::message - \n:signature",
+    'resolve' => "Resolved::message - \n:signature",
 
 ];

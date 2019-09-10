@@ -69,4 +69,34 @@ class TicketTest extends TestCase
         /*** assert ***/
         Event::assertDispatched(TicketEvents::OPENED);
     }
+
+    /** @test */
+    public function updated_ticket_emits_ticket_event_updated()
+    {
+        /*** arrange ***/
+        Event::fake();
+        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
+        $message = $this->faker->sentence;
+
+        /*** act ***/
+        $ticket = Ticket::open($contact, $message)->setStage(SupportStage::HANDLED(), $contact, $this->faker->sentence);
+
+        /*** assert ***/
+        Event::assertDispatched(TicketEvents::UPDATED);
+    }
+
+    /** @test */
+    public function resolved_ticket_emits_ticket_event_resolved()
+    {
+        /*** arrange ***/
+        Event::fake();
+        $contact = factory(Contact::class)->create(['mobile' => '09171234567']);
+        $message = $this->faker->sentence;
+
+        /*** act ***/
+        $ticket = Ticket::open($contact, $message)->setStage(SupportStage::RESOLVED(), $contact, $this->faker->sentence);
+
+        /*** assert ***/
+        Event::assertDispatched(TicketEvents::RESOLVED);
+    }
 }

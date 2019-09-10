@@ -6,7 +6,7 @@ use App\Events\TicketEvents;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use App\Notifications\{Approach, Endorsed, Updated, Responded};
+use App\Notifications\{Approach, Endorsed, Updated, Responded, Resolved};
 
 class TicketEventSubscriber implements ShouldQueue
 {
@@ -18,5 +18,6 @@ class TicketEventSubscriber implements ShouldQueue
         $events->listen(TicketEvents::ENDORSED, Endorsed::class);
         $events->listen(TicketEvents::UPDATED,  Updated::class);
         $events->listen(TicketEvents::UPDATED,  Responded::class);
+        $events->listen(TicketEvents::RESOLVED, Resolved::class);
     }
 }

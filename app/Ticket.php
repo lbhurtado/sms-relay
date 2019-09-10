@@ -3,14 +3,12 @@
 namespace App;
 
 use App\Traits\HasHashes;
+use App\SMSTicket as Pivot;
 use App\Classes\SupportStage;
+use LBHurtado\Missive\Models\SMS;
 use Spatie\ModelStatus\HasStatuses;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\{TicketEvents, TicketEvent};
-
-use App\SMSTicket as Pivot;
-use LBHurtado\Missive\Models\SMS;
-use LBHurtado\Missive\Routing\Router;
 
 class Ticket extends Model
 {
@@ -40,6 +38,11 @@ class Ticket extends Model
         return $this->setStage(SupportStage::HANDLED(), $responder, $message);
     }
 
+    public function resolve(Contact $responder, string $message)
+    {
+        return $this->setStage(SupportStage::RESOLVED(), $responder, $message);
+    }
+
     public function setStage(SupportStage $stage, Contact $responder = null, string $message = null)
     {
         $this->setStatus($stage);
@@ -53,6 +56,9 @@ class Ticket extends Model
                 break;
             case SupportStage::HANDLED:
                 event(TicketEvents::UPDATED, (new TicketEvent($this))->setResponder($responder)->setMessage($message));
+                break;
+            case SupportStage::RESOLVED:
+                event(TicketEvents::RESOLVED, (new TicketEvent($this))->setResponder($responder)->setMessage($message));
                 break;
         }
 
@@ -76,6 +82,6 @@ class Ticket extends Model
     {
         $this->smss()->attach($sms, $attributes);
 
-        return $this; 
+        return $this;
     }
 }

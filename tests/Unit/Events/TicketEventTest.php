@@ -10,7 +10,7 @@ use App\Events\TicketEvent;
 use App\Listeners\TicketEventSubscriber;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Notifications\{Endorsed, Approach, Responded, Updated};
+use App\Notifications\{Endorsed, Approach, Responded, Updated, Resolved};
 
 use App\Classes\SupportStage;
 
@@ -45,7 +45,7 @@ class TicketEventTest extends TestCase
             $contact->syncRoles('supporter');
         });
 
-        $this->event->shouldReceive('listen')->times(4);
+        $this->event->shouldReceive('listen')->times(5);
         $ticket = $this->getNewTicket();
 
         /*** act ***/
@@ -63,7 +63,7 @@ class TicketEventTest extends TestCase
     {
         /*** arrange ***/
         Notification::fake();
-        $this->event->shouldReceive('listen')->times(4);
+        $this->event->shouldReceive('listen')->times(5);
         $ticket = $this->getUpdatedTicket($responder = $this->getResponder());
 
         /*** act ***/
@@ -72,6 +72,21 @@ class TicketEventTest extends TestCase
         /*** assert ***/
         Notification::assertSentTo($ticket->contact, Responded::class);
         Notification::assertSentTo($responder, Updated::class);
+    }
+
+    /** @test */
+    public function ticket_event_resolved_dispatches_resolved_notifications()
+    {
+        /*** arrange ***/
+        Notification::fake();
+        $this->event->shouldReceive('listen')->times(5);
+        $ticket = $this->getResolvedTicket($responder = $this->getResponder());
+
+        /*** act ***/
+        (new TicketEventSubscriber)->subscribe($this->event);
+
+        /*** assert ***/
+        Notification::assertSentTo($responder, Resolved::class);
     }
 
     protected function getNewTicket()
@@ -84,6 +99,11 @@ class TicketEventTest extends TestCase
     protected function getUpdatedTicket($responder)
     {
         return $this->getNewTicket()->setStage(SupportStage::HANDLED(), $responder, $this->faker->sentence);
+    }
+
+    protected function getResolvedTicket($responder)
+    {
+        return $this->getNewTicket()->setStage(SupportStage::RESOLVED(), $responder, $this->faker->sentence);
     }
 
     protected function getResponder()
