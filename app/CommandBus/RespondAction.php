@@ -5,7 +5,7 @@ namespace App\CommandBus;
 use LBHurtado\Missive\Routing\Router;
 use App\CommandBus\Commands\RespondCommand;
 use App\CommandBus\Handlers\RespondHandler;
-use App\CommandBus\Middlewares\AttachSMSMiddleware;
+use App\CommandBus\Middlewares\ConverseMiddleware;
 use LBHurtado\Missive\Repositories\ContactRepository;
 
 class RespondAction extends BaseAction
@@ -16,7 +16,7 @@ class RespondAction extends BaseAction
     {
         parent::__construct($router, $contacts);
 
-        $this->addMiddleWare(AttachSMSMiddleware::class);
+        $this->addMiddleWare(ConverseMiddleware::class);
     }
 
     public function __invoke(string $path, array $values)

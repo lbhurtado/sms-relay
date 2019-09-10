@@ -2,25 +2,15 @@
 
 namespace App\CommandBus;
 
-use LBHurtado\Missive\Routing\Router;
+use App\Exceptions\MaximumApproach;
+use App\CommandBus\Middlewares\ConfineMiddleware;
+use App\CommandBus\Middlewares\ConverseMiddleware;
 use App\CommandBus\Commands\{ApproachCommand, RespondCommand};
 use App\CommandBus\Handlers\{ApproachHandler, RespondHandler};
-use App\CommandBus\Middlewares\ConfineMiddleware;
-use LBHurtado\Missive\Repositories\ContactRepository;
-
-use App\CommandBus\Middlewares\AttachSMSMiddleware;
 
 class ApproachAction extends BaseAction
 {
     protected $permission = 'send message';
-
-    public function __construct(Router $router, ContactRepository $contacts)
-    {
-        parent::__construct($router, $contacts);
-
-        $this->addMiddleWare(ConfineMiddleware::class);
-        $this->addMiddleWare(AttachSMSMiddleware::class);
-    }
 
     public function __invoke(string $path, array $values)
     {
@@ -28,17 +18,34 @@ class ApproachAction extends BaseAction
 
         $data = array_merge($values, compact('origin'));
 
-        $this->approach($data);
+        try {
+            $this->approach($data);
+        }
+        catch (MaximumApproach $e) {
+            $this->respond($this->addHashToData($data));
+        }
     }
 
     protected function approach(array $data)
     {
-        $this->bus->dispatch(ApproachCommand::class, $data, $this->getMiddlewares());
+        $this->bus->dispatch(ApproachCommand::class, $data, [ConfineMiddleware::class, ConverseMiddleware::class]);
+    }
+
+    protected function respond(array $data)
+    {
+        $this->bus->dispatch(RespondCommand::class, $data, [ConverseMiddleware::class]);
     }
 
     protected function addBusHandlers()
     {
         $this->bus->addHandler(ApproachCommand::class, ApproachHandler::class);
         $this->bus->addHandler(RespondCommand::class, RespondHandler::class);
+    }
+
+    private function addHashToData($data)
+    {
+        $ticket_id = $data['origin']->tickets->last()->ticket_id;
+
+        return array_merge($data, compact('ticket_id'));
     }
 }

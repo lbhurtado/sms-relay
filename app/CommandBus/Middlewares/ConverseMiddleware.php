@@ -2,21 +2,24 @@
 
 namespace App\CommandBus\Middlewares;
 
-use App\Ticket;
 use League\Tactician\Middleware;
 use App\Contracts\GetTicketInterface;
-use App\CommandBus\Commands\{ApproachCommand, RespondCommand};
 
-class AttachSMSMiddleware implements Middleware
+class ConverseMiddleware implements Middleware
 {
     public function execute($command, callable $next)
     {
         $next($command);
 
+        $this->addSMS($command);
+    }
+
+    protected function addSMS(GetTicketInterface $command)
+    {
         optional($command->getTicket(), function ($ticket) use ($command) {
-	        optional($command->origin->smss->last(), function ($sms) use ($ticket) {
-	    		$ticket->addSMS($sms);
-	    	});
+            optional($command->origin->smss->last(), function ($sms) use ($ticket) {
+                $ticket->addSMS($sms);
+            });
         });
     }
 }
