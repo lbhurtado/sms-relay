@@ -17,7 +17,7 @@ class ConverseMiddleware implements Middleware
     protected function addSMS(GetTicketInterface $command)
     {
         optional($command->getTicket(), function ($ticket) use ($command) {
-            optional($command->origin->smss->last(), function ($sms) use ($ticket) {
+            tap($command->getSMS(), function ($sms) use ($ticket) {
                 $ticket->addSMS($sms);
             });
         });

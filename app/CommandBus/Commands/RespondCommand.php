@@ -34,4 +34,9 @@ class RespondCommand extends BaseCommand implements GetTicketInterface
     {
         return Ticket::fromHash($this->ticket_id);
     }
+
+    public function getSMS()
+    {
+        return $this->origin->smss->last();
+    }
 }

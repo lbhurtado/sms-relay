@@ -6,7 +6,7 @@ use App\CommandBus\Commands\RelayCommand;
 use App\CommandBus\Handlers\RelayHandler;
 use App\CommandBus\Commands\BroadcastCommand;
 use App\CommandBus\Handlers\BroadcastHandler;
-use App\CommandBus\Middlewares\{LogMiddleware, EmailMiddleware, ReplyMiddleware, ForwardMiddleware};
+use App\CommandBus\Middlewares\{LogMiddleware, EmailMiddleware, ReplyMiddleware, ForwardMiddleware, ConverseMiddleware};
 
 class RelayAction extends BaseAction
 {
@@ -30,6 +30,7 @@ class RelayAction extends BaseAction
             ->email($go->email)
             ->forward($go->mobile)
             ->reply($go->reply)
+            ->converse(true)
             ->relay($go->hashtags && ! $this->shouldBroadcast())
             ->broadcast($this->shouldBroadcast())
             ;
@@ -73,6 +74,13 @@ class RelayAction extends BaseAction
     protected function broadcast(bool $go = true)
     {
         ! $go ||  $this->bus->dispatch(BroadcastCommand::class, $this->broadcastData, $this->getMiddlewares());
+
+        return $this;
+    }
+
+    protected function converse($go = true)
+    {
+        $this->addMiddleWare(ConverseMiddleware::class);
 
         return $this;
     }
