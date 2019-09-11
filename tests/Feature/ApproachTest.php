@@ -8,11 +8,11 @@ use App\CommandBus\ApproachAction;
 use LBHurtado\Missive\Routing\Router;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class SupportTest extends TestCase
+class ApproachTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $keyword = 'SUPPORT';
+    protected $keyword = '?';
 
     protected $router;
 
@@ -26,15 +26,15 @@ class SupportTest extends TestCase
 
         $this->router = app(Router::class);
         $this->action = Mockery::mock(ApproachAction::class);
-        $this->router->register("{$this->keyword} {message}", $this->action);
+        $this->router->register("{message=(.+)}{$this->keyword}", $this->action);
     }
 
     /** @test */
-    public function ticket_space_title__space_messge_invokes_ticket_action()
+    public function message_keyword_invokes_ticket_action()
     {
         /*** arrange ***/
         $message = $this->faker->sentence;
-        $from = '09171234567'; $to = '09182222222'; $message = "{$this->keyword} {$message}";
+        $from = '09171234567'; $to = '09182222222'; $message = "{$message}{$this->keyword}";
 
         /*** act ***/
         $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
@@ -45,11 +45,25 @@ class SupportTest extends TestCase
     }
 
     /** @test */
-    public function ticket_alone_does_not_invoke_redeem_action()
+    public function message_alone_does_not_invoke_redeem_action()
     {
         /*** arrange ***/
-        $space = ' ';
-        $from = '09171234567'; $to = '09182222222'; $message = "{$this->keyword}{$space}";
+        $message = $this->faker->sentence;
+        $from = '09171234567'; $to = '09182222222'; $message = "{$message}";
+
+        /*** act ***/
+        $this->json($this->method, $this->uri, compact('from', 'to', 'message'));
+        $this->sleep_after_url();
+
+        /*** assert ***/
+        $this->action->shouldNotHaveReceived('__invoke');
+    }
+
+    /** @test */
+    public function keyword_alone_does_not_invoke_redeem_action()
+    {
+        /*** arrange ***/
+        $from = '09171234567'; $to = '09182222222'; $message =  "{$this->keyword}";
 
         /*** act ***/
         $this->json($this->method, $this->uri, compact('from', 'to', 'message'));

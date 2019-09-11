@@ -37,7 +37,7 @@ class TicketEventTest extends TestCase
     }
 
     /** @test */
-    public function ticket_event_open_dispatches_supported_notification()
+    public function new_ticket_open_dispatches_approach_and_endorsed_notifications()
     {
         /*** arrange ***/
         Notification::fake();
@@ -59,7 +59,7 @@ class TicketEventTest extends TestCase
     }
 
     /** @test */
-    public function ticket_event_updated_dispatches_responded_and_updated_notifications()
+    public function ticket_event_handled_dispatches_responded_and_updated_notifications()
     {
         /*** arrange ***/
         Notification::fake();

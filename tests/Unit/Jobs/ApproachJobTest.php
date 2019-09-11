@@ -7,7 +7,7 @@ use App\Jobs\Approach;
 use App\{Contact, Ticket};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class SupportJobTest extends TestCase
+class ApproachJobTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -19,7 +19,7 @@ class SupportJobTest extends TestCase
     }
 
     /** @test */
-    public function support_job_generates_a_ticket()
+    public function approach_job_generates_a_ticket()
     {
         /*** arrange ***/
         $contact = factory(Contact::class)->create(['mobile' => '09171234567']);

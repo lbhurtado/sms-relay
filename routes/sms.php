@@ -6,7 +6,7 @@ $router = resolve('missive:router'); extract(redeem_regex());
 
 $router->register('{message}', RelayAction::class);
 
-$router->register("{message=(.*)\?}", ApproachAction::class);
+$router->register("{message=(.+)\?}", ApproachAction::class);
 
 $router->register('BROADCAST {message}', BroadcastAction::class);
 

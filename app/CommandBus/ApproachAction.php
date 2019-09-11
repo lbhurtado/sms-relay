@@ -2,8 +2,8 @@
 
 namespace App\CommandBus;
 
-use App\Exceptions\MaximumApproach;
 use App\CommandBus\Middlewares\Statuses;
+use App\Exceptions\MaximumApproachesReached;
 use App\CommandBus\Middlewares\ConfineMiddleware;
 use App\CommandBus\Middlewares\ConverseMiddleware;
 use App\CommandBus\Commands\{ApproachCommand, RespondCommand};
@@ -22,7 +22,7 @@ class ApproachAction extends BaseAction
         try {
             $this->approach($data);
         }
-        catch (MaximumApproach $e) {
+        catch (MaximumApproachesReached $e) {
             $this->respond($this->addHashToData($data));//TODO: if resolved or close, new approach should open ticket
         }
     }

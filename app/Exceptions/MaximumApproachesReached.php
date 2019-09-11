@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class MaximumApproach extends Exception
+class MaximumApproachesReached extends Exception
 {
 
 }
