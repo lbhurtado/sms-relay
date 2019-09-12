@@ -6,8 +6,8 @@ use App\CommandBus\Middlewares\Statuses;
 use App\Exceptions\MaximumApproachesReached;
 use App\CommandBus\Middlewares\ConfineMiddleware;
 use App\CommandBus\Middlewares\ConverseMiddleware;
-use App\CommandBus\Commands\{ApproachCommand, RespondCommand};
-use App\CommandBus\Handlers\{ApproachHandler, RespondHandler};
+use App\CommandBus\Commands\{ApproachCommand, ConverseCommand};
+use App\CommandBus\Handlers\{ApproachHandler, ConverseHandler};
 
 class ApproachAction extends BaseAction
 {
@@ -38,7 +38,7 @@ class ApproachAction extends BaseAction
 
     protected function respond(array $data)
     {
-        $this->bus->dispatch(RespondCommand::class, $data, [
+        $this->bus->dispatch(ConverseCommand::class, $data, [
             Statuses::class,
             ConverseMiddleware::class
         ]);
@@ -47,7 +47,7 @@ class ApproachAction extends BaseAction
     protected function addBusHandlers()
     {
         $this->bus->addHandler(ApproachCommand::class, ApproachHandler::class);
-        $this->bus->addHandler(RespondCommand::class, RespondHandler::class);
+        $this->bus->addHandler(ConverseCommand::class, ConverseHandler::class);
     }
 
     private function addHashToData($data)
