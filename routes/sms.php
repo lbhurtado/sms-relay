@@ -1,10 +1,16 @@
 <?php
 
-use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemAction, ListenAction, UnlistenAction, PostAction, VoucherAction, ApproachAction, RespondAction, ResolveAction};
+use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemAction, ListenAction, UnlistenAction, PostAction, VoucherAction, ApproachAction, RespondAction, ResolveAction, ConverseAction};
 
 $router = resolve('missive:router'); extract(redeem_regex());
 
+$router->register('{message}', function ($path, $values) {
+	return false;
+});
+
 $router->register('{message}', RelayAction::class);
+
+
 
 $router->register("{message=(.+)\?}", ApproachAction::class);
 

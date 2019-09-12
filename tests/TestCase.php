@@ -33,6 +33,13 @@ abstract class TestCase extends BaseTestCase
         return $voucher->code;
     }
 
+    protected function getRandomMobile(int $country = 63, int $prefix = null)
+    {
+        $prefix = $prefix ?? $this->faker->numberBetween(915,919);
+        
+        return '+' . $country . $prefix . $this->faker->numberBetween(1000000,9999999);
+    }
+
     protected function getRandomEmail()
     {
         return $this->faker->email;

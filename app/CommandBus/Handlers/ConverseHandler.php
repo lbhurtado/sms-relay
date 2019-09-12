@@ -15,8 +15,9 @@ class ConverseHandler
      */
     public function handle(ConverseCommand $command)
     {
-        tap($command->origin, function ($contact) use ($command) {
-            $this->dispatch(new Converse($contact, $command->ticket_id, $command->message));
-        });
+        return true;
+        // tap($command->origin, function ($contact) use ($command) {
+        //     $this->dispatch(new Converse($contact, $command->ticket_id, $command->message));
+        // });
     }
 }

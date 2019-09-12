@@ -2,11 +2,11 @@
 
 namespace Tests\Integration;
 
-use App\Classes\SupportStage;
 use App\Contact;
 use App\Ticket;
 use Tests\TestCase;
 use App\Jobs\Approach;
+use App\Classes\SupportStage;
 use LBHurtado\Missive\Missive;
 use LBHurtado\Missive\Models\SMS;
 use Illuminate\Support\Facades\Bus;
@@ -43,7 +43,7 @@ class ApproachActionTest extends TestCase
     }
 
     /** @test */
-    public function subscriber2_approach_action_dispatches_ticket_job()
+    public function second_subscriber_approach_twice_still_gets_pending_status()
     {
         /*** arrange ***/
         $sms1 = $this->prepareToApproachAs('+639191234567', 'subscriber');
@@ -92,7 +92,7 @@ class ApproachActionTest extends TestCase
     }
 
     /** @test */
-    public function supporter_respond_action_does_this()
+    public function supporter_respond_action_sets_status_to_handled()
     {
         /*** arrange ***/
         $message = $this->faker->sentence;
