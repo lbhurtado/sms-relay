@@ -4,13 +4,9 @@ use App\CommandBus\{PingAction, BroadcastAction, RelayAction, RedeemAction, List
 
 $router = resolve('missive:router'); extract(redeem_regex());
 
-$router->register('{message}', function ($path, $values) {
-	return false;
-});
-
 $router->register('{message}', RelayAction::class);
 
-
+//$router->register('{message}', ConverseAction::class);
 
 $router->register("{message=(.+)\?}", ApproachAction::class);
 

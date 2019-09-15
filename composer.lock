@@ -1575,16 +1575,16 @@
         },
         {
             "name": "lbhurtado/missive",
-            "version": "1.6.6",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lbhurtado/missive.git",
-                "reference": "d8af4f11cfe8c0bdfcd741a17481bc81d868d499"
+                "reference": "09723ee825bcdc9793965c6ba9814328c4554a31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lbhurtado/missive/zipball/d8af4f11cfe8c0bdfcd741a17481bc81d868d499",
-                "reference": "d8af4f11cfe8c0bdfcd741a17481bc81d868d499",
+                "url": "https://api.github.com/repos/lbhurtado/missive/zipball/09723ee825bcdc9793965c6ba9814328c4554a31",
+                "reference": "09723ee825bcdc9793965c6ba9814328c4554a31",
                 "shasum": ""
             },
             "require": {
@@ -1639,7 +1639,7 @@
                 "missive",
                 "sms"
             ],
-            "time": "2019-09-04T14:55:28+00:00"
+            "time": "2019-09-14T23:33:41+00:00"
         },
         {
             "name": "lbhurtado/sms",

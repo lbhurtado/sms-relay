@@ -50,7 +50,6 @@ class Ticket extends Model
 
     public function setStage(SupportStage $stage, Contact $responder = null, string $message = null)
     {
-//        if (! in_array($stage, $this->statuses->pluck('name')->unique()->toArray())) {
         if ($this->latestStatus($stage) == null) {
             $this->setStatus($stage);
         }

@@ -19,21 +19,21 @@ class ConverseAction extends BaseAction
 
         $data = array_merge($values, compact('origin'));
 
-        $this->converse($this->addHashToData($data));
-        // try {
-        //     $this->approach($data);
-        // }
-        // catch (MaximumApproachesReached $e) {
-        //     $this->respond($this->addHashToData($data));
-        // }
+        return $this->converse($this->addHashToData($data));
+//         try {
+//             $this->approach($data);
+//         }
+//         catch (MaximumApproachesReached $e) {
+//             $this->respond($this->addHashToData($data));
+//         }
     }
 
     protected function converse(array $data)
     {
-        $this->bus->dispatch(ConverseCommand::class, $data, [
-            // ConfineMiddleware::class,
-            // Statuses::class,
-            // ConverseMiddleware::class
+        return $this->bus->dispatch(ConverseCommand::class, $data, [
+//             ConfineMiddleware::class,
+             Statuses::class,
+             ConverseMiddleware::class
         ]);
     }
 

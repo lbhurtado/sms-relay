@@ -12,6 +12,7 @@ class ConfineMiddleware implements Middleware
     public function execute($command, callable $next)
     {
         $approaches = Ticket::where('contact_id', $command->origin->id)
+//            ->otherCurrentStatus([SupportStage::HANDLED(), SupportStage::CLOSED()])
             ->whereHas('statuses', function($q) {
                 return $q->where('name', '!=', SupportStage::CLOSED());
             })
