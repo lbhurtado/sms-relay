@@ -4,6 +4,7 @@ namespace App\CommandBus\Middlewares;
 
 use App\Classes\SupportStage;
 use League\Tactician\Middleware;
+use App\Exceptions\CaseResolvedException;
 
 class Statuses implements Middleware
 {
@@ -13,7 +14,7 @@ class Statuses implements Middleware
     {
         if ($ticket = $command->getTicket()) {
             if (in_array($ticket->status, self::DISALLOWED_STAGES))  {
-                return false;
+                throw new CaseResolvedException("Case Resolved!");
             }
         }
 

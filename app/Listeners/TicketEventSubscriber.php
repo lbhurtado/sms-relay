@@ -16,6 +16,7 @@ class TicketEventSubscriber implements ShouldQueue
     {
         $events->listen(TicketEvents::OPENED,   Approach::class);
         $events->listen(TicketEvents::ENDORSED, Endorsed::class);
+        $events->listen(TicketEvents::CONVERSED, Approach::class);
         $events->listen(TicketEvents::UPDATED,  Updated::class);
         $events->listen(TicketEvents::UPDATED,  Responded::class);
         $events->listen(TicketEvents::RESOLVED, Resolved::class);

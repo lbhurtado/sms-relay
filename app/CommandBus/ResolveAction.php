@@ -2,7 +2,9 @@
 
 namespace App\CommandBus;
 
+use App\Classes\NextRoute;
 use LBHurtado\Missive\Routing\Router;
+use App\Exceptions\CaseResolvedException;
 use App\CommandBus\Commands\ResolveCommand;
 use App\CommandBus\Handlers\ResolveHandler;
 use App\CommandBus\Middlewares\{ConverseMiddleware, Statuses};
@@ -26,7 +28,12 @@ class ResolveAction extends BaseAction
 
         $data = array_merge($values, compact('origin'));
 
-        $this->resolveTicket($data);
+        try {
+            $this->resolveTicket($data);            
+        }
+        catch (CaseResolvedException $e) {
+            return NextRoute::STOP;
+        }
     }
 
     protected function resolveTicket(array $data)

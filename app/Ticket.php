@@ -40,7 +40,7 @@ class Ticket extends Model
 
     public function converse(Contact $contact, string $message)
     {
-        return $this->setStage(SupportStage::PENDING());
+        return $this->setStage(SupportStage::CONVERSED());
     }
 
     public function resolve(Contact $responder, string $message)
@@ -60,6 +60,9 @@ class Ticket extends Model
                 break;
             case SupportStage::ENDORSED:
                 event(TicketEvents::ENDORSED, new TicketEvent($this));
+                break;
+            case SupportStage::CONVERSED:
+                event(TicketEvents::CONVERSED, new TicketEvent($this));
                 break;
             case SupportStage::HANDLED:
                 event(TicketEvents::UPDATED, (new TicketEvent($this))->setResponder($responder)->setMessage($message));
