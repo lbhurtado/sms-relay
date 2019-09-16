@@ -5,7 +5,7 @@ namespace App\CommandBus\Middlewares;
 use League\Tactician\Middleware;
 use App\Exceptions\NotEnoughCredits;
 
-class LimitMiddleware implements Middleware
+class CheckCreditsMiddleware implements Middleware
 {
     public function execute($command, callable $next)
     {

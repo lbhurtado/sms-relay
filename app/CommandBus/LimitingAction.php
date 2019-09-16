@@ -3,7 +3,7 @@
 namespace App\CommandBus;
 
 use LBHurtado\Missive\Routing\Router;
-use App\CommandBus\Middlewares\LimitMiddleware;
+use App\CommandBus\Middlewares\CheckCreditsMiddleware;
 use LBHurtado\Missive\Repositories\ContactRepository;
 
 abstract class LimitingAction extends BaseAction
@@ -12,7 +12,7 @@ abstract class LimitingAction extends BaseAction
     {
         parent::__construct($router, $contacts);
 
-        $this->addMiddleWare(LimitMiddleware::class);
+        $this->addMiddleWare(CheckCreditsMiddleware::class);
     }
 
     abstract protected function addBusHandlers();

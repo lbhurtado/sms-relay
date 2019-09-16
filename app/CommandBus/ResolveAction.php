@@ -7,7 +7,7 @@ use LBHurtado\Missive\Routing\Router;
 use App\Exceptions\CaseResolvedException;
 use App\CommandBus\Commands\ResolveCommand;
 use App\CommandBus\Handlers\ResolveHandler;
-use App\CommandBus\Middlewares\{ConverseMiddleware, Statuses};
+use App\CommandBus\Middlewares\{ConverseMiddleware, CheckResolvedMiddleware};
 use LBHurtado\Missive\Repositories\ContactRepository;
 
 class ResolveAction extends BaseAction
@@ -18,7 +18,7 @@ class ResolveAction extends BaseAction
     {
         parent::__construct($router, $contacts);
 
-        $this->addMiddleWare(Statuses::class);
+        $this->addMiddleWare(CheckResolvedMiddleware::class);
         $this->addMiddleWare(ConverseMiddleware::class);
     }
 
@@ -29,7 +29,7 @@ class ResolveAction extends BaseAction
         $data = array_merge($values, compact('origin'));
 
         try {
-            $this->resolveTicket($data);            
+            $this->resolveTicket($data);
         }
         catch (CaseResolvedException $e) {
             return NextRoute::STOP;

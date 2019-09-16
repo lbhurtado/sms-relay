@@ -5,9 +5,9 @@ namespace App\CommandBus\Middlewares;
 use App\Ticket;
 use App\Classes\SupportStage;
 use League\Tactician\Middleware;
-use App\Exceptions\MaximumApproachesReached;
+use App\Exceptions\MaximumApproachesReachedException;
 
-class ConfineMiddleware implements Middleware
+class CheckApproachesMiddleware implements Middleware
 {
     public function execute($command, callable $next)
     {
@@ -17,7 +17,7 @@ class ConfineMiddleware implements Middleware
         $maximum = config('sms-relay.approach.maximum');
 
         if ($approaches >= $maximum){
-            throw new MaximumApproachesReached(".");
+            throw new MaximumApproachesReachedException(".");
         }
 
         $next($command);

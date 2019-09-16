@@ -4,7 +4,7 @@ namespace App\CommandBus;
 
 use App\CommandBus\Commands\BroadcastCommand;
 use App\CommandBus\Handlers\BroadcastHandler;
-use App\CommandBus\Middlewares\LimitMiddleware;
+use App\CommandBus\Middlewares\CheckCreditsMiddleware;
 
 class BroadcastAction extends LimitingAction
 {

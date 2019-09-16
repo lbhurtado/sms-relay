@@ -2,13 +2,10 @@
 
 namespace App\CommandBus;
 
-use App\Classes\NextRoute;
-use App\CommandBus\Middlewares\Statuses;
-use App\Exceptions\{MaximumApproachesReached, CaseResolvedException};
-use App\CommandBus\Middlewares\ConfineMiddleware;
-use App\CommandBus\Middlewares\ConverseMiddleware;
 use App\CommandBus\Commands\{ApproachCommand, ConverseCommand};
 use App\CommandBus\Handlers\{ApproachHandler, ConverseHandler};
+use App\Exceptions\{MaximumApproachesReachedException, CaseResolvedException};
+use App\CommandBus\Middlewares\{CheckApproachesMiddleware, ConverseMiddleware, CheckResolvedMiddleware};
 
 class ApproachAction extends BaseAction
 {
@@ -23,35 +20,37 @@ class ApproachAction extends BaseAction
         try {
             $this->approach($data);
         }
-        catch (MaximumApproachesReached $e) {
-            $this->respond($this->addMsgToData($this->addHashToData($data)));//TODO: if resolved or close, new approach should open ticket
-        }
         catch (CaseResolvedException $e) {
-            $this->reapproach($data);
+            $this->approach_again($data);
+        }
+        catch (MaximumApproachesReachedException $e) {
+            $this->just_converse($data);
         }
     }
 
     protected function approach(array $data)
     {
         $this->bus->dispatch(ApproachCommand::class, $data, [
-            ConfineMiddleware::class,
-            Statuses::class,
+            CheckApproachesMiddleware::class,
+            CheckResolvedMiddleware::class,
             ConverseMiddleware::class
         ]);
     }
 
-    protected function reapproach(array $data)
+    protected function approach_again(array $data)
     {
         $this->bus->dispatch(ApproachCommand::class, $data, [
-            ConfineMiddleware::class,
+            CheckApproachesMiddleware::class,
             ConverseMiddleware::class
         ]);
     }
 
-    protected function respond(array $data)
+    protected function just_converse(array $data)
     {
+        $data = $this->addMsgToData($this->addHashToData($data));
+
         $this->bus->dispatch(ConverseCommand::class, $data, [
-            Statuses::class,
+            CheckResolvedMiddleware::class,
             ConverseMiddleware::class
         ]);
     }

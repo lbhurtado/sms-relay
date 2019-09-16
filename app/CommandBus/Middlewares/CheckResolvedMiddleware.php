@@ -6,7 +6,7 @@ use App\Classes\SupportStage;
 use League\Tactician\Middleware;
 use App\Exceptions\CaseResolvedException;
 
-class Statuses implements Middleware
+class CheckResolvedMiddleware implements Middleware
 {
     const DISALLOWED_STAGES = [SupportStage::RESOLVED, SupportStage::CLOSED];
 

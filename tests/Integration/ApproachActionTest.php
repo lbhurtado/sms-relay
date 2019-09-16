@@ -88,7 +88,7 @@ class ApproachActionTest extends TestCase
             return $q->where('s_m_s_id', $sms22->id);
         })->first();
         $this->assertTrue($ticket2->is($ticket22));
-        $this->assertEquals(SupportStage::PENDING, $ticket22->status);//TODO create a ConverseAction to fix this
+        $this->assertEquals(SupportStage::CONVERSED, $ticket22->status);//TODO create a ConverseAction to fix this
     }
 
     /** @test */

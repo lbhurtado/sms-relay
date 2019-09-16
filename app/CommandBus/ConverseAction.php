@@ -3,11 +3,11 @@
 namespace App\CommandBus;
 
 use App\Classes\NextRoute;
-use App\CommandBus\Middlewares\Statuses;
-use App\Exceptions\MaximumApproachesReached;
+use App\CommandBus\Middlewares\CheckResolvedMiddleware;
+use App\Exceptions\MaximumApproachesReachedException;
 use App\CommandBus\Commands\ConverseCommand;
 use App\CommandBus\Handlers\ConverseHandler;
-use App\CommandBus\Middlewares\ConfineMiddleware;
+use App\CommandBus\Middlewares\CheckApproachesMiddleware;
 use App\CommandBus\Middlewares\ConverseMiddleware;
 use App\Exceptions\{CaseResolvedException, NoTicketException};
 
@@ -36,8 +36,8 @@ class ConverseAction extends BaseAction
     protected function converse(array $data)
     {
         return $this->bus->dispatch(ConverseCommand::class, $data, [
-            ConfineMiddleware::class,
-            Statuses::class,
+            CheckApproachesMiddleware::class,
+            CheckResolvedMiddleware::class,
             ConverseMiddleware::class
         ]);
     }
@@ -53,7 +53,7 @@ class ConverseAction extends BaseAction
 
         if ($lastTicket == null) {
             throw new NoTicketException('Contact has no tickets.');
-        } 
+        }
 
         $ticket_id = $data['origin']->tickets->last()->ticket_id;
 

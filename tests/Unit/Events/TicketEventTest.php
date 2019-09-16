@@ -45,7 +45,7 @@ class TicketEventTest extends TestCase
             $contact->syncRoles('supporter');
         });
 
-        $this->event->shouldReceive('listen')->times(5);
+        $this->event->shouldReceive('listen')->times(6);
         $ticket = $this->getNewTicket();
 
         /*** act ***/
@@ -63,7 +63,7 @@ class TicketEventTest extends TestCase
     {
         /*** arrange ***/
         Notification::fake();
-        $this->event->shouldReceive('listen')->times(5);
+        $this->event->shouldReceive('listen')->times(6);
         $ticket = $this->getUpdatedTicket($responder = $this->getResponder());
 
         /*** act ***/
@@ -79,7 +79,7 @@ class TicketEventTest extends TestCase
     {
         /*** arrange ***/
         Notification::fake();
-        $this->event->shouldReceive('listen')->times(5);
+        $this->event->shouldReceive('listen')->times(6);
         $ticket = $this->getResolvedTicket($responder = $this->getResponder());
 
         /*** act ***/
