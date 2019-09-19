@@ -8,15 +8,52 @@ use LBHurtado\Tactician\Contracts\ActionInterface;
 
 class TemplateAction extends ActionAbstract implements ActionInterface
 {
+    /** @var Router */
     protected $router;
 
+    /** @var string */
     protected $permission = 'issue command';
 
+    /** @var array */
+    protected $middlewares = [];
+
+    /** @var array */
+    protected $data = [];
+    /**
+     * TemplateAction constructor.
+     * @param Router $router
+     */
     public function __construct(Router $router)
     {
+        parent::__construct(
+            app(\Joselfonseca\LaravelTactician\CommandBusInterface::class),
+            app(\Opis\Events\EventDispatcher::class),
+            app(\Illuminate\Http\Request::class)
+        );
+
         $this->router = $router;
     }
 
+    /**
+     * Add ['origin' => $origin] to $this->data for all actions
+     */
+    public function setup()
+    {
+        $this->addOriginToData();
+    }
+
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param null $permission
+     * @return \LBHurtado\Missive\Models\Contact|null
+     */
     protected function permittedContact($permission = null)
     {
         $contact = $this->router->missive->getContact();
@@ -24,13 +61,20 @@ class TemplateAction extends ActionAbstract implements ActionInterface
         return $contact->hasPermissionTo($permission ?? $this->permission) ? $contact : null;
     }
 
-    protected function addOrigin(array $data)
+    /**
+     * @return $this
+     */
+    protected function addOriginToData()
     {
         $origin = $this->permittedContact();
+        $this->data = array_merge($this->data, compact('origin'));
 
-        return array_merge($data, compact('origin'));
+        return $this;
     }
 
+    /**
+     * @return \LBHurtado\Missive\Classes\SMSAbstract
+     */
     protected function getSMS()
     {
         return $this->router->missive->getSMS();

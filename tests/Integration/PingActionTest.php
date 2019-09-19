@@ -2,6 +2,7 @@
 
 namespace Tests\Integration;
 
+use TypeError;
 use App\Contact;
 use Tests\TestCase;
 use App\Notifications\Pinged;
@@ -45,7 +46,7 @@ class PingActionTest extends TestCase
         $sms = $this->prepareToPingAs('listener');
 
         /*** act ***/
-        app(PingAction::class)->__invoke('', []);
+        app(PingAction::class)();
 
         /*** assert ***/
         Notification::assertSentTo($sms->origin, Pinged::class);
@@ -59,7 +60,7 @@ class PingActionTest extends TestCase
         $sms = $this->prepareToPingAs('forwarder');
 
         /*** act ***/
-        app(PingAction::class)->__invoke('', []);
+        app(PingAction::class)();
 
         /*** assert ***/
         Notification::assertSentTo($sms->origin, Pinged::class);
@@ -71,9 +72,10 @@ class PingActionTest extends TestCase
         /*** arrange ***/
         Notification::fake();
         $sms = $this->prepareToPingAs('subscriber');
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(PingAction::class)->__invoke('', []);
+        app(PingAction::class)();
 
         /*** assert ***/
         Notification::assertNotSentTo($sms->origin, Pinged::class);
