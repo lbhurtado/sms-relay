@@ -2,6 +2,7 @@
 
 namespace App\CommandBus;
 
+use Illuminate\Support\Arr;
 use LBHurtado\Missive\Routing\Router;
 use LBHurtado\Tactician\Classes\ActionAbstract;
 use LBHurtado\Tactician\Contracts\ActionInterface;
@@ -39,7 +40,7 @@ class TemplateAction extends ActionAbstract implements ActionInterface
      */
     public function setup()
     {
-        $this->addOriginToData();
+        $this->addOriginToData()->addArgumentsToData();
     }
 
     /**
@@ -48,6 +49,14 @@ class TemplateAction extends ActionAbstract implements ActionInterface
     public function getData(): array
     {
         return $this->data;
+    }
+
+    public function addArgumentsToData()
+    {
+        $params = Arr::get($this->arguments, 1);
+        $this->data = array_merge($this->data, $params);
+
+        return $this;
     }
 
     /**
