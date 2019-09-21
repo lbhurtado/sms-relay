@@ -6,31 +6,15 @@ use App\CommandBus\Commands\BroadcastCommand;
 use App\CommandBus\Handlers\BroadcastHandler;
 use App\CommandBus\Middlewares\CheckCreditsMiddleware;
 
-class BroadcastAction extends LimitingAction
+class BroadcastAction extends TemplateAction
 {
     protected $permission = 'send broadcast';
 
-    public function __invoke(string $path, array $values)
-    {
-        optional($this->permittedContact(), function($origin) use ($values) {
-            $this->broadcastMessage(array_merge($values, compact('origin')));
-        });
-    }
+    protected $command = BroadcastCommand::class;
 
-    /**
-     * @param array $data
-     * e.g. $data = ['message' => 'The quick brown fox...']
-     * @return $this
-     */
-    public function broadcastMessage(array $data = [])
-    {
-        $this->bus->dispatch(BroadcastCommand::class, $data, $this->getMiddlewares());
+    protected $handler = BroadcastHandler::class;
 
-        return $this;
-    }
-
-    protected function addBusHandlers()
-    {
-        $this->bus->addHandler(BroadcastCommand::class, BroadcastHandler::class);
-    }
+    protected $middlewares = [
+        CheckCreditsMiddleware::class
+    ];
 }

@@ -33,7 +33,7 @@ class RedeemActionTest extends TestCase
         $email = $this->faker->email;
 
         /*** act ***/
-        app(RedeemAction::class)->__invoke('', compact('code', 'email'));
+        app(RedeemAction::class)('REDEEM', compact('code', 'email'));
 
         /*** assert ***/
         Bus::assertDispatched(Redeem::class, function ($job) use ($sms, $code, $email) {

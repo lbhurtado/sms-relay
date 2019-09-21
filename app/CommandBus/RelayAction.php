@@ -6,7 +6,7 @@ use App\CommandBus\Commands\RelayCommand;
 use App\CommandBus\Handlers\RelayHandler;
 use App\CommandBus\Commands\BroadcastCommand;
 use App\CommandBus\Handlers\BroadcastHandler;
-use App\CommandBus\Middlewares\{LogMiddleware, EmailMiddleware, ReplyMiddleware, ForwardMiddleware, ConverseMiddleware};
+use App\CommandBus\Middlewares\{LogMiddleware, EmailMiddleware, ReplyMiddleware, ForwardMiddleware, RecordDiscussionMiddleware};
 
 class RelayAction extends BaseAction
 {
@@ -80,7 +80,7 @@ class RelayAction extends BaseAction
 
     protected function converse($go = true)
     {
-        $this->addMiddleWare(ConverseMiddleware::class);
+        $this->addMiddleWare(RecordDiscussionMiddleware::class);
 
         return $this;
     }

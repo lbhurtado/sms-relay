@@ -2,6 +2,7 @@
 
 namespace Tests\Integration;
 
+use TypeError;
 use App\Contact;
 use Tests\TestCase;
 use LBHurtado\Missive\Missive;
@@ -40,7 +41,7 @@ class BroadcastActionTest extends TestCase
         $sms = $this->prepareToBroadcastAs('spokesman');
 
         /*** act ***/
-        app(BroadcastAction::class)->__invoke('', compact('message'));
+        app(BroadcastAction::class)('BROADCAST', compact('message'));
 
         /*** assert ***/
         Contact::whereNotIn('mobile',[$sms->origin->mobile])->get()->each(function ($contact) use ($message, &$i) {
@@ -64,9 +65,10 @@ class BroadcastActionTest extends TestCase
         Notification::fake();
         $message = $this->faker->sentence;
         $sms = $this->prepareToBroadcastAs('listener');
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(BroadcastAction::class)->__invoke('', compact('message'));
+        app(BroadcastAction::class)('BROADCAST', compact('message'));
 
         /*** assert ***/
         Contact::whereNotIn('mobile',[$sms->origin->mobile])->get()->each(function ($contact) use ($message, &$i) {
@@ -85,9 +87,10 @@ class BroadcastActionTest extends TestCase
         Notification::fake();
         $message = $this->faker->sentence;
         $sms = $this->prepareToBroadcastAs('subscriber');
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(BroadcastAction::class)->__invoke('', compact('message'));
+        app(BroadcastAction::class)('BROADCAST', compact('message'));
 
         /*** assert ***/
         Contact::whereNotIn('mobile',[$sms->origin->mobile])->get()->each(function ($contact) use ($message, &$i) {

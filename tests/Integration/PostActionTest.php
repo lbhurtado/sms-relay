@@ -2,6 +2,7 @@
 
 namespace Tests\Integration;
 
+use TypeError;
 use App\Contact;
 use Tests\TestCase;
 use App\Notifications\Post;
@@ -42,7 +43,7 @@ class PostActionTest extends TestCase
         $sms = $this->prepareToPostAs('spokesman');
 
         /*** act ***/
-        app(PostAction::class)->__invoke('', compact('message'));
+        app(PostAction::class)('POST', compact('message'));
 
         /*** assert ***/
         Contact::notBearing($sms->origin->mobile)->each(function ($contact) use ($message, &$i) {
@@ -67,9 +68,10 @@ class PostActionTest extends TestCase
         $tag = "#{$this->tag}";
         $message = "{$tag} {$this->faker->sentence}";
         $sms = $this->prepareToPostAs('listener');
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(PostAction::class)->__invoke('', compact('message'));
+        app(PostAction::class)('POST', compact('message'));
 
         /*** assert ***/
         Contact::whereNotIn('mobile',[$sms->origin->mobile])->get()->each(function ($contact) use ($message, &$i) {
@@ -89,9 +91,10 @@ class PostActionTest extends TestCase
         $tag = "#{$this->tag}";
         $message = "{$tag} {$this->faker->sentence}";
         $sms = $this->prepareToPostAs('subscriber');
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(PostAction::class)->__invoke('', compact('message'));
+        app(PostAction::class)('POST', compact('message'));
 
         /*** assert ***/
         Contact::whereNotIn('mobile',[$sms->origin->mobile])->get()->each(function ($contact) use ($message, &$i) {

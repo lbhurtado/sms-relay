@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface GetTicketInterface
+interface CommandTicketable
 {
 	function getTicket();
 

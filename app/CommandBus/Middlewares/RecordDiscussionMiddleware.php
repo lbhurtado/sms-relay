@@ -3,9 +3,9 @@
 namespace App\CommandBus\Middlewares;
 
 use League\Tactician\Middleware;
-use App\Contracts\GetTicketInterface;
+use App\Contracts\CommandTicketable;
 
-class ConverseMiddleware implements Middleware
+class RecordDiscussionMiddleware implements Middleware
 {
     public function execute($command, callable $next)
     {
@@ -14,7 +14,7 @@ class ConverseMiddleware implements Middleware
         $this->addSMS($command);
     }
 
-    protected function addSMS(GetTicketInterface $command)
+    protected function addSMS(CommandTicketable $command)
     {
         optional($command->getTicket(), function ($ticket) use ($command) {
             tap($command->getSMS(), function ($sms) use ($ticket) {

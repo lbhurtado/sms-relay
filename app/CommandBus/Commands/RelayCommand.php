@@ -3,9 +3,9 @@
 namespace App\CommandBus\Commands;
 
 use LBHurtado\Missive\Models\SMS;
-use App\Contracts\GetTicketInterface;
+use App\Contracts\CommandTicketable;
 
-class RelayCommand extends BaseCommand implements GetTicketInterface
+class RelayCommand extends BaseCommand implements CommandTicketable
 {
     /** @var SMS */
     public $sms;

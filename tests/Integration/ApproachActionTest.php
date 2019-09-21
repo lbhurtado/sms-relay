@@ -34,7 +34,7 @@ class ApproachActionTest extends TestCase
         $message = $this->faker->sentence;
 
         /*** act ***/
-        app(ApproachAction::class)->__invoke('', compact('title', 'message'));
+        app(ApproachAction::class)('APPROACH', compact('title', 'message'));
 
         /*** assert ***/
         Bus::assertDispatched(Approach::class, function ($job) use ($sms, $message) {
@@ -53,7 +53,7 @@ class ApproachActionTest extends TestCase
         $this->assertEquals(0, Ticket::count());
 
         /*** act ***/
-        app(ApproachAction::class)->__invoke('', compact('title', 'message'));
+        app(ApproachAction::class)('APPROACH', compact('message'));
 
         /*** assert ***/
         $this->assertEquals(1, Ticket::count());
@@ -66,7 +66,7 @@ class ApproachActionTest extends TestCase
         $message = $this->faker->sentence;
 
         /*** act ***/
-        app(ApproachAction::class)->__invoke('', compact('title', 'message'));
+        app(ApproachAction::class)('APPROACH', compact('message'));
 
         /*** assert ***/
         $this->assertEquals(2, Ticket::count());
@@ -80,7 +80,7 @@ class ApproachActionTest extends TestCase
         $message = $this->faker->sentence;
 
         /*** act ***/
-        app(ApproachAction::class)->__invoke('', compact('title', 'message'));
+        app(ApproachAction::class)('APPROACH', compact('message'));
 
         /*** assert ***/
         $this->assertEquals(2, Ticket::count());
@@ -99,7 +99,7 @@ class ApproachActionTest extends TestCase
         $sms1 = $this->prepareToApproachAs('+639191234567', 'subscriber');
 
         /*** act ***/
-        app(ApproachAction::class)->__invoke('', compact('message'));
+        app(ApproachAction::class)('APPROACH', compact('message'));
 
         /*** assert ***/
         $ticket = Ticket::first();
@@ -111,7 +111,7 @@ class ApproachActionTest extends TestCase
         $sms2 = $this->prepareToApproachAs('+639191234567', 'supporter');
 
         /*** act ***/
-        app(RespondAction::class)->__invoke('', compact( 'ticket_id', 'message'));
+        app(RespondAction::class)('RESPOND', compact( 'ticket_id', 'message'));
 
         /*** assert ***/
         $this->assertTrue(Ticket::find($ticket->id)->smss->where('id', $sms2->id)->first()->is($sms2));

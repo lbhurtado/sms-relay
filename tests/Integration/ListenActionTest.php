@@ -2,6 +2,7 @@
 
 namespace Tests\Integration;
 
+use TypeError;
 use App\Contact;
 use Tests\TestCase;
 use App\Jobs\Listen;
@@ -35,7 +36,7 @@ class ListenActionTest extends TestCase
         $tags = $this->getSpaceDelimitedTags();
 
         /*** act ***/
-        app(ListenAction::class)->__invoke('', compact('tags'));
+        app(ListenAction::class)('LISTEN', compact('tags'));
 
         /*** assert ***/
         Bus::assertDispatched(Listen::class, function ($job) use ($tags, $sms) {
@@ -52,7 +53,7 @@ class ListenActionTest extends TestCase
         $tags = $this->getSpaceDelimitedTags();
 
         /*** act ***/
-        app(ListenAction::class)->__invoke('', compact('tags'));
+        app(ListenAction::class)('LISTEN', compact('tags'));
 
         /*** assert ***/
         Bus::assertDispatched(Listen::class, function ($job) use ($tags, $sms) {
@@ -67,9 +68,10 @@ class ListenActionTest extends TestCase
         Bus::fake();
         $sms = $this->prepareToListenAs('subscriber');
         $tags = $this->getSpaceDelimitedTags();
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(ListenAction::class)->__invoke('', compact('tags'));
+        app(ListenAction::class)('LISTEN', compact('tags'));
 
         /*** assert ***/
         Bus::assertNotDispatched(Listen::class);

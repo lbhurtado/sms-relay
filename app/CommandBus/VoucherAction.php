@@ -8,6 +8,8 @@ use App\CommandBus\Handlers\VoucherHandler;
 class VoucherAction extends TemplateAction
 {
     protected $permission = 'send message';
+
     protected $command = VoucherCommand::class;
+
     protected $handler = VoucherHandler::class;
 }

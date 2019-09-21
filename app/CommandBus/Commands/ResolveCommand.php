@@ -3,9 +3,9 @@
 namespace App\CommandBus\Commands;
 
 use App\{Contact, Ticket};
-use App\Contracts\GetTicketInterface;
+use App\Contracts\CommandTicketable;
 
-class ResolveCommand extends BaseCommand implements GetTicketInterface
+class ResolveCommand extends BaseCommand implements CommandTicketable
 {
     /** @var Contact */
     public $origin;

@@ -2,61 +2,66 @@
 
 namespace App\CommandBus;
 
-use App\Classes\NextRoute;
-use App\CommandBus\Middlewares\CheckResolvedMiddleware;
-use App\Exceptions\MaximumApproachesReachedException;
+use Illuminate\Support\Arr;
+use App\Classes\{NextRoute, Hash};
 use App\CommandBus\Commands\ConverseCommand;
 use App\CommandBus\Handlers\ConverseHandler;
-use App\CommandBus\Middlewares\CheckApproachesMiddleware;
-use App\CommandBus\Middlewares\ConverseMiddleware;
 use App\Exceptions\{CaseResolvedException, NoTicketException};
+use App\CommandBus\Middlewares\{CheckNoTicketMiddleware, CheckCaseResolvedMiddleware, RecordDiscussionMiddleware};
 
-class ConverseAction extends BaseAction
+class ConverseAction extends TemplateAction
 {
+    public const NO_CHECK_APPROACH = 'no_check_approach';
+
     protected $permission = 'send message';
 
-    public function __invoke(string $path, array $values)
+    protected $command = ConverseCommand::class;
+
+    protected $handler = ConverseHandler::class;
+
+    protected $middlewares = [
+        CheckNoTicketMiddleware::class,
+        CheckCaseResolvedMiddleware::class,
+        RecordDiscussionMiddleware::class
+    ];
+
+    public function dispatchHandlers()
     {
-        if (! $origin = $this->permittedContact()) return;
-
-        $data = array_merge($values, compact('origin'));
-
+//        if (array_key_exists(2, $this->arguments)) {
+//            if (in_array(self::NO_CHECK_APPROACH, $this->arguments[2])) {
+//                if ($ndx = array_search(CheckMaximumApproachesReachedMiddleware::class, $this->middlewares)) {
+//                    Arr::forget($this->middlewares, $ndx);
+//                }
+//            }
+//        }
         try {
-            $this->converse($this->addHashToData($data));
+            return parent::dispatchHandlers();
         }
         catch (CaseResolvedException $e) {
             return NextRoute::GO;
         }
-
         catch (NoTicketException $e) {
             return NextRoute::GO;
         }
-    }
+        catch (\Exception $e) {
+            echo "ConverseAction::dispatchHandlers\n\n\n\n";
 
-    protected function converse(array $data)
-    {
-        return $this->bus->dispatch(ConverseCommand::class, $data, [
-            CheckApproachesMiddleware::class,
-            CheckResolvedMiddleware::class,
-            ConverseMiddleware::class
-        ]);
-    }
-
-    protected function addBusHandlers()
-    {
-        $this->bus->addHandler(ConverseCommand::class, ConverseHandler::class);
-    }
-
-    private function addHashToData($data)
-    {
-        $lastTicket = $data['origin']->tickets->last();
-
-        if ($lastTicket == null) {
-            throw new NoTicketException('Contact has no tickets.');
+            throw $e;
         }
+    }
 
-        $ticket_id = $data['origin']->tickets->last()->ticket_id;
+    public function setup()
+    {
+        parent::setup();
 
-        return array_merge($data, compact('ticket_id'));
+        $this->addHashToData();
+    }
+
+    protected function addHashToData()
+    {
+        $ticket_id = optional($this->data['origin']->tickets->last())->ticket_id ?? Hash::EMPTY;
+        $this->data = array_merge($this->data, compact('ticket_id'));
+
+        return $this;
     }
 }

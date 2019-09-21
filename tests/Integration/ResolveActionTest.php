@@ -2,7 +2,7 @@
 
 namespace Tests\Integration;
 
-
+use TypeError;
 use Tests\TestCase;
 use App\Jobs\Resolve;
 use App\{Contact, Ticket};
@@ -36,7 +36,7 @@ class ResolveActionTest extends TestCase
         $ticket_id = $ticket->ticket_id;
 
         /*** act ***/
-        app(ResolveAction::class)->__invoke('', compact('ticket_id', 'message'));
+        app(ResolveAction::class)('RESOLVE', compact('ticket_id', 'message'));
 
         /*** assert ***/
         Bus::assertDispatched(Resolve::class, function ($job) use ($sms, $ticket_id, $message) {
@@ -54,9 +54,10 @@ class ResolveActionTest extends TestCase
         $message = $this->faker->sentence;
         $ticket = Ticket::open($contact, $message);
         $ticket_id = $ticket->ticket_id;
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(ResolveAction::class)->__invoke('', compact('ticket_id', 'message'));
+        app(ResolveAction::class)('RESOLVE', compact('ticket_id', 'message'));
 
         /*** assert ***/
         Bus::assertNotDispatched(Resolve::class);

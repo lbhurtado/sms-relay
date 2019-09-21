@@ -2,6 +2,7 @@
 
 namespace Tests\Integration;
 
+use TypeError;
 use App\Contact;
 use Tests\TestCase;
 use App\Jobs\Unlisten;
@@ -35,7 +36,7 @@ class UnlistenActionTest extends TestCase
         $tags = $this->getSpaceDelimitedTags();
 
         /*** act ***/
-        app(UnlistenAction::class)->__invoke('', compact('tags'));
+        app(UnlistenAction::class)('UNLISTEN', compact('tags'));
 
         /*** assert ***/
         Bus::assertDispatched(Unlisten::class, function ($job) use ($tags, $sms) {
@@ -52,7 +53,7 @@ class UnlistenActionTest extends TestCase
         $tags = $this->getSpaceDelimitedTags();
 
         /*** act ***/
-        app(UnlistenAction::class)->__invoke('', compact('tags'));
+        app(UnlistenAction::class)('UNLISTEN', compact('tags'));
 
         /*** assert ***/
         Bus::assertDispatched(Unlisten::class, function ($job) use ($tags, $sms) {
@@ -67,9 +68,10 @@ class UnlistenActionTest extends TestCase
         Bus::fake();
         $sms = $this->prepareToUnlistenAs('subscriber', ['tag1', 'tag2', 'tag3', 'tag4']);
         $tags = $this->getSpaceDelimitedTags();
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(UnlistenAction::class)->__invoke('', compact('tags'));
+        app(UnlistenAction::class)('UNLISTEN', compact('tags'));
 
         /*** assert ***/
         Bus::assertNotDispatched(Unlisten::class);

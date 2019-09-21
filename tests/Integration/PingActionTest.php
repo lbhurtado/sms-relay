@@ -32,7 +32,7 @@ class PingActionTest extends TestCase
         $sms = $this->prepareToPingAs('spokesman');
 
         /*** act ***/
-        app(PingAction::class)->__invoke('', []);
+        app(PingAction::class)('PING', []);
 
         /*** assert ***/
         Notification::assertSentTo($sms->origin, Pinged::class);
@@ -46,7 +46,7 @@ class PingActionTest extends TestCase
         $sms = $this->prepareToPingAs('listener');
 
         /*** act ***/
-        app(PingAction::class)();
+        app(PingAction::class)('PING', []);
 
         /*** assert ***/
         Notification::assertSentTo($sms->origin, Pinged::class);
@@ -60,7 +60,7 @@ class PingActionTest extends TestCase
         $sms = $this->prepareToPingAs('forwarder');
 
         /*** act ***/
-        app(PingAction::class)();
+        app(PingAction::class)('PING', []);
 
         /*** assert ***/
         Notification::assertSentTo($sms->origin, Pinged::class);
@@ -75,7 +75,7 @@ class PingActionTest extends TestCase
         $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(PingAction::class)();
+        app(PingAction::class)('PING', []);
 
         /*** assert ***/
         Notification::assertNotSentTo($sms->origin, Pinged::class);

@@ -1703,16 +1703,16 @@
         },
         {
             "name": "lbhurtado/tactician",
-            "version": "1.0.1",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lbhurtado/tactician.git",
-                "reference": "ed47e7bece721e689778efed273f92eed7290da6"
+                "reference": "224c317763e539f91b34ab93da235d14bf462e9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lbhurtado/tactician/zipball/ed47e7bece721e689778efed273f92eed7290da6",
-                "reference": "ed47e7bece721e689778efed273f92eed7290da6",
+                "url": "https://api.github.com/repos/lbhurtado/tactician/zipball/224c317763e539f91b34ab93da235d14bf462e9f",
+                "reference": "224c317763e539f91b34ab93da235d14bf462e9f",
                 "shasum": ""
             },
             "require": {
@@ -1758,7 +1758,7 @@
                 "lbhurtado",
                 "tactician"
             ],
-            "time": "2019-09-18T13:51:21+00:00"
+            "time": "2019-09-20T05:46:38+00:00"
         },
         {
             "name": "lcobucci/jwt",

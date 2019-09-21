@@ -3,46 +3,31 @@
 namespace App\CommandBus;
 
 use App\Classes\NextRoute;
-use LBHurtado\Missive\Routing\Router;
 use App\Exceptions\CaseResolvedException;
 use App\CommandBus\Commands\ResolveCommand;
 use App\CommandBus\Handlers\ResolveHandler;
-use App\CommandBus\Middlewares\{ConverseMiddleware, CheckResolvedMiddleware};
-use LBHurtado\Missive\Repositories\ContactRepository;
+use App\CommandBus\Middlewares\{CheckCaseResolvedMiddleware, RecordDiscussionMiddleware};
 
-class ResolveAction extends BaseAction
+class ResolveAction extends TemplateAction
 {
     protected $permission = 'issue command';
 
-    public function __construct(Router $router, ContactRepository $contacts)
+    protected $command = ResolveCommand::class;
+
+    protected $handler = ResolveHandler::class;
+
+    protected $middlewares = [
+        CheckCaseResolvedMiddleware::class, //TODO: test this
+        RecordDiscussionMiddleware::class
+    ];
+
+    public function dispatchHandlers()
     {
-        parent::__construct($router, $contacts);
-
-        $this->addMiddleWare(CheckResolvedMiddleware::class);
-        $this->addMiddleWare(ConverseMiddleware::class);
-    }
-
-    public function __invoke(string $path, array $values)
-    {
-        if (! $origin = $this->permittedContact()) return;
-
-        $data = array_merge($values, compact('origin'));
-
         try {
-            $this->resolveTicket($data);
+            return parent::dispatchHandlers();
         }
         catch (CaseResolvedException $e) {
             return NextRoute::STOP;
         }
-    }
-
-    protected function resolveTicket(array $data)
-    {
-        $this->bus->dispatch(ResolveCommand::class, $data, $this->getMiddlewares());
-    }
-
-    protected function addBusHandlers()
-    {
-        $this->bus->addHandler(ResolveCommand::class, ResolveHandler::class);
     }
 }

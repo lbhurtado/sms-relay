@@ -2,7 +2,7 @@
 
 namespace Tests\Integration;
 
-
+use TypeError;
 use Tests\TestCase;
 use App\Jobs\Respond;
 use App\{Contact, Ticket};
@@ -37,7 +37,7 @@ class RespondActionTest extends TestCase
         $ticket_id = $ticket->ticket_id;
 
         /*** act ***/
-        app(RespondAction::class)->__invoke('', compact('ticket_id', 'message'));
+        app(RespondAction::class)('RESPOND', compact('ticket_id', 'message'));
 
         /*** assert ***/
         Bus::assertDispatched(Respond::class, function ($job) use ($sms, $ticket_id, $message) {
@@ -55,9 +55,10 @@ class RespondActionTest extends TestCase
         $message = $this->faker->sentence;
         $ticket = Ticket::open($contact, $message);
         $ticket_id = $ticket->ticket_id;
+        $this->expectException(TypeError::class);
 
         /*** act ***/
-        app(RespondAction::class)->__invoke('', compact('ticket_id', 'message'));
+        app(RespondAction::class)('RESPOND', compact('ticket_id', 'message'));
 
         /*** assert ***/
         Bus::assertNotDispatched(Respond::class);
@@ -71,7 +72,7 @@ class RespondActionTest extends TestCase
         $sms1 = $this->prepareToActAs('subscriber');
 
         /*** act ***/
-        app(ApproachAction::class)->__invoke('', compact('message'));
+        app(ApproachAction::class)('RESPOND', compact('ticket_id', 'message'));
 
         /*** assert ***/
         $ticket = Ticket::first();
@@ -83,7 +84,7 @@ class RespondActionTest extends TestCase
         $sms2 = $this->prepareToActAs('supporter');
 
         /*** act ***/
-        app(RespondAction::class)->__invoke('', compact( 'ticket_id', 'message'));
+        app(RespondAction::class)('RESPOND', compact('ticket_id', 'message'));
 
         /*** assert ***/
         $this->assertTrue(Ticket::find($ticket->id)->smss->where('id', $sms2->id)->first()->is($sms2));

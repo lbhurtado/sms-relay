@@ -14,6 +14,11 @@ class Ticket extends Model
 {
     use HasStatuses, HasHashes;
 
+    const CONSIDERED_RESOLVED_STAGES = [
+        SupportStage::RESOLVED,
+        SupportStage::CLOSED
+    ];
+
     protected $fillable = [
         'message'
     ];
@@ -93,5 +98,15 @@ class Ticket extends Model
         $this->smss()->attach($sms, $attributes);
 
         return $this;
+    }
+
+    public function scopeConsideredResolved($query)
+    {
+        return $query->currentStatus(self::CONSIDERED_RESOLVED_STAGES);
+    }
+
+    public function scopeConsideredNotResolved($query)
+    {
+        return $query->otherCurrentStatus(self::CONSIDERED_RESOLVED_STAGES);
     }
 }

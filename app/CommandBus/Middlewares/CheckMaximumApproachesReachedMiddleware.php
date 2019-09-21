@@ -7,7 +7,7 @@ use App\Classes\SupportStage;
 use League\Tactician\Middleware;
 use App\Exceptions\MaximumApproachesReachedException;
 
-class CheckApproachesMiddleware implements Middleware
+class CheckMaximumApproachesReachedMiddleware implements Middleware
 {
     public function execute($command, callable $next)
     {
@@ -17,7 +17,7 @@ class CheckApproachesMiddleware implements Middleware
         $maximum = config('sms-relay.approach.maximum');
 
         if ($approaches >= $maximum){
-            throw new MaximumApproachesReachedException(".");
+            throw new MaximumApproachesReachedException("Maximum approaches reached.");
         }
 
         $next($command);
