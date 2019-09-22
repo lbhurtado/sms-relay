@@ -3,6 +3,7 @@
 namespace App\CommandBus;
 
 use Illuminate\Support\Arr;
+use InvalidArgumentException;
 use App\Classes\{NextRoute, Hash};
 use App\CommandBus\Commands\ConverseCommand;
 use App\CommandBus\Handlers\ConverseHandler;
@@ -11,8 +12,6 @@ use App\CommandBus\Middlewares\{CheckNoTicketMiddleware, CheckCaseResolvedMiddle
 
 class ConverseAction extends TemplateAction
 {
-    public const NO_CHECK_APPROACH = 'no_check_approach';
-
     protected $permission = 'send message';
 
     protected $command = ConverseCommand::class;
@@ -27,13 +26,6 @@ class ConverseAction extends TemplateAction
 
     public function dispatchHandlers()
     {
-//        if (array_key_exists(2, $this->arguments)) {
-//            if (in_array(self::NO_CHECK_APPROACH, $this->arguments[2])) {
-//                if ($ndx = array_search(CheckMaximumApproachesReachedMiddleware::class, $this->middlewares)) {
-//                    Arr::forget($this->middlewares, $ndx);
-//                }
-//            }
-//        }
         try {
             return parent::dispatchHandlers();
         }
@@ -43,6 +35,11 @@ class ConverseAction extends TemplateAction
         catch (NoTicketException $e) {
             return NextRoute::GO;
         }
+        catch (InvalidArgumentException $e) {
+            $updatedArguments = $this->updateArguments($this->arguments);
+
+            return app(static::class)(...$updatedArguments);
+        }
         catch (\Exception $e) {
             echo "ConverseAction::dispatchHandlers\n\n\n\n";
 
@@ -50,18 +47,24 @@ class ConverseAction extends TemplateAction
         }
     }
 
-    public function setup()
+    protected function updateArguments(array $arguments): array
     {
-        parent::setup();
+        $parameters = [
+            'msg' => $this->getMsg($arguments),
+            'ticket_id' => $this->getHash()
+        ];
+        Arr::set($arguments, 1, $parameters);
 
-        $this->addHashToData();
+        return $arguments;
     }
 
-    protected function addHashToData()
+    protected function getMsg($arguments): string
     {
-        $ticket_id = optional($this->data['origin']->tickets->last())->ticket_id ?? Hash::EMPTY;
-        $this->data = array_merge($this->data, compact('ticket_id'));
+        return Arr::get($arguments, '1.msg') ?? Arr::get($arguments, '1.message');
+    }
 
-        return $this;
+    protected function getHash(): string
+    {
+        return optional($this->data['origin']->tickets->last())->ticket_id ?? Hash::EMPTY;
     }
 }

@@ -7,6 +7,7 @@ use App\Classes\SupportStage;
 use League\Tactician\Middleware;
 use App\Exceptions\MaximumApproachesNotReachedException;
 
+//TODO: deprecate this if possible
 class CheckMaximumApproachesNotReachedMiddleware implements Middleware
 {
     public function execute($command, callable $next)

@@ -8,21 +8,19 @@ use App\CommandBus\Commands\BroadcastCommand;
 use App\CommandBus\Handlers\BroadcastHandler;
 use App\CommandBus\Middlewares\{LogMiddleware, EmailMiddleware, ReplyMiddleware, ForwardMiddleware, RecordDiscussionMiddleware};
 
-class RelayAction extends BaseAction
+class RelayAction extends TemplateAction
 {
     protected $permission = 'send message';
 
-    protected $broadcastData = [];
+    protected $command = RelayCommand::class;
 
-    protected $values = [];
+    protected $handler = RelayHandler::class;
 
-    public function __invoke(string $path, array $values)
+    public function setup()
     {
-        if (! tap($this->permittedContact(), function ($origin) use ($values) {
-            if ($origin->hasPermissionTo('send broadcast')) {
-                $this->broadcastData = array_merge($values, compact('origin'));
-            }
-        })) return;
+        parent::setup();
+
+        $this->addSMSToData();
 
         $go = $this->shouldProceed();
 
@@ -31,11 +29,59 @@ class RelayAction extends BaseAction
             ->forward($go->mobile)
             ->reply($go->reply)
             ->converse($go->converse)
-            ->relay($go->hashtags && ! $this->shouldBroadcast())
-            ->broadcast($this->shouldBroadcast())
+//            ->relay($go->hashtags && ! $this->shouldBroadcast())
+//            ->broadcast($this->shouldBroadcast())
             ;
     }
 
+    public function dispatchHandlers()
+    {
+        try {
+            return parent::dispatchHandlers();
+        }
+        catch (\Exception $e) {
+            echo "RelayAction::dispatchHandlers\n\n\n\n";
+
+//            throw $e;
+        }
+    }
+
+    /**
+     * @return $this
+     */
+    protected function addSMSToData()
+    {
+        $sms = $this->getSMS();
+        $this->data = array_merge($this->data, compact('sms'));
+
+        return $this;
+    }
+//    protected $broadcastData = [];
+//
+//    protected $values = [];
+//
+//    public function __invoke(string $path, array $values)
+//    {
+//        if (! tap($this->permittedContact(), function ($origin) use ($values) {
+//            if ($origin->hasPermissionTo('send broadcast')) {
+//                $this->broadcastData = array_merge($values, compact('origin'));
+//            }
+//        })) return;
+//
+//        dd($values);
+//        dd($this->broadcastData);
+//        $go = $this->shouldProceed();
+//
+//        $this->log($go->log)
+//            ->email($go->email)
+//            ->forward($go->mobile)
+//            ->reply($go->reply)
+//            ->converse($go->converse)
+//            ->relay($go->hashtags && ! $this->shouldBroadcast())
+//            ->broadcast($this->shouldBroadcast())
+//            ;
+//    }
+//
     protected function log(bool $go = true)
     {
         ! $go || $this->addMiddleWare(LogMiddleware::class);
@@ -64,38 +110,47 @@ class RelayAction extends BaseAction
         return $this;
     }
 
-    protected function relay(bool $go = true)
-    {
-        ! $go || $this->bus->dispatch(RelayCommand::class, $this->getData(), $this->getMiddlewares());
-
-        return $this;
-    }
-
-    protected function broadcast(bool $go = true)
-    {
-        ! $go ||  $this->bus->dispatch(BroadcastCommand::class, $this->broadcastData, $this->getMiddlewares());
-
-        return $this;
-    }
-
+//    protected function relay(bool $go = true)
+//    {
+//        ! $go || $this->bus->dispatch(RelayCommand::class, $this->getData(), $this->getMiddlewares());
+//
+//        return $this;
+//    }
+//
+//    protected function broadcast(bool $go = true)
+//    {
+//        ! $go ||  $this->bus->dispatch(BroadcastCommand::class, $this->broadcastData, $this->getMiddlewares());
+//
+//        return $this;
+//    }
+//
     protected function converse($go = true)
     {
         $this->addMiddleWare(RecordDiscussionMiddleware::class);
 
         return $this;
     }
+//
+//    protected function addBusHandlers()
+//    {
+//        $this->bus->addHandler(RelayCommand::class, RelayHandler::class);
+//        $this->bus->addHandler(BroadcastCommand::class, BroadcastHandler::class);
+//    }
+//
+//    private function getData()
+//    {
+//        return [
+//            'sms' => $this->router->missive->getSMS(),
+//        ];
+//    }
+//
 
-    protected function addBusHandlers()
+    protected function addMiddleWare(string $middleware)
     {
-        $this->bus->addHandler(RelayCommand::class, RelayHandler::class);
-        $this->bus->addHandler(BroadcastCommand::class, BroadcastHandler::class);
-    }
+        if (! in_array($middleware, $this->middlewares))
+            array_push($this->middlewares, $middleware);
 
-    private function getData()
-    {
-        return [
-            'sms' => $this->router->missive->getSMS(),
-        ];
+        return $this;
     }
 
     protected function shouldProceed()
@@ -103,8 +158,8 @@ class RelayAction extends BaseAction
         return (object) config('sms-relay.relay');
     }
 
-    protected function shouldBroadcast()
-    {
-        return (bool) config('sms-relay.broadcast.optional') && (bool) $this->broadcastData;
-    }
+//    protected function shouldBroadcast()
+//    {
+//        return (bool) config('sms-relay.broadcast.optional') && (bool) $this->broadcastData;
+//    }
 }
