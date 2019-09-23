@@ -82,6 +82,17 @@ class TemplateAction extends ActionAbstract implements ActionInterface
     }
 
     /**
+     * @return $this
+     */
+    protected function addSMSToData()
+    {
+        $sms = $this->getSMS();
+        $this->data = array_merge($this->data, compact('sms'));
+
+        return $this;
+    }
+
+    /**
      * @return \LBHurtado\Missive\Classes\SMSAbstract
      */
     protected function getSMS()
