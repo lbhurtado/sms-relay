@@ -88,4 +88,12 @@ class TemplateAction extends ActionAbstract implements ActionInterface
     {
         return $this->router->missive->getSMS();
     }
+
+    protected function addMiddleWare(string $middleware)
+    {
+        if (! in_array($middleware, $this->middlewares))
+            array_push($this->middlewares, $middleware);
+
+        return $this;
+    }
 }
