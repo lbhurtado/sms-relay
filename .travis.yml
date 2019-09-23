@@ -13,11 +13,11 @@ env:
 
 before_script:
   - cp .env.travis .env
-  - mysql -e 'create database testing_db;'
+  - mysql -uroot -e 'create database testing_db;'
   - travis_retry composer self-update
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
   - php artisan key:generate
-  - php artisan migrate --seed
+  - php artisan migrate --force
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
