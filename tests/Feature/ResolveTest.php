@@ -27,7 +27,8 @@ class ResolveTest extends TestCase
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
-
+        $this->artisan('db:seed', ['--class' => 'SettingSeeder']);
+        
         $this->router = app(Router::class);
         $this->action = Mockery::mock(ResolveAction::class);
         $this->router->register("{$this->keyword} {ticket_id=\w+} {message}", $this->action);

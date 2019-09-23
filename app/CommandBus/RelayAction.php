@@ -2,11 +2,20 @@
 
 namespace App\CommandBus;
 
+use App\CommandBus\BroadcastAction;
 use App\CommandBus\Commands\RelayCommand;
 use App\CommandBus\Handlers\RelayHandler;
 use App\CommandBus\Commands\BroadcastCommand;
 use App\CommandBus\Handlers\BroadcastHandler;
-use App\CommandBus\Middlewares\{LogMiddleware, EmailMiddleware, ReplyMiddleware, ForwardMiddleware, RecordDiscussionMiddleware};
+use App\CommandBus\Middlewares\{
+    LogMiddleware, 
+    EmailMiddleware, 
+    ReplyMiddleware, 
+    ForwardMiddleware, 
+    RecordDiscussionMiddleware,
+    CheckBroadcasterMiddleware,
+};
+use App\Exceptions\ShouldBroadcastException;
 
 class RelayAction extends TemplateAction
 {
@@ -15,6 +24,10 @@ class RelayAction extends TemplateAction
     protected $command = RelayCommand::class;
 
     protected $handler = RelayHandler::class;
+
+    protected $middlewares = [
+        CheckBroadcasterMiddleware::class,
+    ];
 
     public function setup()
     {
@@ -29,8 +42,6 @@ class RelayAction extends TemplateAction
             ->forward($go->mobile)
             ->reply($go->reply)
             ->converse($go->converse)
-//            ->relay($go->hashtags && ! $this->shouldBroadcast())
-//            ->broadcast($this->shouldBroadcast())
             ;
     }
 
@@ -39,10 +50,13 @@ class RelayAction extends TemplateAction
         try {
             return parent::dispatchHandlers();
         }
+        catch (ShouldBroadcastException $e) {
+            return app(BroadcastAction::class)(...$this->arguments);
+        }
         catch (\Exception $e) {
             echo "RelayAction::dispatchHandlers\n\n\n\n";
 
-//            throw $e;
+            throw $e;
         }
     }
 
@@ -157,9 +171,4 @@ class RelayAction extends TemplateAction
     {
         return (object) config('sms-relay.relay');
     }
-
-//    protected function shouldBroadcast()
-//    {
-//        return (bool) config('sms-relay.broadcast.optional') && (bool) $this->broadcastData;
-//    }
 }

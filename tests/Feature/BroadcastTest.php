@@ -27,6 +27,7 @@ class BroadcastTest extends TestCase
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
+        $this->artisan('db:seed', ['--class' => 'SettingSeeder']);
 
         $this->router = app(Router::class);
         $this->action = Mockery::mock(BroadcastAction::class);

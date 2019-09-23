@@ -21,7 +21,8 @@ class RedeemTest extends TestCase
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
-
+        $this->artisan('db:seed', ['--class' => 'SettingSeeder']);
+        
         $regex_code = ''; $regex_email = ''; extract(redeem_regex());
         $this->router = app(Router::class);
         $this->action = Mockery::mock(RedeemAction::class);

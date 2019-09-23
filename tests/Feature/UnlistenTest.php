@@ -21,7 +21,8 @@ class UnlistenTest extends TestCase
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
-
+        $this->artisan('db:seed', ['--class' => 'SettingSeeder']);
+        
         $this->router = app(Router::class);
         $this->action = Mockery::mock(UnlistenAction::class);
         $this->router->register("{$this->keyword} {tags}", $this->action);

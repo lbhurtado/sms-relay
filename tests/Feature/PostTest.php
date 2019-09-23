@@ -27,7 +27,8 @@ class PostTest extends TestCase
         parent::setUp();
 
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
-
+        $this->artisan('db:seed', ['--class' => 'SettingSeeder']);
+        
         $this->router = app(Router::class);
         $this->action = Mockery::mock(PostAction::class);
         $this->router->register("{$this->keyword} {message}", $this->action);
